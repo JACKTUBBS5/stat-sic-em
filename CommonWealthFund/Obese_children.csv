@@ -1,0 +1,261 @@
+time_period,state,point_estimate
+2016-17,United States,31.00
+2017-18,United States,30.80
+2018-19,United States,31.00
+2019-20,United States,32.10
+2020-21,United States,33.50
+2016-17,Alabama,34.30
+2017-18,Alabama,33.10
+2018-19,Alabama,34.00
+2019-20,Alabama,36.90
+2020-21,Alabama,37.00
+2016-17,Alaska,25.00
+2017-18,Alaska,24.70
+2018-19,Alaska,29.30
+2019-20,Alaska,32.40
+2020-21,Alaska,31.00
+2016-17,Arizona,25.50
+2017-18,Arizona,26.70
+2018-19,Arizona,25.50
+2019-20,Arizona,26.60
+2020-21,Arizona,30.70
+2016-17,Arkansas,30.20
+2017-18,Arkansas,29.90
+2018-19,Arkansas,33.90
+2019-20,Arkansas,36.20
+2020-21,Arkansas,37.10
+2016-17,California,30.70
+2017-18,California,31.60
+2018-19,California,30.80
+2019-20,California,30.40
+2020-21,California,34.80
+2016-17,Colorado,27.50
+2017-18,Colorado,25.60
+2018-19,Colorado,24.70
+2019-20,Colorado,25.10
+2020-21,Colorado,24.40
+2016-17,Connecticut,25.30
+2017-18,Connecticut,25.70
+2018-19,Connecticut,28.80
+2019-20,Connecticut,30.90
+2020-21,Connecticut,34.10
+2016-17,Delaware,29.90
+2017-18,Delaware,27.10
+2018-19,Delaware,30.60
+2019-20,Delaware,38.10
+2020-21,Delaware,36.20
+2016-17,District of Columbia,34.70
+2017-18,District of Columbia,31.60
+2018-19,District of Columbia,28.30
+2019-20,District of Columbia,29.40
+2020-21,District of Columbia,32.90
+2016-17,Florida,36.40
+2017-18,Florida,33.40
+2018-19,Florida,30.30
+2019-20,Florida,32.80
+2020-21,Florida,32.80
+2016-17,Georgia,32.40
+2017-18,Georgia,31.30
+2018-19,Georgia,31.30
+2019-20,Georgia,34.40
+2020-21,Georgia,33.90
+2016-17,Hawaii,28.00
+2017-18,Hawaii,24.90
+2018-19,Hawaii,23.10
+2019-20,Hawaii,28.30
+2020-21,Hawaii,32.30
+2016-17,Idaho,24.30
+2017-18,Idaho,25.20
+2018-19,Idaho,28.90
+2019-20,Idaho,29.20
+2020-21,Idaho,27.20
+2016-17,Illinois,30.50
+2017-18,Illinois,29.30
+2018-19,Illinois,29.30
+2019-20,Illinois,32.50
+2020-21,Illinois,32.40
+2016-17,Indiana,29.90
+2017-18,Indiana,32.70
+2018-19,Indiana,36.60
+2019-20,Indiana,31.50
+2020-21,Indiana,30.10
+2016-17,Iowa,31.50
+2017-18,Iowa,34.60
+2018-19,Iowa,33.60
+2019-20,Iowa,33.10
+2020-21,Iowa,34.50
+2016-17,Kansas,31.50
+2017-18,Kansas,28.80
+2018-19,Kansas,29.20
+2019-20,Kansas,30.80
+2020-21,Kansas,29.50
+2016-17,Kentucky,37.00
+2017-18,Kentucky,38.00
+2018-19,Kentucky,36.90
+2019-20,Kentucky,39.00
+2020-21,Kentucky,40.60
+2016-17,Louisiana,30.90
+2017-18,Louisiana,32.10
+2018-19,Louisiana,35.30
+2019-20,Louisiana,37.30
+2020-21,Louisiana,39.20
+2016-17,Maine,28.80
+2017-18,Maine,27.80
+2018-19,Maine,25.10
+2019-20,Maine,26.80
+2020-21,Maine,30.40
+2016-17,Maryland,34.80
+2017-18,Maryland,33.90
+2018-19,Maryland,34.50
+2019-20,Maryland,29.40
+2020-21,Maryland,31.80
+2016-17,Massachusetts,26.30
+2017-18,Massachusetts,26.00
+2018-19,Massachusetts,24.20
+2019-20,Massachusetts,24.10
+2020-21,Massachusetts,28.10
+2016-17,Michigan,32.50
+2017-18,Michigan,29.40
+2018-19,Michigan,30.10
+2019-20,Michigan,32.10
+2020-21,Michigan,33.50
+2016-17,Minnesota,26.20
+2017-18,Minnesota,24.70
+2018-19,Minnesota,22.40
+2019-20,Minnesota,24.00
+2020-21,Minnesota,25.60
+2016-17,Mississippi,39.20
+2017-18,Mississippi,40.30
+2018-19,Mississippi,37.70
+2019-20,Mississippi,38.40
+2020-21,Mississippi,41.40
+2016-17,Missouri,27.70
+2017-18,Missouri,31.70
+2018-19,Missouri,34.50
+2019-20,Missouri,31.30
+2020-21,Missouri,33.70
+2016-17,Montana,25.50
+2017-18,Montana,24.40
+2018-19,Montana,23.20
+2019-20,Montana,24.30
+2020-21,Montana,25.70
+2016-17,Nebraska,28.90
+2017-18,Nebraska,25.80
+2018-19,Nebraska,26.40
+2019-20,Nebraska,28.00
+2020-21,Nebraska,28.70
+2016-17,Nevada,29.00
+2017-18,Nevada,30.80
+2018-19,Nevada,31.90
+2019-20,Nevada,30.20
+2020-21,Nevada,32.20
+2016-17,New Hampshire,24.40
+2017-18,New Hampshire,26.20
+2018-19,New Hampshire,27.50
+2019-20,New Hampshire,26.60
+2020-21,New Hampshire,27.30
+2016-17,New Jersey,33.20
+2017-18,New Jersey,32.80
+2018-19,New Jersey,31.60
+2019-20,New Jersey,30.90
+2020-21,New Jersey,29.00
+2016-17,New Mexico,29.60
+2017-18,New Mexico,32.00
+2018-19,New Mexico,32.10
+2019-20,New Mexico,33.50
+2020-21,New Mexico,36.50
+2016-17,New York,31.40
+2017-18,New York,30.10
+2018-19,New York,29.60
+2019-20,New York,32.30
+2020-21,New York,32.30
+2016-17,North Carolina,30.70
+2017-18,North Carolina,29.80
+2018-19,North Carolina,30.70
+2019-20,North Carolina,33.90
+2020-21,North Carolina,33.50
+2016-17,North Dakota,30.00
+2017-18,North Dakota,27.10
+2018-19,North Dakota,28.20
+2019-20,North Dakota,26.90
+2020-21,North Dakota,29.00
+2016-17,Ohio,32.40
+2017-18,Ohio,31.40
+2018-19,Ohio,34.40
+2019-20,Ohio,38.00
+2020-21,Ohio,34.00
+2016-17,Oklahoma,35.30
+2017-18,Oklahoma,36.40
+2018-19,Oklahoma,34.80
+2019-20,Oklahoma,32.30
+2020-21,Oklahoma,34.30
+2016-17,Oregon,21.90
+2017-18,Oregon,24.10
+2018-19,Oregon,29.00
+2019-20,Oregon,31.50
+2020-21,Oregon,31.50
+2016-17,Pennsylvania,30.40
+2017-18,Pennsylvania,27.70
+2018-19,Pennsylvania,27.80
+2019-20,Pennsylvania,29.50
+2020-21,Pennsylvania,30.10
+2016-17,Rhode Island,33.60
+2017-18,Rhode Island,31.20
+2018-19,Rhode Island,32.50
+2019-20,Rhode Island,33.40
+2020-21,Rhode Island,32.30
+2016-17,South Carolina,33.00
+2017-18,South Carolina,35.60
+2018-19,South Carolina,36.10
+2019-20,South Carolina,35.60
+2020-21,South Carolina,39.90
+2016-17,South Dakota,27.50
+2017-18,South Dakota,25.10
+2018-19,South Dakota,29.00
+2019-20,South Dakota,34.70
+2020-21,South Dakota,36.90
+2016-17,Tennessee,37.70
+2017-18,Tennessee,36.70
+2018-19,Tennessee,36.40
+2019-20,Tennessee,36.90
+2020-21,Tennessee,36.80
+2016-17,Texas,32.40
+2017-18,Texas,32.30
+2018-19,Texas,33.50
+2019-20,Texas,37.10
+2020-21,Texas,39.50
+2016-17,Utah,22.70
+2017-18,Utah,23.50
+2018-19,Utah,22.50
+2019-20,Utah,22.80
+2020-21,Utah,25.70
+2016-17,Vermont,27.20
+2017-18,Vermont,33.10
+2018-19,Vermont,28.90
+2019-20,Vermont,27.80
+2020-21,Vermont,29.10
+2016-17,Virginia,27.50
+2017-18,Virginia,29.80
+2018-19,Virginia,31.20
+2019-20,Virginia,29.60
+2020-21,Virginia,33.70
+2016-17,Washington,25.00
+2017-18,Washington,26.30
+2018-19,Washington,29.90
+2019-20,Washington,29.70
+2020-21,Washington,28.40
+2016-17,West Virginia,34.90
+2017-18,West Virginia,36.20
+2018-19,West Virginia,40.10
+2019-20,West Virginia,41.20
+2020-21,West Virginia,41.00
+2016-17,Wisconsin,27.60
+2017-18,Wisconsin,30.50
+2018-19,Wisconsin,30.70
+2019-20,Wisconsin,28.50
+2020-21,Wisconsin,30.70
+2016-17,Wyoming,28.20
+2017-18,Wyoming,28.70
+2018-19,Wyoming,25.50
+2019-20,Wyoming,24.10
+2020-21,Wyoming,24.30
