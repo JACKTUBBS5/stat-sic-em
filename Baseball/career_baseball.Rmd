@@ -1,0 +1,41 @@
+---
+title: "Baseball Careers"
+author: "author"
+date: "date"
+output: html_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+
+```
+
+Needed Packages
+```{r, message=FALSE}
+if(!require(knitr)){install.packages("knitr")}
+if(!require(dplyr)){install.packages("dplyr")}
+if (!require("readr")) install.packages("readr", dep=FALSE)
+if (!require("gridExtra")) install.packages("gridExtra", dep=TRUE)
+
+if(!require(FSA)){install.packages("FSA")}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if (!require("mosaic")) install.packages("mosaic", dep=FALSE)
+if (!require("nortest")) install.packages("nortest", dep=TRUE)
+if (!require("epitools")) install.packages("epitools", dep=TRUE)
+if (!require("prettyR")) install.packages("prettyR", dep=TRUE)
+if (!require("rms")) install.packages("rms", dep=TRUE)
+# add other as needed
+```
+## Observational Cohort Data
+
+```{r}
+frame = read.csv('career_baseball.csv', header = TRUE,
+                       fileEncoding = 'UTF-8-BOM') #latest version
+
+baseball = data.frame(frame)
+summary(baseball)
+dim(baseball)
+```
+
+The objective is to model the probability that a will have a career that is 'long' (l_career = '1'). The data has season (1986) statistics and career statistics. Use the seasonal statistics (hits, bb, etc.) to model the data.
