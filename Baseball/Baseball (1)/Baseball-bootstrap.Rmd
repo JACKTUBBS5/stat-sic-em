@@ -1,0 +1,90 @@
+---
+title: "Baseball with Bootstrap"
+author: "JDT"
+date: "2/2/2022"
+output: latex_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.height = 3)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60), tidy=TRUE)
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+```
+
+Needed Packages
+```{r, message=FALSE}
+if (!require("boot")) install.packages("boot")
+if (!require("MASS")) install.packages("MASS")
+```
+
+Read Baseball Salary data 
+```{r}
+baseball <- read.table('baseball.csv',sep = ",", header = TRUE)
+#summary(baseball)
+```
+
+Subset the data for catchers
+```{r}
+base_catcher = subset(baseball, Position=="C")
+summary(base_catcher)
+```
+
+Define functions for the bootstrap with Specified Variables
+```{r}
+# Median
+fc_median <- function(d, i){
+	d2 <- d[i,]
+	return(median(d2$Salary, na.rm = TRUE))
+}
+
+#Midpoint
+fc_mid <- function(d, i){
+	d2 <- d[i,]
+	mid <- (max(d2$Salary, na.rm = TRUE) + min(d2$Salary, na.rm = TRUE))/2
+	return(mid)
+}
+
+#Trimmed Midpoint [10%]
+fc_trimmid <- function(d, i){
+	d2 <- d[i,]
+	mid <- (quantile(d2$Salary,probs=.9, na.rm = TRUE) + 
+	        quantile(d2$Salary,probs=.1, na.rm = TRUE))/2
+	return(mid)
+}
+
+#Mean Absolute difference 
+fc_mad <- function(d, i){
+	d2 <- d[i,]
+	mid <- abs(d2$Salary - median(d2$Salary, na.rm = TRUE))
+	return(sqrt((mean(mid, na.rm = TRUE))))
+}
+```
+
+Perform Bootstrap
+```{r}
+set.seed(321)  #start the Bootstrap at the same location
+#Median
+  b.median = boot(base_catcher, fc_median, R = 100) 
+  b.median
+plot(b.median)
+
+set.seed(321)
+#Midpoint
+  b.mid = boot(base_catcher, fc_mid, R = 100) 
+  b.mid
+plot(b.mid)
+
+set.seed(321)
+#Trimmed Midpoint Using 10% on both sides
+  b.trimmid = boot(base_catcher, fc_trimmid, R = 100) 
+  b.trimmid
+plot(b.trimmid)
+
+set.seed(321)
+#MAD  #Measure of the sd in Salary 
+  b.mad = boot(base_catcher, fc_mad, R = 100) 
+  b.mad
+plot(b.mad)
+
+```
+
