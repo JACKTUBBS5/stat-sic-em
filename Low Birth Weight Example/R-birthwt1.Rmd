@@ -1,0 +1,59 @@
+---
+title: "Birth Weight"
+author: "JDT"
+date: "9/23/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+
+```
+Needed Packages
+```{r, message=FALSE}
+
+if(!require(FSA)){install.packages("FSA")}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if (!require("mosaic")) install.packages("mosaic", dep=FALSE)
+if (!require("nortest")) install.packages("nortest", dep=TRUE)
+if (!require("epitools")) install.packages("epitools", dep=TRUE)
+if (!require("prettyR")) install.packages("prettyR", dep=TRUE)
+if (!require("rms")) install.packages("rms", dep=TRUE)
+# add other as needed
+```
+
+## Problem -- Infant Birth Weight Data
+
+Read data from SAS input file
+```{r}
+# this data came from SASHELP.BWEIGHT
+bw = read.csv('bwgt.csv', header = TRUE)
+bw = data.frame(bw)
+#summary(bw)
+bw = transform(bw, AgeGroup.f = as.factor(AgeGroup))
+bw = transform(bw, Race.f = as.factor(Race))
+bw = transform(bw, Drinking.f = as.factor(Drinking))
+bw = transform(bw, Death.f = as.factor(Death))
+bw = transform(bw, Smoking.f = as.factor(Smoking))
+bw = transform(bw, SomeCollege.f = as.factor(SomeCollege))
+bw = transform(bw, LowBirthWgt.f = as.factor(LowBirthWgt))
+```
+```{r}
+tally(~ AgeGroup + Race.f, data=bw)
+tally(~ Race.f | AgeGroup.f, data=bw)
+
+library(mosaic)
+mytab = tally(~ Race.f | AgeGroup.f, data=bw)
+addmargins(mytab)
+prop.table(mytab, 1)
+```
+
+```{r, message=FALSE, warning=FALSE}
+library(epitools)
+attach(bw)
+mytab = tally(~ LowBirthWgt.f | Death.f, data=bw)
+addmargins(mytab)
+prop.table(mytab, 1)
+riskratio(x=Smoking.f, y=Death.f)
+```
