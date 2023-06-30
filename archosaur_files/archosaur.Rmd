@@ -1,0 +1,34 @@
+---
+title: "Archosaurs: Linear Regression Example"
+author: "jdt"
+date: "October 2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+```
+Read data from SAS input file
+```{r}
+# this data came from SASHELP.CARS
+brain <- read.csv('archosaur.csv', header = TRUE)
+summary(brain)
+```
+Transform Data
+```{r}
+log_body.wt = log(brain$Body.Weight)
+log_brain.wt = log(brain$Brain.Weight)
+```
+Graph of data
+```{r}
+plot(log_brain.wt~log_body.wt)
+abline(lm(log_brain.wt~log_body.wt))
+```
+
+Results
+```{r}
+result<-lm(log_brain.wt~log_body.wt)
+summary(result)
+plot(result)
+```
