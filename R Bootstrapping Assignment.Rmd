@@ -1,0 +1,80 @@
+---
+title: "Bootstrapping Assignment in R"
+author: "Katie, Rita, and Chang"
+date: "August 26, 2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+#if(!require("boot")) install.packages("boot", dep=TRUE)
+```
+
+# Part 1
+# upload necessary packages
+```{r}
+library("boot") 
+```
+
+# set up problem
+``` {r}
+set.seed(123)
+theta = 12 # parameter for the uniform
+dat <- (c(runif(100)*theta))
+```
+
+# define function using minimum and maximum
+``` {r}
+fc_minandmax <- function(d, i){
+  d3 <- d[i]
+  return(min(d3) + max(d3))
+}
+```
+
+# perform bootstrap
+``` {r}
+set.seed(321)
+b.minandmax = boot(dat, fc_minandmax, R = 100)
+b.minandmax
+plot(b.minandmax)
+```
+
+# Part 2
+```{r}
+set.seed(123)
+theta = 8 # parameter for the uniform
+dat = c(rexp(100)*theta)
+```
+
+# define function using x bar (mean)
+```{r}
+fc_mean <- function(d, i) {
+  d2 <- d[i]
+  return(mean(d2))
+}
+```
+
+# perform bootstrap
+```{r}
+set.seed(321)
+b.mean = boot(dat, fc_mean, R = 100)
+b.mean
+plot(b.mean)
+```
+
+# define function using median
+```{r}
+fc_med <- function(d, i){
+  d2 <- d[i]
+  return(median(d2))
+}
+```
+
+# perform bootstrap
+``` {r}
+set.seed(321)
+b.med = boot(dat, fc_med, R = 100)
+b.med
+plot(b.med)
+```
