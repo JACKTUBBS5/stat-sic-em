@@ -1,0 +1,155 @@
+---
+title: "Test of Fit for Two Simulated Populations"
+author: "jdt"
+date: "1/28/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+```
+
+
+Analysis with Simulated normal data
+
+```{r}
+set.seed(4382)
+x = rnorm(75, mean=10, sd = 4)   #x ~ N(10,4)
+y = rnorm(75, mean=12, sd = 4)   #y ~ N(12,4)
+cert = data.frame(x,y)
+#hist(x)
+#hist(y)
+
+with(cert, hist(x, main="", freq=FALSE))
+with(cert, lines(density(x), main="X", lty=2, lwd=2))
+xvals = with(cert, seq(from=min(x), to=max(x), length=100))
+with(cert, lines(xvals, dnorm(xvals, mean(x), sd(x)), lwd=2))
+with(cert, hist(y, main="", freq=FALSE))
+with(cert, lines(density(y), main="", lty=2, lwd=2))
+xvals = with(cert, seq(from=min(y), to=max(y), length=100))
+with(cert, lines(xvals, dnorm(xvals, mean(y), sd(y)), lwd=2))
+```
+
+Descriptive statistics
+
+```{r, warning=FALSE,echo=FALSE, message=FALSE}
+if (!require("mosaic")) install.packages("mosaic", dep=TRUE)
+
+library("mosaic")
+favstats(x)
+mean(x, trim=.05)
+quantile(x, seq(from=.025, to= .975, by=.1))
+t.test(x, mu=12, conf.level=.9)   #test for mu=12 and 90 percent ci
+
+favstats(y)
+mean(y, trim=.05)
+quantile(y, seq(from=.025, to= .975, by=.1))
+t.test(y, mu=12, conf.level=.9)   #test for mu=12 and 90 percent ci
+```
+
+Use X and Y
+
+```{r, warning=FALSE,echo=FALSE, message=FALSE}
+if (!require("coin")) install.packages("coin", dep=TRUE)
+
+library("coin")
+wilcox.test(x,y)
+t.test(x,y)
+ks.test(x,y)
+```
+
+Univariate Test of Fit for Normality
+
+```{r, warning=FALSE,echo=FALSE, message=FALSE}
+if (!require("nortest")) install.packages("nortest", dep=TRUE)
+library("nortest")
+ad.test(x)
+cvm.test(x)
+lillie.test(x)
+pearson.test(x)
+sf.test(x)
+
+
+qqnorm(x)
+```
+
+Analysis with Simulated lognormal data
+
+```{r, warning=FALSE,echo=FALSE, message=FALSE}
+x = 2*rlnorm(75, mean=0, sd = 1) 
+y = 2.5*rlnorm(75, mean=0, sd = 1) 
+
+cert = data.frame(x,y)    #redefined data.frame with new x,y
+
+with(cert, hist(x, main="", freq=FALSE))
+with(cert, lines(density(x), main="X", lty=2, lwd=2))
+xvals = with(cert, seq(from=min(x), to=max(x), length=100))
+with(cert, lines(xvals, dnorm(xvals, mean(x), sd(x)), lwd=2))
+with(cert, hist(y, main="", freq=FALSE))
+with(cert, lines(density(y), main="", lty=2, lwd=2))
+xvals = with(cert, seq(from=min(y), to=max(y), length=100))
+with(cert, lines(xvals, dnorm(xvals, mean(y), sd(y)), lwd=2))
+
+#use x
+ad.test(x)
+cvm.test(x)
+lillie.test(x)
+pearson.test(x)
+sf.test(x)
+
+qqnorm(x)
+
+```
+
+Use X and Y
+
+```{r}
+library("coin")
+wilcox.test(x,y)
+t.test(x,y)
+ks.test(x,y)
+
+```
+
+Analysis with Simulated exponential data
+
+```{r}
+x = rexp(75, rate = 2) 
+y = rexp(75, rate = 2.5) 
+
+cert = data.frame(x,y)    #redefined data.frame with new x,y
+
+with(cert, hist(x, main="", freq=FALSE))
+with(cert, lines(density(x), main="X", lty=2, lwd=2))
+xvals = with(cert, seq(from=min(x), to=max(x), length=100))
+with(cert, lines(xvals, dnorm(xvals, mean(x), sd(x)), lwd=2))
+with(cert, hist(y, main="", freq=FALSE))
+with(cert, lines(density(y), main="", lty=2, lwd=2))
+xvals = with(cert, seq(from=min(y), to=max(y), length=100))
+with(cert, lines(xvals, dnorm(xvals, mean(y), sd(y)), lwd=2))
+
+
+
+library("nortest")
+ad.test(x)
+cvm.test(x)
+lillie.test(x)
+pearson.test(x)
+sf.test(x)
+
+
+qqnorm(x)
+```
+
+Use X and Y
+
+
+```{r}
+library("coin")
+wilcox.test(x,y)
+t.test(x,y)
+ks.test(x,y)
+
+
+```
