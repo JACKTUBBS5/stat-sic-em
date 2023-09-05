@@ -1,0 +1,1 @@
+If your p-value doesn't change for your adjusted simulation, try using y rather than x when doing the univariate test of fit for normality.
