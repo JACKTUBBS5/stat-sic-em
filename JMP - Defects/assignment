@@ -10,9 +10,10 @@ Problem 1
 I have added the following for which I will consider some simple inference procedures.
 
 Problem 2
-  Are there differences in defects as a function of the time of day? Break the day into 4 parts - id 1-8, 9-16, 
-  17 - 24, 25 - 32. Redo the graphics and descriptive statistics to illustrate how the number of defects is 
-  influenced by the time of day--early, mid morning, early afternoon, and late afternoon.
+  Are there differences in defects as a function of the time of day? Break the day into 4 parts - time of day
+  early 8:00-10:00am, mid morning 10:15-12:00, early afternoon 12:15-2:00 pm, and late afternoon 2:15-4:00 pm. 
+  Redo the graphics and descriptive statistics to illustrate how the number of defects is 
+  influenced by the 
 Problem 3
   Are there differences in defects as a function of the time of week? Break the week into 2 parts - days 1,2,6,7 and 
   days 4,5,9,10. Redo the graphics and descriptive statistics to illustrate how the number of defects is influenced by
