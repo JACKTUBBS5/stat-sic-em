@@ -1,0 +1,95 @@
+---
+title: "HW 1 - Bootstrap with Simulated Data"
+output: html_document
+date: "2023-09-11"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, message=FALSE, echo=FALSE}
+library(tidyverse)
+```
+
+Set parameters
+```{r}
+theta <- 12
+N <- 30
+NumSamples <- 250
+set.seed(123)
+```
+
+Simulate data
+```{r}
+SimUni <- data.frame(x = replicate(N, theta * runif(1)))
+```
+
+Make boostrap examples
+```{r}
+set.seed(1)
+BootSS <- replicate(NumSamples, sample(SimUni$x, replace = TRUE))
+```
+
+Calculate summary statistics for each bootstrap sample
+```{r}
+Bootdist <- data.frame(
+  replicate = 1:NumSamples,
+  mean_x = apply(BootSS, 2, mean),
+  max_x = apply(BootSS, 2, max),
+  min_x = apply(BootSS, 2, min)
+)
+```
+
+Calculate additional statistics
+
+```{r}
+OutStatsUni <- Bootdist %>%
+  mutate(stat1 = 2 * mean_x,
+         stat2 = max_x,
+         stat3 = min_x + max_x)
+```
+
+Plots
+
+```{r}
+ggplot(OutStatsUni, aes(x = stat1)) +
+  geom_histogram(binwidth = .5, fill = "lightblue", color = "black") +
+  labs(title = "Simulate Data for BootStrap Example\nGenerate Uniform (0, theta) Data\n2*xbar") +
+  ylab("Percent") +
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggplot(OutStatsUni, aes(x = stat2)) +
+  geom_histogram(binwidth = .2, fill = "lightblue", color = "black") +
+  labs(title = "Simulate Data for BootStrap Example\nGenerate Uniform (0, theta) Data\nx_(n)") +
+  ylab("Percent") +
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggplot(OutStatsUni, aes(x = stat3)) +
+  geom_histogram(binwidth = .2, fill = "lightblue", color = "black") +
+  labs(title = "Simulate Data for BootStrap Example\nGenerate Uniform (0, theta) Data\nx_(1) + x_(n)") +
+  ylab("Percent") +
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+Summary statistics
+```{r}
+Outstats2 <- OutStatsUni %>%
+  summarise(mean_stat1 = mean(stat1),
+            mean_stat2 = mean(stat2),
+            mean_stat3 = mean(stat3),
+            sd_stat1 = sd(stat1),
+            sd_stat2 = sd(stat2),
+            sd_stat3 = sd(stat3),
+            min_stat1 = min(stat1),
+            min_stat2 = min(stat2),
+            min_stat3 = min(stat3),
+            max_stat1 = max(stat1),
+            max_stat2 = max(stat2),
+            max_stat3 = max(stat3))
+
+print(Outstats2)
+```
