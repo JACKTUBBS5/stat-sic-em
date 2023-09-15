@@ -48,13 +48,12 @@ proc freq data=baseball; table league*division; run;
 
 *proc contents data=baseball short;*run;
 /*
-Problem 1 - comparing Boston RSox with NYC Yankees using
-seasonal variables
+Problem 1 - comparing the American League East versus
+the American League West using seasonal variables
 */
 title3 'Comparing Divisions in the American League';
 data problem1; set baseball;
 if league = 'American';
-*if team in ('New York', 'Boston');
 keep  Salary Team Division YrMajor logSalary nAtBat 
 nBB nError nHits nHome nRBI nRuns;
 run;
