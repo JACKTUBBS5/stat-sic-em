@@ -27,8 +27,8 @@ The divisional leaders were Boston RSox and LA Angels in the American league.
 
 In this analysis I have two problem in mind.
 	1. Compare teams from the same division using 1986 data.
-	2. Compare the performance of a team versus their career stats (yearly average 
-	   over each players career)
+	2. Compare the performance of a team versus their career stats
+           (yearly average over each players career)
 	   
 */
 
@@ -125,5 +125,3 @@ proc npar1way data=problem2 wilcoxon edf normal; class career;
 var nHits;			/*   Use which variable you choose  */;
 run;
  quit;
- 
-ods latex close;
