@@ -1,0 +1,35 @@
+---
+title: "Linear Regression Example"
+author: "jdt"
+date: "11/26/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Generate the Simulated Data
+```{r}
+set.seed(123)
+n=30         #sample size
+beta_0=10    #true y-intercept
+beta_1=2    #true slope
+sigma= 9     #true sigma
+
+x=25*runif(n)
+y=beta_0 + beta_1*x + sigma*rnorm(n)
+```
+Graph of data
+```{r}
+plot(y~x)
+abline(lm(y~x))
+```
+
+
+
+Results
+```{r}
+result<-lm(y~x)
+summary(result)
+plot(result)
+```
