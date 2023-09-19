@@ -1,0 +1,26 @@
+The files in this folder originated in a collection of case studies using JMP. The file entitled
+jmp003-defect-sampling.pdf has instruction and background material for analyzing the data using JMP. The
+data is in a JMP format which I have converted to a xlsx and csv file. You can use the csv file for getting
+the data into RStudio and Sas OnDemand.
+
+Problem 1
+  Reproduce the JMP analysis using R and SAS.  The original problem was to illustrate different sampling
+  strategies in terms of the frequency of inspected parts. 
+
+I have added the following for which I will consider some simple inference procedures.
+
+Problem 2
+  Are there differences in defects as a function of the time of day? Break the day into 4 parts - time of day
+  early 8:00-10:00am, mid morning 10:15-12:00, early afternoon 12:15-2:00 pm, and late afternoon 2:15-4:00 pm. 
+  Redo the graphics and descriptive statistics to illustrate how the number of defects is 
+  influenced by the 
+Problem 3
+  Are there differences in defects as a function of the time of week? Break the week into 2 parts - days 1,2,6,7 and 
+  days 4,5,9,10. Redo the graphics and descriptive statistics to illustrate how the number of defects is influenced by
+  the day of the week; early,and late.
+
+This is a teams project. Since most members have experience with R, do each problem with R. Then repeat the analysis using SAS Studio.
+How do you get the SAS code, wait for Tubbs!  Long wait, I'm not doing this problem! (I changed my mind, SAS versions are included)
+Use the tasks section (with videos assistance) in SAS Studio to write the SAS code for the graphics and descriptive procedures you 
+need. In essence, you are teaching yourself SAS (I'll help!) or Use an AI bot to convert your R code to SAS and then make the 
+SAS work (I'll watch!)
