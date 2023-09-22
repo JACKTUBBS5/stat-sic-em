@@ -1,0 +1,96 @@
+---
+title: "Baseball Careers"
+author: "author"
+date: "date"
+output: html_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+
+```
+
+# Load necessary libraries
+
+```{r, message=FALSE}
+if(!require(knitr)){install.packages("knitr")}
+if(!require(dplyr)){install.packages("dplyr")}
+if (!require("readr")) install.packages("readr", dep=FALSE)
+if (!require("gridExtra")) install.packages("gridExtra", dep=TRUE)
+if (!require("stats")) install.packages("stats", dep=TRUE)
+if(!require(FSA)){install.packages("FSA")}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if (!require("mosaic")) install.packages("mosaic", dep=FALSE)
+if (!require("nortest")) install.packages("nortest", dep=TRUE)
+if (!require("epitools")) install.packages("epitools", dep=TRUE)
+if (!require("prettyR")) install.packages("prettyR", dep=TRUE)
+if (!require("rms")) install.packages("rms", dep=TRUE)
+# add others as needed
+```
+## Read the baseball data (assuming you have it in a CSV file)
+
+```{r}
+baseball <- read.csv("baseball.csv")
+dim(baseball)
+```
+
+# Data for Problem 1 
+ 
+Comparing American League East vs
+American League West using 1986 data for seasonal hits
+
+
+# Create a subset of the data for American League
+
+```{r}
+problem1 <- baseball %>%
+  filter(League == "American") %>%
+  select(Salary, Team, Division, YrMajor, logSalary, nAtBat, nBB, nError, nHits, nHome, nRBI, nRuns)
+
+# Frequency table for Division
+division_freq <- table(problem1$Division)
+print(division_freq)
+```
+
+# Sort the data by Division
+```{r}
+problem1 <- problem1 %>%
+  arrange(Division)
+
+# Test for means assuming normal data (t-test)
+t_test_result <- t.test(problem1$nHits ~ problem1$Division)
+print(t_test_result)
+
+# Test for means assuming non-normal data (Wilcoxon test)
+wilcoxon_test_result <- wilcox.test(problem1$nHits ~ problem1$Division)
+print(wilcoxon_test_result)
+
+# Test for means assuming non-normal data (KS test)
+ks_test_result <- ks.test(problem1$nHits ~ problem1$Division)
+print(ks_test_result)
+```
+
+# Subset the data for problem 2 
+
+Comparing present season
+number of hits with past average number of hits for teams 
+in National League East
+
+```{r}
+prob2 = subset(baseball, Div == "NE")
+#summary(prob2)
+dim(prob2)
+#summary(prob2)
+x=prob2$nHits                 #present number of hits
+y = prob2$CrHits/prob2$YrMajor 
+                              #past average number of hits
+
+favstats(x)
+favstats(y)
+
+boxplot(x,y, data=prob2)
+t.test(x,y)
+wilcox.test(x,y)
+ks.test(x,y)
+```
