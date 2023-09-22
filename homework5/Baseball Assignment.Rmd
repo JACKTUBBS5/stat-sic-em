@@ -1,0 +1,121 @@
+---
+title: "Baseball Assignment"
+author: "Katie, Rita, and Chang"
+date: "2023-09-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("/Users/katieclewett/Desktop")
+dat <- read.csv("baseball.csv", header=TRUE)
+```
+
+# Problem 1
+
+# Subgroups
+```{r}
+library("dplyr")
+infield <- filter(dat, Position == '1B' | Position == '2B' | Position == 'SS' | Position == '3B')
+outfield <- filter(dat, Position == 'CF' | Position == 'RF' | Position == 'LF' | Position == 'OF')
+catcher <- filter(dat, Position == 'C')
+CrHits2 <- dat$CrHits*dat$CrHits
+```
+
+# Plot League by Division
+```{r}
+library("arsenal")
+tab.lbyd <- table(dat$League, dat$Division)
+lbyd <- freqlist(tab.lbyd)
+summary(lbyd)
+```
+
+# Plot Division for American Leagues
+```{r}
+library("arsenal")
+library("dplyr")
+data <- filter(dat, League == 'American')
+tab.adiv <- table(data$Division)
+adiv <- freqlist(tab.adiv)
+summary(adiv)
+```
+
+# Arrange by Division
+```{r}
+data <- filter(dat, League == 'American')
+data <- subset(data, select = c(Salary, Team, Division, YrMajor, logSalary, nAtBat, nBB, nError, nHits, nHome, nRuns))
+print(data[order(data$Division),])
+subdata <- 
+  data %>%
+  group_by(Division) %>%
+  summarize(c(total_count = n()), (mean_hits = mean(nHits)), (sd_hits = sd(nHits)), (se_hits = sd(nHits)/sqrt(n())), (min_hits = min(nHits)), (max_hits = max(nHits)))
+print(subdata)
+```
+
+# Assuming Normal Data
+# Pooled T-test
+```{r}
+data <- filter(dat, League == 'American')
+data <- subset(data, select = c(Salary, Team, Division, YrMajor, logSalary, nAtBat, nBB, nError, nHits, nHome, nRuns))
+t.test(data$nHits ~ data$Division, var.equal = TRUE)
+```
+
+# Satterthwaite T-test
+```{r}
+data <- filter(dat, League == 'American')
+data <- subset(data, select = c(Salary, Team, Division, YrMajor, logSalary, nAtBat, nBB, nError, nHits, nHome, nRuns))
+t.test(data$nHits ~ data$Division)
+```
+
+# Plots
+```{r}
+library("ggplot2")
+data <- filter(dat, League == 'American')
+data <- subset(data, select = c(Salary, Team, Division, YrMajor, logSalary, nAtBat, nBB, nError, nHits, nHome, nRuns))
+eastsubdata <- filter(data, Division == 'East')
+westsubdata <- filter(data, Division == 'West')
+
+# East Plots
+qqnorm(eastsubdata$nHits)
+ggplot((eastsubdata), aes(x=nHits)) +
+  geom_histogram(aes(y = after_stat(density)), fill='lightgray', col='black', bins = 10) +
+  scale_x_continuous(limits = c(-50,300)) +
+  stat_function(fun = dnorm, args = list(mean=mean(eastsubdata$nHits), sd=sd(eastsubdata$nHits)))
+ggplot(eastsubdata, aes(x=nHits)) + geom_boxplot()
+
+# West Plots
+qqnorm(westsubdata$nHits)
+ggplot((westsubdata), aes(x=nHits)) +
+  geom_histogram(aes(y = after_stat(density)), fill='lightgray', col='black', bins = 10) +
+  scale_x_continuous(limits = c(-50,250)) +
+  stat_function(fun = dnorm, args = list(mean=mean(westsubdata$nHits), sd=sd(westsubdata$nHits)))
+ggplot(westsubdata, aes(x=nHits)) + geom_boxplot()
+```
+
+# Assuming Non-Normal Data
+```{r}
+library("DescrTab2")
+library("tidyverse")
+library("rstatix")
+library("ggpubr")
+data <- filter(dat, League == 'American')
+data <- subset(data, select = c(Salary, Team, Division, YrMajor, logSalary, nAtBat, nBB, nError, nHits, nHome, nRuns))
+
+data %>%
+  group_by(Division) %>%
+  get_summary_stats(nHits, type = "median_iqr")
+bxp <- ggboxplot(
+  data, x = "Division", y = "nHits", 
+  ylab = "nHits", xlab = "Division", add = "jitter"
+  )
+bxp
+
+stat.test <- data %>%
+  wilcox_test(nHits ~ Division) %>%
+  add_significance
+stat.test
+
+wilcox.test(data$nHits~data$Division)
+
+kruskal.test(data$nHits~data$Division)
+```
