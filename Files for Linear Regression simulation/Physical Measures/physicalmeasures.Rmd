@@ -1,0 +1,526 @@
+---
+title: "Physical Measures Project"
+author: "Randy Nguyen, Emmie Jenkins, Sonish Lamsal"
+date: "11/19/2020"
+#papersize: a5
+#fontsize: 8pt
+output: html_document
+#theme: "Berkeley"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Background
+Larner (1996) measured the weight and various physical measurements for 22 males aged 16–30. 
+\pause \
+Subjects were randomly chosen volunteers and all were in reasonably good health.  \
+\pause
+Subjects were requested to tense each muscle being measured slightly to ensure measurement consistency. \
+\pause
+The question of interest for these data is how weight can best be predicted from the other measurements.
+
+## Dataset
+```{r dataset}
+library(readxl)
+PhysicalMeasures <- read_xlsx(file.path("physicalmeasures.xlsx"))
+```
+
+## Scatterplot Matrix
+```{r scatterplot matrix code, message=FALSE, warning=FALSE, fig.show='hide'}
+library(GGally)
+ggpairs(PhysicalMeasures, axisLabels = "none", 
+        title = "Scatterplot Matrix of Physical Measures")
+# corr codes
+```
+
+## Scatterplot Matrix
+```{r scatterplot matrix, echo = FALSE}
+ggpairs(PhysicalMeasures, axisLabels = "none", 
+        title = "Scatterplot Matrix of Physical Measures")
+```
+
+## Linear Model of Mass with All Predictors
+```{r LM with all predictors code, message=FALSE, warning=FALSE, results=FALSE}
+fit <- lm(Mass ~ ., data = PhysicalMeasures)
+summary(fit) # does not have VIFs included like SAS
+```
+
+## Linear Model of Mass with All Predictors
+```{r LM with all predictors, echo=FALSE}
+fit <- lm(Mass ~ ., data = PhysicalMeasures)
+summary(fit) # does not have VIFs included like SAS
+```
+
+## Checking Regression Assumptions
+Linear regression makes several assumptions about the data, such as :
+\pause \
+1) Linearity of the data: The relationship between the predictor (x) and the outcome (y) is assumed to be linear. \
+\pause
+2) Normality of residuals: The residual errors are assumed to be normally distributed. \
+\pause
+3) Homogeneity of residuals variance: The residuals are assumed to have a constant variance (homoscedasticity). \
+\pause
+4) Independence of residuals error terms. \
+\pause
+You should check whether or not these assumptions hold true. 
+
+## Potential Problems
+1) Non-linearity of the outcome - predictor relationships
+\pause
+2) Heteroscedasticity: Non-constant variance of error terms.
+\pause
+3) Presence of influential values in the data that can be:
+\pause \
+-Outliers: extreme values in the outcome (y) variable \
+-High-leverage points: extreme values in the predictors (x) variable
+\pause \
+All these assumptions and potential problems can be checked by producing some diagnostic plots visualizing the residual errors.
+
+## Fit Diagnostics
+```{r predicted values}
+fitted(fit) # predicted values
+```
+
+## Fit Diagnostics
+```{r residuals}
+residuals(fit) # residuals
+```
+## Fit Diagnostics
+```{r fit diagnostics code, message=FALSE, warning=FALSE}
+library(broom)
+options(width = 80)
+diagnostics <- augment(fit)
+diagnostics[, 12:16]
+```
+
+## Fit Diagnostics
+```{r anova}
+anova(fit) 
+```
+
+## Fit Diagnostics
+```{r diagnostic plot 1}
+plot(fit, which = 1)
+```
+
+## Fit Diagnostics
+```{r diagnostic plot 2}
+plot(fit, which = 2)
+```
+
+## Fit Diagnostics
+```{r diagnostic plot 3}
+plot(fit, which = 3)
+```
+
+## Fit Diagnostics
+```{r diagnostic plot 4}
+plot(fit, which = 4)
+```
+
+## Fit Diagnostics
+```{r diagnostic plot 5}
+plot(fit, which = 5)
+```
+
+## Fit Diagnostics
+```{r diagnostic plot 6}
+plot(fit, which = 6)
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics code 1, fig.show='hide'}
+ggplot(diagnostics) +
+  geom_point(aes(x = Fore, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics 1, echo=FALSE}
+ggplot(diagnostics) +
+  geom_point(aes(x = Fore, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics code 2, fig.show='hide'}
+ggplot(diagnostics) +
+  geom_point(aes(x = Bicep, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics 2, echo=FALSE}
+ggplot(diagnostics) +
+  geom_point(aes(x = Bicep, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics code 3, fig.show='hide'}
+ggplot(diagnostics) +
+  geom_point(aes(x = Chest, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics 3, echo=FALSE}
+ggplot(diagnostics) +
+  geom_point(aes(x = Chest, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics code 4, fig.show='hide'}
+ggplot(diagnostics) +
+  geom_point(aes(x = Neck, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics 4, echo=FALSE}
+ggplot(diagnostics) +
+  geom_point(aes(x = Neck, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics code 5, fig.show='hide'}
+ggplot(diagnostics) +
+  geom_point(aes(x = Shoulder, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics 5, echo=FALSE}
+ggplot(diagnostics) +
+  geom_point(aes(x = Shoulder, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics code 6, fig.show='hide'}
+ggplot(diagnostics) +
+  geom_point(aes(x = Waist, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics 6, echo=FALSE}
+ggplot(diagnostics) +
+  geom_point(aes(x = Waist, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics code 7, fig.show='hide'}
+ggplot(diagnostics) +
+  geom_point(aes(x = Height, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics 7, echo=FALSE}
+ggplot(diagnostics) +
+  geom_point(aes(x = Height,y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics code 8, fig.show='hide'}
+ggplot(diagnostics) +
+  geom_point(aes(x = Calf, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics 8, echo=FALSE}
+ggplot(diagnostics) +
+  geom_point(aes(x = Calf, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics code 9, fig.show='hide'}
+ggplot(diagnostics) +
+  geom_point(aes(x = Thigh, y = .resid)) +
+  geom_hline(yintercept=0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics 9, echo=FALSE}
+ggplot(diagnostics) +
+  geom_point(aes(x = Thigh, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics code 10, fig.show='hide'}
+ggplot(diagnostics) +
+  geom_point(aes(x = Head, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Residual by Regressors for Mass
+```{r fit diagnostics 10, echo=FALSE}
+ggplot(diagnostics) +
+  geom_point(aes(x = Head, y = .resid)) +
+  geom_hline(yintercept=0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+## Evaluate Collinearity
+```{r collinearity code, results=FALSE}
+library(car)
+options(width = 60)
+vif(fit) # variance inflation factors
+sqrt(vif(fit)) > 2 # Ice Cream Flavor
+```
+
+## Evaluate Collinearity
+```{r collinearity, echo=FALSE}
+vif(fit)
+sqrt(vif(fit)) > 2 
+```
+
+## Test for Autocorrelated Errors
+```{r autocorrelation}
+durbinWatsonTest(fit)
+```
+
+## Global Test of Model Assumptions
+```{r testing model assumptions code, warning=FALSE, results=FALSE}
+#library(gvlma)
+#gvmodel <- gvlma(fit)
+#display.gvlmatests(gvmodel)
+```
+
+## Global Test of Model Assumptions
+```{r testing model assumptions, echo=FALSE}
+#display.gvlmatests(gvmodel)
+```
+
+## Backward Stepwise Model Selection Based on AIC
+```{r backward stepwise code, results=FALSE}
+selectedModel <- step(lm(Mass ~ ., data = PhysicalMeasures))
+summary(selectedModel)
+```
+
+## Backward Stepwise Model Selection Based on AIC
+```{r backward stepwise, echo=FALSE}
+summary(selectedModel)
+```
+
+## Check VIFs for Multicollinearity
+```{r multicollinearity}
+print(all_vifs <- car::vif(selectedModel))
+```
+
+## Recursively select models with VIF < 4
+```{r backward stepwise with VIFs code, results=FALSE}
+signif_all <- names(all_vifs)
+while(any(all_vifs > 4)){
+  # get the var with max vif
+  var_with_max_vif <- names(which(all_vifs == max(all_vifs)))  
+  # remove
+  signif_all <- signif_all[!(signif_all) %in% var_with_max_vif]  
+  # new formula
+  myFormula <- as.formula(paste("Mass ~ ", 
+                             paste (signif_all, collapse=" + "), sep=""))  
+  # re-build model with new formula
+  selectedModel <- lm(myFormula, data = PhysicalMeasures)  
+  all_vifs <- car::vif(selectedModel)
+}
+summary(selectedModel)
+```
+
+## Recursively select models with VIF < 4
+```{r backward stepwise with VIFs, echo=FALSE}
+signif_all <- names(all_vifs)
+while(any(all_vifs > 4)){
+  # get the var with max vif
+  var_with_max_vif <- names(which(all_vifs == max(all_vifs)))  
+  # remove
+  signif_all <- signif_all[!(signif_all) %in% var_with_max_vif]  
+  # new formula
+  myFormula <- as.formula(paste("Mass ~ ", 
+                             paste (signif_all, collapse=" + "), sep=""))  
+  # re-build model with new formula
+  selectedModel <- lm(myFormula, data = PhysicalMeasures)  
+  all_vifs <- car::vif(selectedModel)
+}
+summary(selectedModel)
+```
+
+## P-value
+The p-value for Head is large, so not significant
+```{r p-value}
+car::vif(selectedModel)
+```
+May want to leave it in to support the model
+
+## Recursively Remove Non-significant predictors with VIFs Criteria
+```{r backward stepwise with VIFs and p-value code, results=FALSE}
+all_vars <- names(selectedModel[[1]])[-1]  # names of all X variables
+# Get the non-significant vars
+summ <- summary(selectedModel)  # model summary
+pvals <- summ[[4]][, 4]  # get all p values
+# init variables that aren't statistically significant
+not_significant <- character() 
+not_significant <- names(which(pvals > 0.1))
+# remove 'intercept'. Optional!
+not_significant <- not_significant[!not_significant %in% "(Intercept)"] 
+# If there are any non-significant variables, 
+while(length(not_significant) > 0){
+  all_vars <- all_vars[!all_vars %in% not_significant[1]]
+  # new formula
+  myFormula <- as.formula(paste("Mass ~ ", 
+    paste (all_vars, collapse = " + "), sep = ""))
+  # re-build model with new formula
+  selectedModel <- lm(myFormula, data = PhysicalMeasures)  
+  # Get the non-significant vars.
+  summ <- summary(selectedModel)
+  pvals <- summ[[4]][, 4]
+  not_significant <- character()
+  not_significant <- names(which(pvals > 0.1))
+  not_significant <- not_significant[!not_significant %in% "(Intercept)"]
+}
+summary(selectedModel)
+```
+
+## Recursively Remove Non-significant predictors with VIFs Criteria
+```{r backward stepwise with VIFs and p-value, echo=FALSE}
+all_vars <- names(selectedModel[[1]])[-1]  # names of all X variables
+# Get the non-significant vars
+summ <- summary(selectedModel)  # model summary
+pvals <- summ[[4]][, 4]  # get all p values
+not_significant <- character()  # init variables that aren't statistically significant
+not_significant <- names(which(pvals > 0.1))
+not_significant <- not_significant[!not_significant %in% "(Intercept)"] # remove 'intercept'. Optional!
+
+# If there are any non-significant variables, 
+while(length(not_significant) > 0){
+  all_vars <- all_vars[!all_vars %in% not_significant[1]]
+  myFormula <- as.formula(paste("Mass ~ ", paste (all_vars, collapse=" + "), sep=""))  # new formula
+  selectedModel <- lm(myFormula, data = PhysicalMeasures)  # re-build model with new formula
+  
+  # Get the non-significant vars.
+  summ <- summary(selectedModel)
+  pvals <- summ[[4]][, 4]
+  not_significant <- character()
+  not_significant <- names(which(pvals > 0.1))
+  not_significant <- not_significant[!not_significant %in% "(Intercept)"]
+}
+summary(selectedModel)
+```
+
+## Forward Stepwise
+```{r forward stepwise code, results=FALSE, warning=FALSE, message=FALSE}
+library(MASS); library(caret)
+res.lm <- lm(Mass ~., data = PhysicalMeasures)
+step <- stepAIC(res.lm, direction = "forward", trace = FALSE)
+step
+# Train the model
+train.control <- trainControl(method = "cv", number = 10)
+step.model <- train(Mass ~., data = PhysicalMeasures,
+                    method = "lmStepAIC", 
+                    trControl = train.control,
+                    trace = FALSE
+)
+# Model accuracy
+step.model$results
+# Final model coefficients
+step.model$finalModel
+# Summary of the model
+summary(step.model$finalModel)
+```
+
+## Forward Stepwise
+```{r forward stepwise, echo=FALSE}
+# Summary of the mode
+summary(step.model$finalModel)
+```
+
+## Lasso
+```{r lasso code, results=FALSE, warning=FALSE, message=FALSE}
+library(ISLR); library(glmnet); library(dplyr); library(tidyr)
+X = PhysicalMeasures[-1] %>% as.matrix()
+y = PhysicalMeasures[,1] %>% as.matrix()
+
+#must specify alpha=1 for lasso
+fit_lasso = cv.glmnet(X, y, alpha=1)
+#we can obtain the lasso estimates
+predict(fit_lasso, s ="lambda.min", type = "coefficients")
+```
+
+## Lasso
+```{r lasso, echo=FALSE}
+library(ISLR); library(glmnet); library(dplyr); library(tidyr)
+X = PhysicalMeasures[-1] %>% as.matrix()
+y = PhysicalMeasures[,1] %>% as.matrix()
+
+#must specify alpha=1 for lasso
+fit_lasso = cv.glmnet(X, y, alpha=1)
+#we can obtain the lasso estimates
+predict(fit_lasso, s ="lambda.min", type = "coefficients")
+```
+
+## Elastic Net
+```{r elastic net code, results=FALSE, warning=FALSE, message=FALSE}
+#must specify alpha=1 for lasso
+fit_elnet <- cv.glmnet(X, y, alpha=.5,)
+predict(fit_elnet, s ="lambda.min", type = "coefficients")
+```
+
+## Elastic Net
+```{r elastic net, echo=FALSE}
+#must specify alpha=1 for lasso
+fit_elnet <- cv.glmnet(X, y, alpha=.5,)
+predict(fit_elnet, s ="lambda.min", type = "coefficients")
+```
+
+## Chosen Model: Parsimonious
+```{r chosen model}
+summary(selectedModel)
+```
