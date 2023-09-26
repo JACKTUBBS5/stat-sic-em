@@ -11,7 +11,7 @@ setwd("/Users/katieclewett/Desktop")
 dat <- read.csv("baseball.csv", header=TRUE)
 ```
 
-# Problem 1
+# Problem 1 - nHits
 
 # Subgroups
 ```{r}
@@ -57,7 +57,8 @@ print(subdata)
 ```{r}
 data <- filter(dat, League == 'American')
 data <- subset(data, select = c(Salary, Team, Division, YrMajor, logSalary, nAtBat, nBB, nError, nHits, nHome, nRuns))
-t.test(data$nHits ~ data$Division, var.equal = TRUE)
+t.test_res <- t.test(data$nHits ~ data$Division, var.equal = TRUE)
+print(t.test_res)
 ```
 
 # Satterthwaite T-test
@@ -118,4 +119,185 @@ stat.test
 wilcox.test(data$nHits~data$Division)
 
 kruskal.test(data$nHits~data$Division)
+
+ks.test(data$nHits~data$Division)
+```
+# Summary for Problem 1
+```{r}
+# There was little reason to believe that there is a difference in the mean and median number of hits for each division. Put differently, the p-value for the t-test assuming normal data was not significant. This means that the assumption of normality is likely okay. Overall, there was not sufficient evidence to claim the mean and median differ between division.
+```
+
+
+# Problem 2
+
+``` {r}
+library("mosaic")
+library("ggplot2")
+
+datb <- filter(dat, League == 'National' | Division == 'East')
+dim(datb)
+new_df = subset(datb, select = c(CrAtBat, CrBB, CrHits, CrHits2,CrRbi, CrRuns, Div, Salary, YrMajor, nBB, nHits, nHome)); 
+
+x = datb$nHits
+y = (datb$CrHits)/(datb$YrMajor)
+                 
+favstats(x)
+favstats(y)
+
+ggplot(datb, aes(x=x, y=y)) + geom_boxplot()
+t.test(x,y)
+wilcox.test(x,y)
+ks.test(x,y)
+```
+# Summary for Problem 2
+```{r}
+# There is a difference in the mean and median number of hits when comparing the 1986 national league east team with the average career number. The p-value for the t-test is significant indicating that the difference in means is not equal to zero. Further, the p-value of the wilcoxon test is significant indicating that the true location shift is not equal to zero.
+```
+
+
+
+# New Variable - nRuns
+
+# Problem 1
+
+# Subgroups
+```{r}
+library("dplyr")
+infield <- filter(dat, Position == '1B' | Position == '2B' | Position == 'SS' | Position == '3B')
+outfield <- filter(dat, Position == 'CF' | Position == 'RF' | Position == 'LF' | Position == 'OF')
+catcher <- filter(dat, Position == 'C')
+CrOuts2 <- dat$CrOuts*dat$CrOuts
+```
+
+# Plot League by Division
+```{r}
+library("arsenal")
+tab.lbyd <- table(dat$League, dat$Division)
+lbyd <- freqlist(tab.lbyd)
+summary(lbyd)
+```
+
+# Plot Division for American Leagues
+```{r}
+library("arsenal")
+library("dplyr")
+data <- filter(dat, League == 'American')
+tab.adiv <- table(data$Division)
+adiv <- freqlist(tab.adiv)
+summary(adiv)
+```
+
+# Arrange by Division
+```{r}
+data <- filter(dat, League == 'American')
+data <- subset(data, select = c(Salary, Team, Division, YrMajor, logSalary, nAtBat, nBB, nError, nHits, nHome, nRuns, nRuns))
+print(data[order(data$Division),])
+subdata <- 
+  data %>%
+  group_by(Division) %>%
+  summarize(c(total_count = n()), (mean_outs = mean(nRuns)), (sd_outs = sd(nRuns)), (se_outs = sd(nRuns)/sqrt(n())), (min_outs = min(nRuns)), (max_outs = max(nRuns)))
+print(subdata)
+```
+
+# Assuming Normal Data
+# Pooled T-test
+```{r}
+data <- filter(dat, League == 'American')
+data <- subset(data, select = c(Salary, Team, Division, YrMajor, logSalary, nAtBat, nBB, nError, nHits, nHome, nRuns, nRuns))
+t.test_res <- t.test(data$nRuns ~ data$Division, var.equal = TRUE)
+print(t.test_res)
+```
+
+# Satterthwaite T-test
+```{r}
+data <- filter(dat, League == 'American')
+data <- subset(data, select = c(Salary, Team, Division, YrMajor, logSalary, nAtBat, nBB, nError, nHits, nHome, nRuns, nRuns))
+t.test(data$nRuns ~ data$Division)
+```
+
+# Plots
+```{r}
+library("ggplot2")
+data <- filter(dat, League == 'American')
+data <- subset(data, select = c(Salary, Team, Division, YrMajor, logSalary, nAtBat, nBB, nError, nHits, nHome, nRuns, nRuns))
+eastsubdata <- filter(data, Division == 'East')
+westsubdata <- filter(data, Division == 'West')
+
+# East Plots
+qqnorm(eastsubdata$nRuns)
+ggplot((eastsubdata), aes(x=nRuns)) +
+  geom_histogram(aes(y = after_stat(density)), fill='lightgray', col='black', bins = 10) +
+  scale_x_continuous(limits = c(-50,300)) +
+  stat_function(fun = dnorm, args = list(mean=mean(eastsubdata$nRuns), sd=sd(eastsubdata$nRuns)))
+ggplot(eastsubdata, aes(x=nRuns)) + geom_boxplot()
+
+# West Plots
+qqnorm(westsubdata$nRuns)
+ggplot((westsubdata), aes(x=nRuns)) +
+  geom_histogram(aes(y = after_stat(density)), fill='lightgray', col='black', bins = 10) +
+  scale_x_continuous(limits = c(-50,250)) +
+  stat_function(fun = dnorm, args = list(mean=mean(westsubdata$nRuns), sd=sd(westsubdata$nRuns)))
+ggplot(westsubdata, aes(x=nRuns)) + geom_boxplot()
+```
+
+# Assuming Non-Normal Data
+```{r}
+library("DescrTab2")
+library("tidyverse")
+library("rstatix")
+library("ggpubr")
+data <- filter(dat, League == 'American')
+data <- subset(data, select = c(Salary, Team, Division, YrMajor, logSalary, nAtBat, nBB, nError, nHits, nHome, nRuns, nRuns))
+
+data %>%
+  group_by(Division) %>%
+  get_summary_stats(nRuns, type = "median_iqr")
+bxp <- ggboxplot(
+  data, x = "Division", y = "nRuns", 
+  ylab = "nRuns", xlab = "Division", add = "jitter"
+  )
+bxp
+
+stat.test <- data %>%
+  wilcox_test(nRuns ~ Division) %>%
+  add_significance
+stat.test
+
+wilcox.test(data$nRuns~data$Division)
+
+kruskal.test(data$nRuns~data$Division)
+
+ks.test(data$nRuns~data$Division)
+```
+# Summary for Problem 1
+```{r}
+# There was little reason to believe that there is a difference in the mean and median number of runs for each division. Put differently, the p-value for the t-test assuming normal data was not significant. This means that the assumption of normality is likely okay. Overall, there was not sufficient evidence to claim the mean and median differ between division.
+```
+
+
+# Problem 2
+
+``` {r}
+library("mosaic")
+library("ggplot2")
+
+datb <- filter(dat, League == 'National' | Division == 'East')
+dim(datb)
+new_df = subset(datb, select = c(CrAtBat, CrBB, CrHits, CrHits2,CrRbi, CrRuns, Div, Salary, YrMajor, nBB, nHits, nHome, nRuns)); 
+
+x = datb$nRuns
+y = (datb$CrRuns)/(datb$YrMajor)
+                 
+favstats(x)
+favstats(y)
+
+ggplot(datb, aes(x=x, y=y)) + geom_boxplot()
+t.test(x,y)
+wilcox.test(x,y)
+ks.test(x,y)
+```
+
+# Summary for Problem 2
+```{r}
+# There is a difference in the mean and median number of runs when comparing the 1986 national league east team with the average career number. The p-value for the t-test is significant indicating that the difference in means is not equal to zero. Further, the p-value of the wilcoxon test is significant indicating that the true location shift is not equal to zero.
 ```
