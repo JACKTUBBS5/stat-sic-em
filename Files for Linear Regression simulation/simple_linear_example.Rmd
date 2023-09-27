@@ -1,0 +1,99 @@
+---
+title: "R with Simple Linear Regression"
+author: "jdt"
+date: "2/1/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Generate the Data
+```{r}
+#set parameters
+set.seed = 12345
+beta_0 = 8
+beta_1 = 2.0
+sigma = 4.
+n = 16
+x = runif(n,-5,15)  
+y = beta_0 + beta_1*x + sigma*rnorm(n)
+ds = data.frame(x,y)
+#previous example data
+#x=c(15.6,26.8,37.8,36.4,35.5,18.6,15.3,7.9,0)
+#y=c(5.2,6.1,8.7,8.5,8.8,4.9,4.5,2.5,1.1)
+plot(ds)
+abline(a=beta_0,b=beta_1)
+abline(v=0, col = "gray", lty = 3)
+```
+
+# Non matrix approach
+```{r}
+n<-length(x)
+xbar=mean(x)
+ybar=mean(y)
+ssxy<- sum((x-xbar)*(y-ybar))
+ssxx<- sum((x-xbar)**2)
+ssyy<- sum((y-ybar)**2)
+sx<-ssxx/(n-1)
+sy<-ssyy/(n-1)
+b1<-ssxy/ssxx
+b0<-ybar-b1*xbar
+X=cbind(xbar,ybar,sx,sy,ssxy,b0,b1)
+X
+```
+
+# Plot of Results
+```{r}
+plot(ds)
+abline(a=b0,b=b1, col = "red", lty = 1pwd)
+abline(v=xbar, col = "gray", lty = 3)
+abline(h=ybar, col = "gray", lty = 3)
+abline(v=0, col = "gray", lty = 3)
+
+```
+
+# LSE
+```{r}
+
+y.hat<- b0 + b1*x
+ssct = sum((y - ybar)**2)
+ssm = sum((ybar - y.hat)**2)
+r.square = ssm/ssct
+y.resid<-y - y.hat
+Z=cbind(x,y,y.hat,y.resid)
+Z
+s.se<-sum(y.resid*y.resid)
+m.se<-s.se/(n-2)
+r.mse<-sqrt(m.se)
+ub1<- b1 + qt(.975,n-2)*sqrt(m.se/ssxx)
+lb1<- b1 - qt(.975,n-2)*sqrt(m.se/ssxx)
+W=cbind(s.se,m.se,r.mse,ssct,ssm,r.square,lb1,ub1)
+W
+u.95<-y.hat + qt(.975,n-2)*r.mse*sqrt(1/n + (x-xbar)**2/ssxx)
+u.95
+l.95<-y.hat - qt(.975,n-2)*r.mse*sqrt(1/n + (x-xbar)**2/ssxx)
+l.95
+Y<-cbind(x,y,y.hat,l.95,u.95)
+Y
+```
+
+## Regular R Approach to Regression
+```{r}
+
+result<-lm(y~x)
+summary(result)
+#aov(result)
+
+```
+
+## Fit Diagnostics -- ANOVA Table
+```{r anova}
+summary.aov(result)
+```
+All these assumptions and potential problems can be checked by producing some diagnostic plots visualizing the residual errors.
+
+```{r}
+plot(result)
+```
