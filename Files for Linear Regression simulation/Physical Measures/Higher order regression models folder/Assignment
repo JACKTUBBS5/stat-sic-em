@@ -1,0 +1,2 @@
+I have added a SAS file for higher order models, you should reproduce these using RStudio. These are the same data that your used when using RStudio for the linear regression models.
+Choose a new group of predictor variables and reproduce the results using SAS and R.
