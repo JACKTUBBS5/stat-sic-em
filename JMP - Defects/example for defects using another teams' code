@@ -1,0 +1,32 @@
+This is example code from another team for the JMP Defects analysis
+
+
+# Sample Once Per Day
+```{r}
+library("dplyr")
+library("ggplot2")
+library("egg")
+
+dat2 <- filter(dat, Sample == '09:30') 
+dat2 <- subset(dat2, select = -Sample)
+dat2$n <- c(1,1,1,1,1,1,1,1,1,1)
+dat2
+hist <- ggplot(dat2, aes(x = Defects)) + geom_histogram(bins=8, color = "black", fill = "violet") + ggtitle("Histogram of Defects at 9:30") + scale_x_continuous(limits = c(4,20))
+
+box<- ggplot(dat2, aes(x=Defects)) + geom_boxplot() + ggtitle("Boxplot of Defects at 9:30")
+
+egg::ggarrange(box, hist, heights = 2:1)
+
+xbar <- mean(dat2$Defects)
+xbar
+sd <- sd(dat2$Defects)
+sd
+n = 10
+standard_error_mean <- sd/sqrt(n)
+standard_error_mean
+margin <- qt(0.975,df=n-1)*sd/sqrt(n)
+lowerinterval <- xbar - margin
+lowerinterval
+upperinterval <- xbar + margin
+upperinterval
+```
