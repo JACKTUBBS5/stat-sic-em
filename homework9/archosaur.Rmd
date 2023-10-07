@@ -1,0 +1,147 @@
+---
+title: "Archosaurs: Linear Regression Example"
+author: "Katie, Rita, and Chang"
+date: "10/6/23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("/Users/katieclewett/Desktop")
+brain <- read.csv('archosaur.csv', header = TRUE)
+```
+
+# Distribution of body weight
+```{r}
+library("ggplot2")
+ggplot(brain, aes(x = Body.Weight)) + geom_histogram(bins = 16, color = "black", fill = "violet") + ggtitle("Histogram of Body Weight") + scale_x_continuous(limits = c(-100,90000))
+
+ggplot(brain, aes(x = Body.Weight)) + geom_boxplot() + ggtitle("Boxplot of Body Weight")
+
+xbar <- mean(brain$Body.Weight)
+xbar
+sd <- sd(brain$Body.Weight)
+sd
+n = 21
+standard_error_mean <- sd/sqrt(n)
+standard_error_mean
+margin <- qt(0.975,df=n-1)*sd/sqrt(n)
+lowerinterval <- xbar - margin
+lowerinterval
+upperinterval <- xbar + margin
+upperinterval
+```
+
+# Distribution of brain weight
+```{r}
+library("ggplot2")
+ggplot(brain, aes(x = Brain.Weight)) + geom_histogram(bins=10, color = "black", fill = "violet") + ggtitle("Histogram of Brain Weight") + scale_x_continuous(limits = c(0,400))
+
+ggplot(brain, aes(x = Brain.Weight)) + geom_boxplot() + ggtitle("Boxplot of Brain Weight")
+
+xbar <- mean(brain$Brain.Weight)
+xbar
+sd <- sd(brain$Brain.Weight)
+sd
+n = 21
+standard_error_mean <- sd/sqrt(n)
+standard_error_mean
+margin <- qt(0.975,df=n-1)*sd/sqrt(n)
+lowerinterval <- xbar - margin
+lowerinterval
+upperinterval <- xbar + margin
+upperinterval
+```
+
+# Regression with body weight and brain weight prior to transformation
+```{r}
+plot(brain$Brain.Weight~brain$Body.Weight)
+abline(lm(brain$Brain.Weight~brain$Body.Weight))
+```
+
+# Transform body weight and brain weight
+```{r}
+brain$log_body.wt = log(brain$Body.Weight)
+brain$log_brain.wt = log(brain$Brain.Weight)
+```
+
+# Distribution of transformed body weight
+```{r}
+library("ggplot2")
+ggplot(brain, aes(x = log_body.wt)) + geom_histogram(bins = 16, color = "black", fill = "violet") + ggtitle("Histogram of Transformed Body Weight") 
+
+ggplot(brain, aes(x = log_body.wt)) + geom_boxplot() + ggtitle("Boxplot of Transformed Body Weight")
+
+xbar <- mean(brain$log_body.wt)
+xbar
+sd <- sd(brain$log_body.wt)
+sd
+n = 21
+standard_error_mean <- sd/sqrt(n)
+standard_error_mean
+margin <- qt(0.975,df=n-1)*sd/sqrt(n)
+lowerinterval <- xbar - margin
+lowerinterval
+upperinterval <- xbar + margin
+upperinterval
+```
+
+# Distribution of transformed brain weight
+```{r}
+library("ggplot2")
+ggplot(brain, aes(x = log_brain.wt)) + geom_histogram(bins=10, color = "black", fill = "violet") + ggtitle("Histogram of Transformed Brain Weight") 
+
+ggplot(brain, aes(x = log_brain.wt)) + geom_boxplot() + ggtitle("Boxplot of Transformed Brain Weight")
+
+xbar <- mean(brain$log_brain.wt)
+xbar
+sd <- sd(brain$log_brain.wt)
+sd
+n = 21
+standard_error_mean <- sd/sqrt(n)
+standard_error_mean
+margin <- qt(0.975,df=n-1)*sd/sqrt(n)
+lowerinterval <- xbar - margin
+lowerinterval
+upperinterval <- xbar + margin
+upperinterval
+```
+
+# Regression plot of transformed data
+```{r}
+plot(log_brain.wt~log_body.wt, dat = brain)
+abline(lm(log_brain.wt~log_body.wt, dat = brain))
+result<-lm(log_brain.wt~log_body.wt, dat = brain)
+plot(result)
+```
+
+# Lack of fit test
+```{r}
+library("olsrr")
+fit <- lm(log_brain.wt~log_body.wt, dat = brain)
+ols_pure_error_anova(fit)
+```
+
+# Parameter estimates
+```{r}
+result<-lm(log_brain.wt~log_body.wt, dat = brain)
+summary(result)
+confint(result)
+```
+
+# Predict brain weight if body weight is 20
+```{r}
+x <- data.frame(20, log(20))
+names(x) <- c("Body.Weight", "log_body.wt")
+pred <- predict(result, x)
+pred
+exp(pred)
+```
+
+# Residual Plot
+```{r}
+result<-lm(log_brain.wt~log_body.wt, dat = brain)
+res <- resid(result)
+plot(fitted(result), res)
+abline(0,0)
+```

@@ -1,0 +1,411 @@
+---
+title: "JMP Defects"
+author: "Katie, Rita, and Chang"
+output: html_document
+date: "2023-09-11"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("/Users/katieclewett/Desktop")
+dat <- read.csv("defects.csv", header=TRUE)
+```
+
+# Part 1
+# Defects Split by Day
+```{r}
+library("reshape2")
+acast(dat, dat$Sample~dat$Day, value.var="Defects")
+```
+
+# Distribution of Defects
+```{r}
+library("ggplot2")
+library("egg")
+
+hist<- ggplot(dat, aes(x = Defects)) + geom_histogram(binwidth=1, color = "black", fill = "turquoise") + ggtitle("Histogram of Defects") + scale_x_continuous(breaks = seq(0, 20, 2))
+
+box <- ggplot(dat, aes(x=Defects)) + geom_boxplot() + ggtitle("Boxplot of Defects")
+
+egg::ggarrange(box, hist, heights = 2:1)
+
+summary(dat$Defects)
+xbar <- mean(dat$Defects)
+xbar
+sd <- sd(dat$Defects)
+sd
+n = 320
+standard_error_mean <- sd/sqrt(n)
+standard_error_mean
+margin <- qt(0.975,df=n-1)*sd/sqrt(n)
+lowerinterval <- xbar - margin
+lowerinterval
+upperinterval <- xbar + margin
+upperinterval
+```
+
+#Summay of Defects by Day
+```{r}
+library("dplyr")
+library("lubridate")
+
+subdat <- 
+  dat %>%
+  group_by(Day) %>%
+  summarize(mean_Defects = mean(Defects))
+
+subdat
+```
+
+```{r}
+library("dplyr")
+
+dat1 <- dat %>% dplyr::group_by(Day) %>% summarise(mean(Defects))
+dat1$n <- c(32,32,32,32,32,32,32,32,32,32)
+dat1
+```
+
+# Sample Once Per Day
+```{r}
+library("dplyr")
+library("ggplot2")
+library("egg")
+
+dat2 <- filter(dat, Sample == '09:30') 
+dat2 <- subset(dat2, select = -Sample)
+dat2$n <- c(1,1,1,1,1,1,1,1,1,1)
+dat2
+hist <- ggplot(dat2, aes(x = Defects)) + geom_histogram(bins=8, color = "black", fill = "violet") + ggtitle("Histogram of Defects at 9:30") + scale_x_continuous(limits = c(4,20))
+
+box<- ggplot(dat2, aes(x=Defects)) + geom_boxplot() + ggtitle("Boxplot of Defects at 9:30")
+
+egg::ggarrange(box, hist, heights = 2:1)
+
+xbar <- mean(dat2$Defects)
+xbar
+sd <- sd(dat2$Defects)
+sd
+n = 10
+standard_error_mean <- sd/sqrt(n)
+standard_error_mean
+margin <- qt(0.975,df=n-1)*sd/sqrt(n)
+lowerinterval <- xbar - margin
+lowerinterval
+upperinterval <- xbar + margin
+upperinterval
+```
+
+# Sample Twice Per Day
+```{r}
+library("dplyr")
+library("ggplot2")
+library("egg")
+
+dat3 <- filter(dat, Sample == '09:30' | Sample == '14:30') 
+dat3 <- subset(dat3, select = -Sample)
+subdat3 <- 
+  dat3 %>%
+  group_by(Day) %>%
+  summarize(mean_Defects = mean(Defects))
+subdat3$n <- c(2,2,2,2,2,2,2,2,2,2)
+subdat3
+
+hist <- ggplot(subdat3, aes(x = mean_Defects)) + geom_histogram(bins = 9, color = "black", fill = "green", ) + ggtitle("Histogram of Defects at 9:30 and 14:30") 
+scale_x_continuous(limits = c(5,14))
+
+box<- ggplot(subdat3, aes(x= mean_Defects)) + geom_boxplot() + ggtitle("Boxplot of Defects at 9:30 and 14:30")
+
+egg::ggarrange(box, hist, heights = 2:1)
+
+xbar <- mean(subdat3$mean_Defects)
+xbar
+sd <- sd(subdat3$mean_Defects)
+sd
+n = 10
+standard_error_mean <- sd/sqrt(n)
+standard_error_mean
+margin <- qt(0.975,df=n-1)*sd/sqrt(n)
+lowerinterval <- xbar - margin
+lowerinterval
+upperinterval <- xbar + margin
+upperinterval
+```
+
+# Five Sampling Schemes
+```{r}
+# 9:30
+dat2 <- filter(dat, Sample == '09:30') 
+dat2 <- subset(dat2, select = -Sample)
+dat2$n <- c(1,1,1,1,1,1,1,1,1,1)
+ggplot(dat2, aes(x = Defects)) + 
+geom_histogram(bins = 32, color = "turquoise", fill = "white") + ggtitle("Histogram of Defects at 9:30") +
+scale_x_continuous(limits = c(4,20), breaks = 4:20)
+```
+
+```{r}
+# 9:30 and 14:30
+dat3 <- filter(dat, Sample == '09:30' | Sample == '14:30') 
+dat3 <- subset(dat3, select = -Sample)
+subdat3 <- 
+  dat3 %>%
+  group_by(Day) %>%
+  summarize(mean_Defects = mean(Defects))
+subdat3$n <- c(2,2,2,2,2,2,2,2,2,2)
+ggplot(subdat3, aes(x = mean_Defects)) + 
+geom_histogram(bins = 32, color = "turquoise", fill = "white") + ggtitle("Histogram of Defects at 9:30 and 14:30") +
+scale_x_continuous(limits = c(4,20), breaks = 4:20)
+```
+
+```{r}
+# Every hour starting at 8:30
+dat4 <- filter(dat, Sample == '08:30' | Sample == '09:30' | Sample == '10:30' | Sample == '11:30' | Sample == '12:30' | Sample == '13:30' | Sample == '14:30' | Sample == '15:30') 
+dat4 <- subset(dat4, select = -Sample)
+subdat4 <- 
+  dat4 %>%
+  group_by(Day) %>%
+  summarize(mean_Defects = mean(Defects))
+ggplot(subdat4, aes(x = mean_Defects)) + 
+geom_histogram(bins = 32, color = "turquoise", fill = "white") + ggtitle("Histogram of Defects every hour starting at 8:30") +
+scale_x_continuous(limits = c(4,20), breaks = 4:20)
+```
+
+```{r}
+# Every half-hour starting at 8:30
+dat5 <- filter(dat, Sample == '08:30' | Sample == '09:30' | Sample == '10:30' | Sample == '11:30' | Sample == '12:30' | Sample == '13:30' | Sample == '14:30' | Sample == '15:30' | Sample == '09:00' | Sample == '10:00' | Sample == '11:00' | Sample == '12:00' | Sample == '13:00' | Sample == '14:00' | Sample == '15:00' | Sample == '16:00') 
+dat5 <- subset(dat5, select = -Sample)
+subdat5 <- 
+  dat5 %>%
+  group_by(Day) %>%
+  summarize(mean_Defects = mean(Defects))
+ggplot(subdat5, aes(x = mean_Defects)) + 
+geom_histogram(bins = 32, color = "turquoise", fill = "white") + ggtitle("Histogram of Defects every half-hour starting at 8:30") +
+scale_x_continuous(limits = c(4,20), breaks = 4:20)
+```
+
+```{r}
+# Every 15 minutes
+dat6 <- subset(dat, select = -Sample)
+subdat6 <- 
+  dat %>%
+  group_by(Day) %>%
+  summarize(mean_Defects = mean(Defects))
+ggplot(subdat6, aes(x = mean_Defects)) + 
+geom_histogram(bins = 32, boundary = 4, color = "turquoise", fill = "white") + ggtitle("Histogram of Defects every 15 minutes") +
+scale_x_continuous(limits = c(4,20), breaks = 4:20)
+```
+
+# Average Defects Plotted Over Time
+```{r}
+# 9:30
+dat2 <- filter(dat, Sample == '09:30') 
+dat2 <- subset(dat2, select = -Sample)
+dat2$n <- c(1,1,1,1,1,1,1,1,1,1)
+ggplot(data=dat2, aes(x=Day, y=Defects)) +
+  geom_line(color="red")+
+  geom_point()
+```
+
+```{r}
+# every hour starting at 8:30
+dat4 <- filter(dat, Sample == '08:30' | Sample == '09:30' | Sample == '10:30' | Sample == '11:30' | Sample == '12:30' | Sample == '13:30' | Sample == '14:30' | Sample == '15:30') 
+dat4 <- subset(dat4, select = -Sample)
+subdat4 <- 
+  dat4 %>%
+  group_by(Day) %>%
+  summarize(mean_Defects = mean(Defects))
+ggplot(data=subdat4, aes(x=Day, y=mean_Defects)) +
+  geom_line(color="red")+
+  geom_point()
+```
+
+```{r}
+# every 15 minutes
+dat6 <- subset(dat, select = -Sample)
+subdat6 <- 
+  dat %>%
+  group_by(Day) %>%
+  summarize(mean_Defects = mean(Defects))
+ggplot(data=subdat6, aes(x=Day, y=mean_Defects)) +
+  geom_line(color="red")+
+  geom_point()
+```
+
+# Part 2
+# 8-10
+```{r}
+library("dplyr")
+library("ggplot2")
+library("egg")
+
+datearly <- filter(dat, Sample == '08:00' | Sample == '08:15' | Sample == '08:30' | Sample == '08:45' | Sample == '09:00' | Sample == '09:15' | Sample == '09:30' | Sample == '09:45' | Sample == '10:00') 
+datearly <- subset(datearly, select = -Sample)
+datearly$n <- c(1,1,1,1,1,1,1,1,1,1)
+datearly
+hist <- ggplot(datearly, aes(x = Defects)) + geom_histogram(bins=8, color = "black", fill = "violet") + ggtitle("Histogram of Defects from 8-10") + scale_x_continuous(limits = c(4,20))
+
+box<- ggplot(datearly, aes(x=Defects)) + geom_boxplot() + ggtitle("Boxplot of Defects from 8-10")
+
+egg::ggarrange(box, hist, heights = 2:1)
+
+xbar <- mean(datearly$Defects)
+xbar
+sd <- sd(datearly$Defects)
+sd
+n = 80
+standard_error_mean <- sd/sqrt(n)
+standard_error_mean
+margin <- qt(0.975,df=n-1)*sd/sqrt(n)
+lowerinterval <- xbar - margin
+lowerinterval
+upperinterval <- xbar + margin
+upperinterval
+```
+
+# 10:15-12:00
+```{r}
+library("dplyr")
+library("ggplot2")
+library("egg")
+
+datmid <- filter(dat, Sample == '10:15' | Sample == '10:30' | Sample == '10:45' | Sample == '11:00' | Sample == '11:15' | Sample == '11:30' | Sample == '11:45' | Sample == '12:00') 
+datmid <- subset(datmid, select = -Sample)
+datmid$n <- c(1,1,1,1,1,1,1,1,1,1)
+datmid
+hist <- ggplot(datmid, aes(x = Defects)) + geom_histogram(bins=8, color = "black", fill = "violet") + ggtitle("Histogram of Defects from 10:15-12") + scale_x_continuous(limits = c(4,20))
+
+box<- ggplot(datmid, aes(x=Defects)) + geom_boxplot() + ggtitle("Boxplot of Defects from 10:15-12")
+
+egg::ggarrange(box, hist, heights = 2:1)
+
+xbar <- mean(datmid$Defects)
+xbar
+sd <- sd(datmid$Defects)
+sd
+n = 80
+standard_error_mean <- sd/sqrt(n)
+standard_error_mean
+margin <- qt(0.975,df=n-1)*sd/sqrt(n)
+lowerinterval <- xbar - margin
+lowerinterval
+upperinterval <- xbar + margin
+upperinterval
+```
+
+# 12:15-14:00
+```{r}
+library("dplyr")
+library("ggplot2")
+library("egg")
+
+dataft <- filter(dat, Sample == '12:15' | Sample == '12:30' | Sample == '12:45' | Sample == '13:00' | Sample == '13:15' | Sample == '13:30' | Sample == '13:45' | Sample == '14:00') 
+dataft <- subset(dataft, select = -Sample)
+dataft$n <- c(1,1,1,1,1,1,1,1,1,1)
+dataft
+hist <- ggplot(dataft, aes(x = Defects)) + geom_histogram(bins=8, color = "black", fill = "violet") + ggtitle("Histogram of Defects from 12:15-2") + scale_x_continuous(limits = c(4,20))
+
+box<- ggplot(dataft, aes(x=Defects)) + geom_boxplot() + ggtitle("Boxplot of Defects from 12:15-2")
+
+egg::ggarrange(box, hist, heights = 2:1)
+
+xbar <- mean(dataft$Defects)
+xbar
+sd <- sd(dataft$Defects)
+sd
+n = 80
+standard_error_mean <- sd/sqrt(n)
+standard_error_mean
+margin <- qt(0.975,df=n-1)*sd/sqrt(n)
+lowerinterval <- xbar - margin
+lowerinterval
+upperinterval <- xbar + margin
+upperinterval
+```
+
+# 14:15-16:00
+```{r}
+library("dplyr")
+library("ggplot2")
+library("egg")
+
+datlat <- filter(dat, Sample == '14:15' | Sample == '14:30' | Sample == '14:45' | Sample == '15:00' | Sample == '15:15' | Sample == '15:30' | Sample == '15:45' | Sample == '16:00') 
+datlat <- subset(datlat, select = -Sample)
+datlat$n <- c(1,1,1,1,1,1,1,1,1,1)
+datlat
+hist <- ggplot(datlat, aes(x = Defects)) + geom_histogram(bins=8, color = "black", fill = "violet") + ggtitle("Histogram of Defects from 2:15-4") + scale_x_continuous(limits = c(4,20))
+
+box<- ggplot(datmid, aes(x=Defects)) + geom_boxplot() + ggtitle("Boxplot of Defects from 2:15-4")
+
+egg::ggarrange(box, hist, heights = 2:1)
+
+xbar <- mean(datlat$Defects)
+xbar
+sd <- sd(datlat$Defects)
+sd
+n = 80
+standard_error_mean <- sd/sqrt(n)
+standard_error_mean
+margin <- qt(0.975,df=n-1)*sd/sqrt(n)
+lowerinterval <- xbar - margin
+lowerinterval
+upperinterval <- xbar + margin
+upperinterval
+```
+
+# Part 3
+# First Half
+```{r}
+library("dplyr")
+library("ggplot2")
+library("egg")
+
+datfirst <- filter(dat, Day == '1' | Day == '2' | Day == '6' | Day == '7') 
+datfirst <- subset(datfirst, select = -Day)
+datfirst
+hist <- ggplot(datfirst, aes(x = Defects)) + geom_histogram(bins=8, color = "black", fill = "violet") + ggtitle("Histogram of Defects on Day 1, 2, 6, and 7") + scale_x_continuous(limits = c(4,20))
+
+box<- ggplot(datfirst, aes(x=Defects)) + geom_boxplot() + ggtitle("Boxplot of Defects on Day 1, 2, 6, and 7")
+
+egg::ggarrange(box, hist, heights = 2:1)
+
+xbar <- mean(datfirst$Defects)
+xbar
+sd <- sd(datfirst$Defects)
+sd
+n = 80
+standard_error_mean <- sd/sqrt(n)
+standard_error_mean
+margin <- qt(0.975,df=n-1)*sd/sqrt(n)
+lowerinterval <- xbar - margin
+lowerinterval
+upperinterval <- xbar + margin
+upperinterval
+```
+
+# Second Half
+```{r}
+library("dplyr")
+library("ggplot2")
+library("egg")
+
+datsecond <- filter(dat, Day == '4' | Day == '5' | Day == '9' | Day == '10') 
+datsecond <- subset(datsecond, select = -Day)
+datsecond
+hist <- ggplot(datsecond, aes(x = Defects)) + geom_histogram(bins=8, color = "black", fill = "violet") + ggtitle("Histogram of Defects on Day 4, 5, 9, and 10") + scale_x_continuous(limits = c(4,20))
+
+box<- ggplot(datsecond, aes(x=Defects)) + geom_boxplot() + ggtitle("Boxplot of Defects on Day 4, 5, 9, and 10")
+
+egg::ggarrange(box, hist, heights = 2:1)
+
+xbar <- mean(datsecond$Defects)
+xbar
+sd <- sd(datsecond$Defects)
+sd
+n = 80
+standard_error_mean <- sd/sqrt(n)
+standard_error_mean
+margin <- qt(0.975,df=n-1)*sd/sqrt(n)
+lowerinterval <- xbar - margin
+lowerinterval
+upperinterval <- xbar + margin
+upperinterval
+```
