@@ -1,0 +1,115 @@
+---
+title: "Physical Measures"
+author: "jdt"
+date: "2023-09-20"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Background
+Larner (1996) measured the weight and various physical measurements for 22 males aged 16–30. 
+\pause \
+Subjects were randomly chosen volunteers and all were in reasonably good health.  \
+\pause
+Subjects were requested to tense each muscle being measured slightly to ensure measurement consistency. \
+\pause
+The question of interest for these data is how weight can best be predicted from the other measurements.
+
+## Dataset
+```{r dataset}
+library(readxl)
+PhysicalMeasures <- read_xlsx(file.path("physicalmeasures.xlsx"))
+summary(PhysicalMeasures)
+```
+
+## Scatterplot Matrix
+```{r scatterplot matrix code, message=FALSE, warning=FALSE, fig.show='hide'}
+library(GGally)
+ggpairs(PhysicalMeasures, axisLabels = "none", 
+        title = "Scatterplot Matrix of Physical Measures")
+# corr codes
+```
+
+## Scatterplot Matrix
+```{r scatterplot matrix, echo = FALSE}
+ggpairs(PhysicalMeasures, axisLabels = "none", 
+        title = "Scatterplot Matrix of Physical Measures")
+```
+
+## Linear Model of Mass with Forearm as the Predictor
+```{r LM with all predictors code, message=FALSE, warning=FALSE, results=FALSE}
+#waist=Physicalmeasures$Waist
+
+fit_fore <- lm(Mass ~ Fore, data = PhysicalMeasures)
+summary(fit_fore) # does not have VIFs included like SAS
+plot(Mass ~ Fore, data = PhysicalMeasures)
+abline(fit_fore)
+```
+
+```{r LM with all predictors, echo=FALSE}
+## Linear Model of Mass with All Predictors
+
+#fit_all <- lm(Mass ~ ., data = PhysicalMeasures)
+#summary(fit_all) # does not have VIFs included like SAS
+```
+
+## Checking Regression Assumptions
+Linear regression makes several assumptions about the data, such as :
+\pause \
+1) Linearity of the data: The relationship between the predictor (x) and the outcome (y) is assumed to be linear. 
+\pause \
+2) Normality of residuals: The residual errors are assumed to be normally distributed. 
+\pause \
+3) Homogeneity of residuals variance: The residuals are assumed to have a constant variance (homoscedasticity). 
+\pause \
+4) Independence of residuals error terms. 
+\pause \
+You should check whether or not these assumptions hold true. 
+
+## Fit Diagnostics -- Predicted Means
+```{r predicted values}
+fitted(fit_fore) # predicted values
+```
+## Fit Diagnostics -- Residuals
+```{r residuals}
+residuals(fit_fore) # residuals
+```
+## Fit Diagnostics -- ANOVA Table
+```{r anova}
+summary(fit_fore) 
+summary.aov(fit_fore)
+```
+All these assumptions and potential problems can be checked by producing some diagnostic plots visualizing the residual errors.
+
+```{r}
+plot(fit_fore)
+```
+
+## Potential Problems
+1) Non-linearity of the outcome - predictor relationships
+\pause \
+2) Heteroscedasticity: Non-constant variance of error terms.
+\pause  \
+3) Presence of influential values in the data that can be:
+\pause \
+-Outliers: extreme values in the outcome (y) variable \
+-High-leverage points: extreme values in the predictors (x) variable
+\pause \
+
+\hl
+
+## Linear Regression with Waist as the Predictor
+```{r}
+fit_waist <- lm(Mass ~ Waist, data = PhysicalMeasures)
+summary(fit_waist) # does not have VIFs included like SAS
+plot(Waist ~ Fore, data = PhysicalMeasures)
+abline(fit_waist)
+fitted(fit_waist) # predicted values
+residuals(fit_waist) # residuals
+summary(fit_waist) 
+summary.aov(fit_waist)
+plot(fit_waist)
+```
