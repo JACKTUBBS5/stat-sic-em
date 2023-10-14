@@ -1,0 +1,128 @@
+---
+title: "BodyFat Random Forest and CART"
+author: "jdt"
+date: "2/16/2021"
+output: pdf_document
+---
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+  # clear the environment and set seed
+rm(list = ls())
+set.seed(123)
+```
+
+Read Body Fat Data
+```{r, message=FALSE}
+library(foreign)
+# this data came from SASHELP.BWEIGHT
+bfat = read.csv('bodyfat.csv', header = TRUE, fileEncoding = 'UTF-8-BOM')
+```
+
+Describe Dependent Variable
+
+```{r}
+per_fat = bfat$per_fat              #per_fat is continuous
+hist(per_fat)
+summary(per_fat)
+# Create Binary variable for Crime
+# 24 was my choice
+high_fat = factor((per_fat > 24))   #high_fat is discrete
+```
+
+```{r, message=FALSE}
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+
+if (!require("randomForest")) install.packages("randomForest", dep=TRUE)
+if (!require("dplyr")) install.packages("dplyr", dep=TRUE)
+if (!require("ggpubr")) install.packages("ggpubr", dep=TRUE)
+if (!require("lme4")) install.packages("lme4", dep=TRUE)
+if (!require("rpart")) install.packages("rpart", dep=TRUE)
+if (!require("rpart.plot")) install.packages("rpart.plot", dep=TRUE)
+
+if (!require("partykit")) install.packages("partykit", dep=TRUE)
+
+```
+#Perform Regression
+
+Random Forest
+```{r}
+library(randomForest)
+bfat.rf <- randomForest(per_fat ~ . - density,data=bfat,mtry=5,
+              importance=TRUE, ntree=100,
+              na.action=na.omit)
+
+print(bfat.rf)
+varImpPlot(bfat.rf)
+```
+
+CART with rpart
+```{r, message=FALSE}
+library(rpart)
+bfat.tr = rpart(per_fat ~ . - density, data=bfat)
+# Output for Tree
+print(bfat.tr)
+
+#plotting using rpart plot
+plot(bfat.tr)
+text(bfat.tr, use.n=T)
+
+
+#plotting using rpart prp
+library(rpart.plot)
+prp(bfat.tr)
+text(bfat.tr, use.n=T)
+
+bfat_pred = predict(bfat.tr)
+# plot predicted
+xlim = range(per_fat)
+plot(bfat_pred ~ per_fat, data=bfat, xlab="Observed",
+     ylab="Predicted", ylim=xlim, xlim=xlim)
+```
+
+CART with party
+```{r}
+bfat.ctree = ctree(per_fat ~ . - density, data=bfat)
+# Output for Tree
+plot(per_fat, predict(bfat.ctree))
+print(bfat.ctree)
+plot(bfat.ctree)
+#plot(bfat.ctree, type="simple")
+```
+
+#Perform Classification
+
+Random Forest
+```{r, message=FALSE}
+
+high_fat.rf <- randomForest(high_fat ~ .-density - per_fat, data=bfat,mtry=5, importance=TRUE, ntree=100, proximity=TRUE)
+
+print(high_fat.rf)
+varImpPlot(high_fat.rf)
+```
+
+CART with rpart
+```{r}
+high_fat.tr = rpart(high_fat ~ .-density - per_fat, data=bfat)
+
+print(high_fat.tr)
+plot(high_fat.tr)
+text(high_fat.tr)
+
+print(high_fat.tr)
+prp(high_fat.tr)
+text(high_fat.tr)
+```
+
+
+CART with party
+```{r}
+high_fat.ctree = ctree(high_fat ~ . - density - per_fat, data=bfat)
+# Output for Tree
+plot(high_fat, predict(high_fat.ctree))
+print(high_fat.ctree)
+plot(high_fat.ctree)
+```
