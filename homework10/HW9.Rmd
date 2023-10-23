@@ -1,0 +1,368 @@
+---
+title: "Polynomial and Multiple Regression using Physical Measures"
+author: "White team"
+date: "2023-10-10"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Packages
+
+```{r}
+library(lmtest)
+library(GGally)
+library(car)
+library(readxl)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(reshape2) 
+
+```
+
+## load data
+
+```{r}
+
+
+pm_dat <- read_excel("C:/Users/Chang/Downloads/physicalmeasures.xlsx")
+
+```
+
+Before building a multiple linear regression model, it's essential to examine the correlations among the variables to detect any potential multicollinearity issues.
+
+## Scatter Plot Matrix
+
+```{r fig.width=10, fig.height=10}
+
+ggpairs(pm_dat , 
+        title="Scatter Plot Matrix", 
+        lower = list(continuous = wrap("points", size = 0.5)),
+        upper = list(continuous = wrap("cor", size = 3.5))) +
+  theme_minimal() +
+  theme(text = element_text(size=12),
+        axis.text.x = element_text(size=10, angle=45, hjust=1),
+        axis.text.y = element_text(size=10))
+
+```
+
+```{r}
+
+model <- lm(Mass ~ ., data=pm_dat)
+vif_values <- vif(model)
+vif_df <- data.frame(Variable = names(vif_values), VIF = vif_values)
+ggplot(vif_df, aes(x = reorder(Variable, VIF), y = VIF)) + 
+  geom_bar(stat = "identity") +
+  coord_flip() +  # Makes it a horizontal bar plot
+  labs(title = "VIF Values", x = "Variables", y = "VIF") +
+  theme_minimal()
+
+
+```
+
+```{r}
+```
+
+## multiple regression mode(AI choices based on the above information )
+
+The variables 'Fore', 'Bicep', 'Chest', 'Neck', and 'Shoulder' have VIF values greater than 5, indicating potential multicollinearity. Given that 'Waist', 'Fore', 'Shoulder', 'Thigh', and 'Calf' have the highest absolute correlation with 'Mass', they might be the most informative predictors. However, due to multicollinearity concerns (as evidenced by high VIF), we might need to exclude some of them.(remove some variable with high VIF and retain high correlation predictors)
+
+```{r}
+mt_model <- lm(Mass ~ Waist + Thigh + Calf + Height + Head, data = pm_dat)
+
+vif_mtdf <- data.frame(Variable = names(vif(mt_model)), VIF = vif(mt_model))
+ggplot(vif_mtdf, aes(x = reorder(Variable, VIF), y = VIF)) + 
+  geom_bar(stat = "identity") +
+  coord_flip() +  # Makes it a horizontal bar plot
+  labs(title = "VIF Values", x = "Variables", y = "VIF") +
+  theme_minimal()
+
+summary(mt_model)
+```
+
+We note that all the VIF values are below 5, indicating that the model is unlikely to experience significant multicollinearity. Additionally, the R-squared value implies a good fit for the model.
+
+## The plot for this model
+
+```{r}
+# Compute the predicted values
+pm_dat$predicted_mass <- predict(mt_model, pm_dat)
+
+# Plotting
+ggplot(data = pm_dat, aes(x = Mass, y = predicted_mass)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE, color = "red") +  # Adds a regression line
+  theme_minimal() +
+  labs(title = "Actual vs. Predicted Mass",
+       x = "Actual Mass",
+       y = "Predicted Mass")
+```
+
+## diagnostic plots
+
+Residuals vs. Fitted plot:(homoscedasticity) of residuals.
+
+```{r}
+ggplot(data = pm_dat, aes(x = fitted(mt_model), y = residuals(mt_model))) +
+  geom_point() +
+  geom_hline(yintercept = 0, color = "red") +
+  theme_minimal() +
+  labs(title = "Residuals vs. Fitted",
+       x = "Fitted values",
+       y = "Residuals")
+```
+QQ plot: Checks the normality of residuals.
+
+```{r}
+# QQ plot
+ggplot(data = pm_dat, aes(sample = residuals(mt_model))) +
+  geom_qq() +
+  geom_qq_line() +
+  theme_minimal() +
+  labs(title = "QQ Plot of Residuals")
+
+```
+Scale-Location plot: Another way to check homoscedasticity.
+
+```{r}
+# Scale-Location plot
+ggplot(data = pm_dat, aes(x = fitted(mt_model), y = sqrt(abs(residuals(mt_model))))) +
+  geom_point() +
+  theme_minimal() +
+  labs(title = "Scale-Location Plot",
+       x = "Fitted values",
+       y = "Square root of Standardized Residuals")
+
+
+```
+
+
+Cook's Distance: To detect influential observations.
+```{r}
+# Compute Cook's Distance
+cooksd <- cooks.distance(mt_model)
+
+# Cook's Distance plot
+ggplot(data = as.data.frame(cooksd), aes(x = seq_along(cooksd), y = cooksd)) +
+  geom_point() +
+  geom_hline(yintercept = 4/nrow(pm_dat), linetype = "dashed", color = "red") +  # Threshold line
+  theme_minimal() +
+  labs(title = "Cook's Distance",
+       x = "Observation",
+       y = "Cook's Distance")
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## polynomial regression model(AI choices based on the above information)
+
+
+```{r}
+poly_model<- lm(Mass ~ I(Waist^2) + I(Calf^2) + I(Height^2), data = pm_dat)
+
+
+vif_pmdf <- data.frame(Variable = names(vif(poly_model)), VIF = vif(poly_model))
+ggplot(vif_pmdf, aes(x = reorder(Variable, VIF), y = VIF)) + 
+  geom_bar(stat = "identity") +
+  coord_flip() +  # Makes it a horizontal bar plot
+  labs(title = "VIF Values", x = "Variables", y = "VIF") +
+  theme_minimal()
+summary(poly_model)
+```
+After careful examination of the Variance Inflation Factors (VIFs), it was determined that multicollinearity was not a concern for our model. Further assessment of the model's coefficients reinforced its robustness and validity. The findings from both these evaluations are promising and indicative of a well-fitted model
+```{r}
+# 1. Plot for Waist^2 vs Mass
+ggplot(pm_dat, aes(x=I(Waist^2), y=Mass)) +
+  geom_point() +
+  geom_smooth(method="lm", se=FALSE, color="red") +
+  labs(title="Polynomial Regression: Waist^2 vs Mass",
+       x="Waist^2", y="Mass")
+
+# 2. Plot for Calf^2 vs Mass
+ggplot(pm_dat, aes(x=I(Calf^2), y=Mass)) +
+  geom_point() +
+  geom_smooth(method="lm", se=FALSE, color="blue") +
+  labs(title="Polynomial Regression: Calf^2 vs Mass",
+       x="Calf^2", y="Mass")
+
+# 3. Plot for Height^2 vs Mass
+ggplot(pm_dat, aes(x=I(Height^2), y=Mass)) +
+  geom_point() +
+  geom_smooth(method="lm", se=FALSE, color="green") +
+  labs(title="Polynomial Regression: Height^2 vs Mass",
+       x="Height^2", y="Mass")
+
+
+
+
+
+
+
+```
+
+
+
+
+## diagnostic plots
+
+```{r}
+
+# Residuals vs Fitted values (for linearity)
+df_plot <- data.frame(Fitted = poly_model$fitted.values, Residuals = poly_model$residuals)
+
+# Use ggplot2 to plot
+ggplot(df_plot, aes(x = Fitted, y = Residuals)) +
+  geom_point() +                                   # Scatterplot points
+  geom_hline(yintercept = 0, color = "red") +      # Horizontal line at y = 0
+  labs(title = "Residuals vs Fitted Values",
+       x = "Fitted values", 
+       y = "Residuals")
+```
+
+
+
+```{r}
+# Q-Q Plot (for normality)
+ggplot(data = pm_dat, aes(sample = residuals(poly_model))) +
+  geom_qq() +
+  geom_qq_line() +
+  theme_minimal() +
+  labs(title = "QQ Plot of Residuals")
+
+```
+
+Check autocorrelation using Durbin-Watson Test
+```{r}
+ 
+dwtest(poly_model)
+```
+
+
+
+
+
+```{r}
+
+df_homoscedasticity <- data.frame(Fitted = poly_model$fitted.values, 
+                                  StandardizedResiduals = abs(sqrt(poly_model$residuals)))
+
+ggplot(df_homoscedasticity, aes(x = Fitted, y = StandardizedResiduals)) +
+  geom_point() +
+  labs(title = "Scale-Location (Checking for Homoscedasticity)",
+       x = "Fitted values", 
+       y = "Standardized Residuals") +
+  geom_hline(yintercept = 0, color = "red")
+
+```
+
+
+
+```{r}
+cooks_d <- cooks.distance(poly_model)
+
+df_cooks <- data.frame(index = 1:length(cooks_d), 
+                       CooksDistance = cooks_d)
+
+ggplot(df_cooks, aes(x = index, y = CooksDistance)) +
+  geom_point() +
+  labs(title = "Cook's Distance Plot",
+       x = "Index", 
+       y = "Cook's Distance")
+
+
+
+# Compute hat values (leverages) and standardized residuals
+hat_values <- hatvalues(poly_model)
+std_residuals <- rstandard(poly_model)
+
+# Compute Cook's distance
+cooks_d <- cooks.distance(poly_model)
+
+df_influence <- data.frame(
+  StandardizedResiduals = std_residuals,
+  Hat = hat_values,
+  CooksDistance = cooks_d
+)
+
+ggplot(df_influence, aes(x = Hat, y = StandardizedResiduals)) +
+  geom_point(aes(size = CooksDistance)) +
+  labs(
+    title = "Influence Plot",
+    x = "Leverage (Hat values)",
+    y = "Standardized Residuals"
+  ) +
+  theme(legend.position = "bottom")
+
+```
+
+
+## PCA
+
+```{r}
+predictors <- scale(pm_dat[, -which(names(pm_dat) == "Mass")])
+pca_result <- prcomp(predictors, center = TRUE, scale. = TRUE)
+summary(pca_result)
+
+
+
+
+# Scree Plot
+eigenvalues <- pca_result$sdev^2
+proportion_variance <- eigenvalues / sum(eigenvalues)
+
+plot(proportion_variance, type = "b", main="Scree Plot", xlab="Principal Component", ylab="Proportion of Variance Explained")
+
+
+
+cumulative_variance <- cumsum(proportion_variance)
+
+plot(cumulative_variance, type = "b", main="Cumulative Proportion of Variance Explained", xlab="Principal Component", ylab="Cumulative Proportion of Variance")
+
+
+biplot(pca_result, scale=0)
+
+
+```
+
+
+Based on the plots, we think 4 components may be a good choice.
+
+```{r}
+
+pc_data <- data.frame(Mass = pm_dat$Mass, PCA1 = pca_result$x[,1], PCA2 = pca_result$x[,2], PCA3 = pca_result$x[,3], PCA4 = pca_result$x[,4])
+
+model_with_pca <- lm(Mass ~ ., data = pc_data)
+summary(model_with_pca)
+
+```
+
+I found the pca3 and pca4 is not significant. Maybe we should choose two components.
+
+
+
+
+```{r}
+
+pc_data_new <- data.frame(Mass = pm_dat$Mass, PCA1 = pca_result$x[,1], PCA2 = pca_result$x[,2])
+
+model_with_pca_new <- lm(Mass ~ ., data = pc_data_new)
+summary(model_with_pca_new)
+```
+Due to the limitations in the size of the dataset, the principal component analysis model we built is highly susceptible to overfitting. Moreover, because of the small sample size of the dataset, it's challenging for us to employ cross-validation to verify the model's fit.

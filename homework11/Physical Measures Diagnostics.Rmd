@@ -1,0 +1,260 @@
+---
+title: "Physical Measures Diagnostics"
+author: "Katie, Rita, and Chang"
+date: "2023-10-16"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("/Users/katieclewett/Desktop")
+library(readxl)
+PhysicalMeasures <- read_xlsx("physicalmeasures.xlsx")
+```
+
+# Scatterplot Matrix
+```{r scatterplot matrix code, message=FALSE, warning=FALSE, fig.show='hide'}
+library(GGally)
+ggpairs(PhysicalMeasures, axisLabels = "none", 
+        title = "Scatterplot Matrix of Physical Measures")
+# corr codes
+```
+
+# Scatterplot Matrix
+```{r scatterplot matrix, echo = FALSE}
+ggpairs(PhysicalMeasures, axisLabels = "none", 
+        title = "Scatterplot Matrix of Physical Measures")
+```
+
+# Stepwise Regression
+```{r}
+library("MASS")
+full.phys <- lm(Mass ~ ., data = PhysicalMeasures)
+step.phys <- stepAIC(full.phys, direction = "both", 
+                      trace = FALSE)
+summary(step.phys)
+```
+
+
+# Multiple regression with selected model (output of stepwise regression)
+```{r}
+stepmodel <- lm(formula = Mass ~ Fore + Waist + Height + Calf + Thigh + Head, data = PhysicalMeasures)
+summary(stepmodel)
+```
+
+# Diagnostics
+```{r}
+library("broom")
+diagnostics <- augment(stepmodel)
+```
+
+# Plots
+```{r}
+residual.mass = residuals(stepmodel)
+predicted.mass = predict(stepmodel)
+plot(residual.mass, predicted.mass)
+
+plot(PhysicalMeasures$Mass, predicted.mass)
+reg = lm(predicted.mass ~ PhysicalMeasures$Mass)
+abline(reg)
+
+plot(stepmodel, which = c(1,2,3,4,5,6))
+```
+
+# Residuals by Fore
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = PhysicalMeasures$Fore, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals by Waist
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = PhysicalMeasures$Waist, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals by Height
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = PhysicalMeasures$Height, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals by Calf
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = PhysicalMeasures$Calf, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals by Thigh
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = PhysicalMeasures$Thigh, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals by Head
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = PhysicalMeasures$Head, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Ridge Regression
+```{r}
+library("glmnet")
+x = data.matrix(PhysicalMeasures [,c('Fore', 'Bicep', 'Chest', 'Neck', 'Shoulder', 'Waist', 'Height', 'Calf', 'Thigh', 'Head')])
+y = PhysicalMeasures$Mass
+model <- glmnet(x, y, alpha = 0)
+summary(model)
+cv_model <- cv.glmnet(x, y, alpha = 0)
+best_lambda <- cv_model$lambda.min
+best_lambda
+plot(cv_model)
+best_model <- glmnet(x, y, alpha = 0, lambda = best_lambda)
+coef(best_model)
+```
+
+# Lasso Regression
+```{r}
+library("glmnet")
+x = data.matrix(PhysicalMeasures [,c('Fore', 'Bicep', 'Chest', 'Neck', 'Shoulder', 'Waist', 'Height', 'Calf', 'Thigh', 'Head')])
+y = PhysicalMeasures$Mass
+model <- glmnet(x, y, alpha = 1)
+summary(model)
+cv_model <- cv.glmnet(x, y, alpha = 1)
+best_lambda <- cv_model$lambda.min
+best_lambda
+plot(cv_model)
+best_model <- glmnet(x, y, alpha = 1, lambda = best_lambda)
+coef(best_model)
+```
+
+# Multiple regression with selected model (output of stepwise regression)
+```{r}
+lassomodel <- lm(formula = Mass ~ . - Bicep - Neck, data = PhysicalMeasures)
+summary(lassomodel)
+```
+
+# Diagnostics
+```{r}
+library("broom")
+diagnostics <- augment(lassomodel)
+```
+
+# Plots
+```{r}
+residual.mass = residuals(lassomodel)
+predicted.mass = predict(lassomodel)
+plot(residual.mass, predicted.mass)
+
+plot(PhysicalMeasures$Mass, predicted.mass)
+reg = lm(predicted.mass ~ PhysicalMeasures$Mass)
+abline(reg)
+
+plot(lassomodel, which = c(1,2,3,4,5,6))
+```
+
+# Residuals by Fore
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = PhysicalMeasures$Fore, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals by Chest
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = PhysicalMeasures$Chest, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals by Shoulder
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = PhysicalMeasures$Shoulder, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals by Waist
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = PhysicalMeasures$Waist, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals by Height
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = PhysicalMeasures$Height, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals by Calf
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = PhysicalMeasures$Calf, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals by Thigh
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = PhysicalMeasures$Thigh, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals by Head
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = PhysicalMeasures$Head, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# The stepwise model is a better fit
+# The stepwise model has a higher adjusted r-squared value

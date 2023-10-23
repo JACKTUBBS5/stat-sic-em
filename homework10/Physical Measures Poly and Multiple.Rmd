@@ -1,0 +1,49 @@
+---
+title: "Physical Measures - poly and multiple"
+author: "Katie, Rita, and Chang"
+date: "2023-10-09"
+output: html_document
+---
+
+---
+title: "Physical Measures"
+author: "Katie, Rita, and Chang"
+date: "2023-10-02"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("/Users/katieclewett/Desktop")
+library(readxl)
+PhysicalMeasures <- read_xlsx("physicalmeasures.xlsx")
+```
+
+# Scatterplot Matrix
+```{r scatterplot matrix code, message=FALSE, warning=FALSE, fig.show='hide'}
+library(GGally)
+ggpairs(PhysicalMeasures, axisLabels = "none", 
+        title = "Scatterplot Matrix of Physical Measures")
+# corr codes
+```
+
+# Scatterplot Matrix
+```{r scatterplot matrix, echo = FALSE}
+ggpairs(PhysicalMeasures, axisLabels = "none", 
+        title = "Scatterplot Matrix of Physical Measures")
+```
+
+# Polynomial Model of Mass with Calf and Calf^2 as the Predictors
+```{r}
+Calf2 = (PhysicalMeasures$Calf)*(PhysicalMeasures$Calf)
+fit_calf_poly <- lm(Mass ~ Calf + Calf2, data = PhysicalMeasures)
+summary(fit_calf_poly) # does not have VIFs included like SAS
+plot(Mass ~ Calf, data = PhysicalMeasures)
+```
+
+# Multiple Regression Model of Mass with Bicep and Height as the Predictors
+```{r}
+fit_multi <- lm(Mass ~ Bicep + Height, data = PhysicalMeasures)
+summary(fit_multi) # does not have VIFs included like SAS
+plot(Mass ~ Bicep + Height, data = PhysicalMeasures)
+```
