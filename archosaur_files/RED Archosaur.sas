@@ -1,5 +1,5 @@
 options center nodate pagesize=120 ls=80;
-libname ldata '/home/jacktubbs/my_shared_file_links/jacktubbs/LaTeX/Class';
+libname ldata '/home/u63561478/sasuser.v94/Data';
 
 /* Simplified LaTeX output that uses plain LaTeX tables  */
 ods latex path='/home/jacktubbs/my_shared_file_links/jacktubbs/LaTeX/Output'
