@@ -1,0 +1,47 @@
+---
+title: "JMP_defects3"
+output: html_document
+date: "2023-10-25"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r }
+library(haven)
+library(tidyverse)
+library(plotly)
+
+# Read the data from the CSV file
+defects <- read.csv("defects.csv")
+
+defects$timeofweek <- ifelse(defects$Day %in% c(1, 2, 6, 7), "early", 
+                           ifelse(defects$Day %in% c(4, 5, 9, 10), "late", NA))
+
+
+# Summary statistics and univariate analysis
+summary_stats <- summary(defects$Defects)
+
+# Histogram and density plot
+ggplot(defects, aes(x = Defects)) +
+  geom_histogram(binwidth = 1, fill = "lightblue", color = "black", alpha = 0.7) +
+  geom_density(alpha = 0.5, fill = "#FF6666") +
+  labs(title = "Histogram and Density Plot for Defects")
+
+# Calculate mean by timeofday
+defects_summary <- defects %>%
+  group_by(timeofweek) %>%
+  summarize(mean_defects = mean(Defects))
+
+# Heatmap
+ggplot(defects, aes(x = timeofweek, y = Sample, fill = Defects)) +
+  geom_tile() +
+  labs(title = "Heatmap for Defects")
+
+# ANOVA for defects
+model <- glm(Day ~ timeofweek, data = defects, family = gaussian)
+summary(model)
+
+```

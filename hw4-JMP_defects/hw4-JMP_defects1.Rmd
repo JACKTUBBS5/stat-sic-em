@@ -1,0 +1,235 @@
+---
+title: "hw4-JMP_defects1"
+output: html_document
+date: "2023-10-25"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Load the necessary libraries
+library(haven)
+library(tidyverse)
+library(plotly)
+
+# Read the data from the CSV file
+defects <- read.csv("defects.csv")
+
+##### ALL DATA ########
+
+summary_by_day <- defects %>%
+  group_by(Day) %>%
+  summarize(mean_defects = mean(Defects))
+
+# Univariate analysis
+univariate_summary <- summary(defects$Defects)
+univariate_summary
+
+# Histogram and density plot
+ggplot(defects, aes(x = Defects)) +
+  geom_histogram(binwidth = 1, fill = "lightblue", color = "black", alpha = 0.7) +
+  geom_density(alpha = 0.5, fill = "#FF6666") +
+  labs(title = "Histogram and Density Plot for Defects")
+
+# Mean calculation by day
+summary_by_day
+
+####### HEAT MAP ############
+
+ggplot(defects, aes(x = Day, y = Sample, fill = Defects)) +
+  geom_tile() +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  labs(title = "Heatmap of Defects") +
+  theme_minimal()
+
+####### SCHEME One Per day 9:30am ####### 
+
+# Filter data for 'scheme_a'
+scheme_a <- defects %>% filter(Sample == "09:30")
+
+# Summary statistics and univariate analysis
+summary_stats <- summary(scheme_a$Defects)
+
+# Histogram and density plot
+ggplot(scheme_a, aes(x = Defects)) +
+  geom_histogram(binwidth = 1, fill = "lightblue", color = "black", alpha = 0.7) +
+  geom_density(alpha = 0.5, fill = "#FF6666") +
+  labs(title = "Histogram and Density Plot for Scheme A")
+
+# Print scheme_a data
+print(scheme_a)
+
+# Calculate mean by day
+a <- scheme_a %>%
+  group_by(Day) %>%
+  summarize(mean = mean(Defects))
+
+# Scatter plot with trend line
+ggplot(a, aes(x = Day, y = mean)) +
+  geom_point() +
+  geom_line() +
+  geom_smooth(method = "loess", se = FALSE) +
+  labs(title = "Mean Defects by Day for Scheme A")
+
+# Boxplot of defects by day
+ggplot(scheme_a, aes(x = factor(Day), y = Defects, fill = factor(Day))) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Defects by Day for Scheme A")
+
+# Heatmap
+ggplot(scheme_a, aes(x = Day, y = Sample, fill = Defects)) +
+  geom_tile() +
+  labs(title = "Heatmap for Scheme A")
+
+########## SCHEME Two Per day 9:30am and 2:30 pm #############
+
+# Filter data for 'scheme_b'
+scheme_b <- defects %>% filter(Sample %in% c("09:30", "14:30"))
+
+# Summary statistics and univariate analysis
+summary_stats <- summary(scheme_b$Defects)
+
+# Histogram and density plot
+ggplot(scheme_b, aes(x = Defects)) +
+  geom_histogram(binwidth = 1, fill = "lightblue", color = "black", alpha = 0.7) +
+  geom_density(alpha = 0.5, fill = "#FF6666") +
+  labs(title = "Histogram and Density Plot for Scheme B")
+
+# Calculate mean by day
+b <- scheme_b %>%
+  group_by(Day) %>%
+  summarize(mean = mean(Defects))
+
+# Scatter plot with trend line
+ggplot(b, aes(x = Day, y = mean)) +
+  geom_point() +
+  geom_line() +
+  geom_smooth(method = "loess", se = FALSE) +
+  labs(title = "Mean Defects by Day for Scheme B")
+
+# Boxplot of defects by day
+ggplot(scheme_b, aes(x = factor(Day), y = Defects, fill = factor(Day))) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Defects by Day for Scheme B")
+
+# Heatmap
+ggplot(scheme_b, aes(x = Day, y = Sample, fill = Defects)) +
+  geom_tile() +
+  labs(title = "Heatmap for Scheme B")
+
+######## SCHEME Eight Per day 9:30am ############
+
+
+# Filter data for 'scheme_c'
+scheme_c <- defects %>%
+  filter(Sample %in% c("08:30", "09:30","10:30","11:30","12:30","13:30","14:30","15:30"))
+
+# Summary statistics and univariate analysis
+summary_stats <- summary(scheme_c$Defects)
+
+# Histogram and density plot
+ggplot(scheme_c, aes(x = Defects)) +
+  geom_histogram(binwidth = 1, fill = "lightblue", color = "black", alpha = 0.7) +
+  geom_density(alpha = 0.5, fill = "#FF6666") +
+  labs(title = "Histogram and Density Plot for Scheme C")
+
+# Calculate mean by day
+c <- scheme_c %>%
+  group_by(Day) %>%
+  summarize(mean = mean(Defects))
+
+# Scatter plot with trend line
+ggplot(c, aes(x = Day, y = mean)) +
+  geom_point() +
+  geom_line() +
+  geom_smooth(method = "loess", se = FALSE) +
+  labs(title = "Mean Defects by Day for Scheme C")
+
+# Boxplot of defects by day
+ggplot(scheme_c, aes(x = factor(Day), y = Defects, fill = factor(Day))) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Defects by Day for Scheme C")
+
+# Heatmap
+ggplot(scheme_c, aes(x = Day, y = Sample, fill = Defects)) +
+  geom_tile() +
+  labs(title = "Heatmap for Scheme C")
+
+######### SCHEME 16 Per day 9:30am and 2:30 pm #########
+
+# Filter data for 'scheme_d'
+scheme_d <- defects %>%
+  filter(Sample %in% c("08:30", "09:30","10:30","11:30","12:30","13:30","14:30","15:30","16:30", "17:30", "18:30", "19:30", "20:30", "21:30", "22:30", "23:30" ))
+
+# Summary statistics and univariate analysis
+summary_stats <- summary(scheme_d$Defects)
+
+# Histogram and density plot
+ggplot(scheme_d, aes(x = Defects)) +
+  geom_histogram(binwidth = 1, fill = "lightblue", color = "black", alpha = 0.7) +
+  geom_density(alpha = 0.5, fill = "#FF6666") +
+  labs(title = "Histogram and Density Plot for Scheme D")
+
+# Calculate mean by day
+d <- scheme_d %>%
+  group_by(Day) %>%
+  summarize(mean = mean(Defects))
+
+# Scatter plot with trend line
+ggplot(d, aes(x = Day, y = mean)) +
+  geom_point() +
+  geom_line() +
+  geom_smooth(method = "loess", se = FALSE) +
+  labs(title = "Mean Defects by Day for Scheme D")
+
+# Boxplot of defects by day
+ggplot(scheme_d, aes(x = factor(Day), y = Defects, fill = factor(Day))) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Defects by Day for Scheme D")
+
+# Heatmap
+ggplot(scheme_d, aes(x = Day, y = Sample, fill = Defects)) +
+  geom_tile() +
+  labs(title = "Heatmap for Scheme D")
+
+########### SCHEME 32 Per day 9:30am and 2:30 pm #########
+
+# Filter data for 'scheme_d'
+scheme_e <- defects %>%
+  filter(Sample %in% c("08:30", "08:45", "09:00", "09:15", "09:30", "09:45", "10:00", "10:15", "10:30", "10:45", "11:00", "11:15", "11:30", "11:45", "12:00", "12:15", "12:30", "12:45", "13:00", "13:15", "13:30", "13:45", "14:00", "14:15", "14:30", "14:45", "15:00", "15:15", "15:30", "15:45", "16:00", "16:15"))
+
+# Summary statistics and univariate analysis
+summary_stats <- summary(scheme_e$Defects)
+
+# Histogram and density plot
+ggplot(scheme_e, aes(x = Defects)) +
+  geom_histogram(binwidth = 1, fill = "lightblue", color = "black", alpha = 0.7) +
+  geom_density(alpha = 0.5, fill = "#FF6666") +
+  labs(title = "Histogram and Density Plot for Scheme E")
+
+# Calculate mean by day
+e <- scheme_e %>%
+  group_by(Day) %>%
+  summarize(mean = mean(Defects))
+
+# Scatter plot with trend line
+ggplot(e, aes(x = Day, y = mean)) +
+  geom_point() +
+  geom_line() +
+  geom_smooth(method = "loess", se = FALSE) +
+  labs(title = "Mean Defects by Day for Scheme E")
+
+# Boxplot of defects by day
+ggplot(scheme_e, aes(x = factor(Day), y = Defects, fill = factor(Day))) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Defects by Day for Scheme E")
+
+# Heatmap
+ggplot(scheme_e, aes(x = Day, y = Sample, fill = Defects)) +
+  geom_tile() +
+  labs(title = "Heatmap for Scheme E")
+
+```
+
