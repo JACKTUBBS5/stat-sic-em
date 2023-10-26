@@ -101,8 +101,32 @@ proc hpsplit data=sashelp.baseball seed=123;
                      crBB league division nOuts nAssts nError;
    output out=hpsplout;
 run;
-
-
 proc print data=hpsplout(obs=10); run;
+
+title2 'Regression';
+proc hpforest data=sashelp.baseball maxtrees=50 inbagfraction=.3;
+   input nAtBat nHits nHome nRuns nRBI nBB
+         yrMajor crAtBat crHits crHome crRuns crRbi
+         crBB nOuts nAssts nError/level=interval;
+   input league division /level=nominal;     
+   target logSalary/level=interval;
+   ods output VariableImportance = variable
+   FitStatistics=fitstats(rename=(Ntrees=Trees)) ;
+run;
+
+data fitstats;
+   set fitstats;
+   label Trees = 'Number of Trees';
+   label MiscAll = 'Full Data';
+   label Miscoob = 'OOB';
+run;
+
+proc sgplot data=fitstats;
+   title "OOB vs Training";
+   series x=Trees y=predall;
+   series x=Trees y=predOob/lineattrs=(pattern=shortdash thickness=2);
+   yaxis label='Average Squared Error';
+run;
+
 
 ods graphics off;
