@@ -1,0 +1,46 @@
+---
+title: 'RED Team: Archosaurs'
+author: "RED Team"
+date: "2023-10-24"
+output: html_document
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+```
+Read data from SAS input file
+```{r}
+# this data came from SASHELP.CARS
+brain <- read.csv('archosaur.csv', header = TRUE)
+body <- read.csv('archosaur.csv', header = TRUE)
+summary(brain)
+```
+
+Transform Data
+```{r}
+body.wt = body$Body.Weight
+brain.wt = brain$Brain.Weight
+log_body.wt = log(brain$Body.Weight)
+log_brain.wt = log(brain$Brain.Weight)
+
+```
+Graph of data
+```{r}
+plot(brain.wt~body.wt)
+abline(lm(brain.wt~body.wt))
+plot(log_brain.wt~log_body.wt)
+abline(lm(log_brain.wt~log_body.wt))
+```
+
+
+Results
+```{r}
+result<-lm(log_brain.wt~log_body.wt)
+summary(result)
+plot(result)
+```
+```
+
