@@ -1,0 +1,305 @@
+---
+title: "Red Wine - linear"
+author: "Katie, Rita, and Chang"
+date: "2023-10-23"
+output: html_document
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("/Users/katieclewett/Desktop")
+red <- read.csv("wineQualityReds.csv")
+```
+
+# Scatterplot Matrix
+```{r scatterplot matrix code, message=FALSE, warning=FALSE, fig.show='hide'}
+library("GGally")
+ggpairs(red, axisLabels = "none", 
+        title = "Scatterplot Matrix of Red Wines")
+# corr codes
+```
+
+# Scatterplot Matrix
+```{r scatterplot matrix, echo = FALSE}
+ggpairs(red, axisLabels = "none", 
+        title = "Scatterplot Matrix of Red Wines")
+```
+
+# Stepwise Regression
+```{r}
+library("MASS")
+full.red <- lm(quality ~ . - id, data = red)
+step.red <- stepAIC(full.red, direction = "both", trace = FALSE)
+summary(step.red)
+```
+
+# Stepwise Regression Model
+```{r}
+library("car")
+step <- lm(quality ~ vol_acidity + chlorides + free_sulfur + total_sulfur + pH + sulphates + alcohol, data = red)
+summary(step)
+
+# Check model for multicollinearity 
+vif(step)
+```
+
+# Forward Selection
+```{r}
+library("MASS")
+library("olsrr")
+full.red <- lm(quality ~ . - id, data = red)
+ols_step_forward_aic(full.red, details = TRUE)
+# results in same model as stepwise regression
+```
+
+# Backward Elimination
+```{r}
+library("MASS")
+library("olsrr")
+full.red <- lm(quality ~ . - id, data = red)
+ols_step_backward_aic(full.red, details = TRUE)
+# results in same model as stepwise regression
+```
+
+# Standardize the variables
+```{r}
+library("tidyverse")
+library("broom")
+library("mosaic")
+
+red_standardized <- 
+  red %>%
+  mutate(fix_acidity = scale(fix_acidity), vol_acidity = scale(vol_acidity), citric_acid = scale(citric_acid), sugar = scale(sugar), chlorides = scale(chlorides), free_sulfur = scale(free_sulfur), total_sulfur = scale(total_sulfur), density = scale(density), pH = scale(pH), sulphates = scale(sulphates), alcohol = scale(alcohol))
+```
+
+# Lasso Regression
+```{r}
+library("glmnet")
+x = data.matrix(red_standardized [,c('fix_acidity', 'vol_acidity', 'citric_acid', 'sugar', 'chlorides', 'free_sulfur', 'total_sulfur', 'density', 'pH', 'sulphates', 'alcohol')])
+y = red_standardized$quality
+model <- glmnet(x, y, alpha = 1)
+summary(model)
+cv_model <- cv.glmnet(x, y, alpha = 1)
+best_lambda <- cv_model$lambda.min
+best_lambda
+plot(cv_model)
+best_model <- glmnet(x, y, alpha = 1, lambda = best_lambda)
+coef(best_model)
+```
+
+# Lasso Regression Model
+```{r}
+library("car")
+lassomod <- lm(quality ~ vol_acidity + sugar + chlorides + free_sulfur + total_sulfur + pH + sulphates + alcohol, data = red_standardized)
+summary(lassomod)
+
+# Check model for multicollinearity 
+vif(lassomod)
+```
+
+# Lasso Regression max of 5 variables
+```{r}
+library("glmnet")
+x = data.matrix(red_standardized [,c('fix_acidity', 'vol_acidity', 'citric_acid', 'sugar', 'chlorides', 'free_sulfur', 'total_sulfur', 'density', 'pH', 'sulphates', 'alcohol')])
+y = red_standardized$quality
+model <- glmnet(x, y, alpha = 1)
+summary(model)
+cv_model <- cv.glmnet(x, y, alpha = 1, dfmax = 4)
+best_lambda <- cv_model$lambda.min
+best_lambda
+plot(cv_model)
+best_model <- glmnet(x, y, alpha = 1, lambda = best_lambda)
+coef(best_model)
+```
+
+# Lasso Regression Model max of 5 variables
+```{r}
+library("car")
+lassomod5 <- lm(quality ~ vol_acidity + chlorides +  total_sulfur + sulphates + alcohol, data = red_standardized)
+summary(lassomod5)
+
+# Check model for multicollinearity 
+vif(lassomod5)
+```
+
+# Ridge Regression
+```{r}
+library("glmnet")
+x = data.matrix(red_standardized [,c('fix_acidity', 'vol_acidity', 'citric_acid', 'sugar', 'chlorides', 'free_sulfur', 'total_sulfur', 'density', 'pH', 'sulphates', 'alcohol')])
+y = red_standardized$quality
+model <- glmnet(x, y, alpha = 0)
+summary(model)
+cv_model <- cv.glmnet(x, y, alpha = 0)
+best_lambda <- cv_model$lambda.min
+best_lambda
+plot(cv_model)
+best_model <- glmnet(x, y, alpha = 0, lambda = best_lambda)
+coef(best_model)
+```
+
+# Ridge Regression Model
+```{r}
+library("car")
+ridgemod <- lm(quality ~ vol_acidity + chlorides + total_sulfur + pH + sulphates + alcohol, data = red_standardized)
+summary(ridgemod)
+
+# Check model for multicollinearity 
+vif(ridgemod)
+```
+
+# Select Best Model with AIC
+```{r}
+library(AICcmodavg)
+models <- list(step, lassomod, ridgemod, lassomod5)
+mod.names <- c('Stepwise', 'Lasso', 'Ridge', 'Limited Lasso')
+aictab(cand.set = models, modnames = mod.names)
+# step is best model
+```
+
+# Select Best Model with BIC
+```{r}
+library("flexmix")
+BIC(step)
+BIC(lassomod)
+BIC(ridgemod)
+BIC(lassomod5)
+# ridge is best model
+# however, since the step model performed better with the adjusted r-squared and aic tests, we will move forward with that model
+```
+
+# From this point forward, we are using the stepwise regression model.
+
+# Diagnostics
+```{r}
+library("broom")
+diagnostics <- augment(step)
+```
+
+# Distribution of quality
+```{r}
+library("ggplot2")
+ggplot(red, aes(x = quality)) + geom_histogram(bins = 10, color = "black", fill = "violet") + ggtitle("Histogram of Red Wine Quality") + scale_x_continuous(limits = c(0,10))
+
+ggplot(red, aes(x = quality)) + geom_boxplot() + ggtitle("Boxplot of Red Wine Quality")
+
+xbar <- mean(red$quality)
+xbar
+sd <- sd(red$quality)
+sd
+n = 1599
+standard_error_mean <- sd/sqrt(n)
+standard_error_mean
+margin <- qt(0.975,df=n-1)*sd/sqrt(n)
+lowerinterval <- xbar - margin
+lowerinterval
+upperinterval <- xbar + margin
+upperinterval
+```
+
+# Plot Residuals
+```{r}
+library("ggplot2")
+model_resid = step$residuals
+ggplot(red, aes(x = model_resid)) + geom_histogram(bins = 15, color = "black", fill = "violet") + ggtitle("Histogram of Residuals") + scale_x_continuous(limits = c(-3,3))
+
+ggplot(red, aes(x = model_resid)) + geom_boxplot() + ggtitle("Boxplot of Residuals")
+```
+
+# QQ Plot of Residuals - check normality
+```{r}
+qqnorm(model_resid)
+qqline(model_resid)
+```
+
+# Multicollinearity Plot - check multicollinearity
+```{r}
+library("ggcorrplot")
+red1 <- data.frame(red$vol_acidity, red$chlorides, red$free_sulfur, red$total_sulfur, red$pH, red$sulphates, red$alcohol)
+corr_matrix = round(cor(red1), 2)
+ggcorrplot(corr_matrix, hc.order = TRUE, type = "lower", lab = TRUE)
+```
+
+# Other Plots
+```{r}
+plot(quality ~ vol_acidity + chlorides + free_sulfur + total_sulfur + pH + sulphates + alcohol, data = red)
+
+residual.quality = residuals(step)
+predicted.quality = predict(step)
+plot(residual.quality, predicted.quality)
+
+plot(red$quality, predicted.quality)
+reg = lm(predicted.quality ~ red$quality)
+abline(reg)
+
+plot(step, which = c(1,2,3,4,5,6))
+```
+
+# Residuals by vol_acidity
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = red$vol_acidity, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals by chlorides
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = red$chlorides, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+``` 
+
+# Residuals by free_sulfur
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = red$free_sulfur, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+``` 
+
+# Residuals by total_sulfur
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = red$total_sulfur, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+``` 
+
+# Residuals by pH
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = red$pH, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+``` 
+
+# Residuals by sulphates
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = red$sulphates, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+``` 
+
+# Residuals by alcohol
+```{r}
+library("GGally")
+ggplot(diagnostics) +
+  geom_point(aes(x = red$alcohol, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+``` 
