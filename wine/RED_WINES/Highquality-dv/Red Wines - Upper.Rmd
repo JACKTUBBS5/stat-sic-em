@@ -1,0 +1,57 @@
+---
+title: "Red Wines - upper"
+author: "Katie, Rita, and Chang"
+date: "2023-11-01"
+output: html_document
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("/Users/katieclewett/Desktop")
+red <- read.csv("wineQualityReds.csv")
+```
+
+# Scatterplot Matrix
+```{r scatterplot matrix code, message=FALSE, warning=FALSE, fig.show='hide'}
+library("GGally")
+ggpairs(red, axisLabels = "none", 
+        title = "Scatterplot Matrix of Red Wines")
+# corr codes
+```
+
+# Scatterplot Matrix
+```{r scatterplot matrix, echo = FALSE}
+ggpairs(red, axisLabels = "none", 
+        title = "Scatterplot Matrix of Red Wines")
+```
+
+# Create Binary Dependent Variable
+```{r}
+red$highquality = factor((red$quality >= 6))
+red$highquality <- as.integer(as.logical(red$highquality))
+```
+
+# Random Forest 
+```{r}
+library("randomForest")
+library("caret")
+library("e1071")
+library("rpart")
+
+rf <- randomForest(highquality ~ . - quality, data = red, mtry = 4, importance = TRUE, ntree = 50, na.action = na.omit)
+print(rf)
+varImpPlot(rf)
+```
+
+# Cart
+```{r}
+library("randomForest")
+library("caret")
+library("e1071")
+library("rpart")
+library("rpart.plot")
+
+cartmodel = rpart(highquality ~ . - quality, data = red)
+print(cartmodel)
+prp(cartmodel)
+```
