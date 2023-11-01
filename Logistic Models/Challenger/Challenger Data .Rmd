@@ -1,0 +1,123 @@
+---
+title: "Challenger Data Example"
+author: "jdt"
+date: "3/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+
+```
+
+Needed Packages
+```{r, message=FALSE}
+
+if(!require(FSA)){install.packages("FSA")}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if(!require(car)){install.packages("car")}
+if(!require(multcompView)){install.packages("multcompView")}
+if(!require(lsmeans)){install.packages("lsmeans")}
+if(!require(grid)){install.packages("grid")}
+if(!require(nlme)){install.packages("nlme")}
+if(!require(lme4)){install.packages("lme4")}
+if(!require(Rmisc)){install.packages("Rmisc")}
+#if(!require(rms)){install.packages("rms")}
+#if(!require(FSA)){install.packages("FSA")}
+#if(!require(lmerTest)){install.packages("lmerTest")} 
+#if(!require(rcompanion)){install.packages("rcompanion")}
+```
+
+Read data from SAS input file
+```{r}
+Input = ("
+temp td no_td
+ 53 1 0
+ 57 1 0
+ 58 1 0
+ 63 1 0
+ 66 0 1
+ 67 0 1
+ 67 0 1
+ 67 0 1
+ 68 0 1
+ 69 0 1
+ 70 1 0
+ 70 1 0
+ 70 0 1
+ 70 0 1
+ 72 0 1
+ 73 0 1
+ 75 1 0
+ 75 0 1
+ 76 0 1
+ 76 0 1
+ 78 0 1
+ 79 0 1
+ 81 0 1
+")
+Nasa = read.table(textConnection(Input),header=TRUE)
+Nasa = data.frame(Nasa)
+# temp = "Atmospheric Temperature"
+# td   = "failed attempts"
+# no_td = "successful attempts"
+# total = "number of attempts";
+temp = Nasa$temp
+td = Nasa$td
+no.td = Nasa$no_td
+total = td + no.td
+per.fail = td/total
+```
+Descriptive Statistics
+```{r, message=FALSE}
+library(Rmisc)
+
+sum = summary(Nasa)
+sum
+```
+
+Descriptive Plots
+
+```{r}
+boxplot(temp ~ td,
+        data = Nasa,
+        xlab = "fail attempt",
+        ylab = "Temperature")
+
+```
+
+Fit Logistic Model with LOGIT link
+```{r, message=FALSE}
+mod1 = glm( td ~ temp,
+            family = "binomial"(link="logit"),
+            data=Nasa)
+mod1
+#plot(mod1)
+```
+
+Fit Logistic Model with Cloglog link
+```{r, message=FALSE}
+mod2 = glm( td ~ temp,
+            family = "binomial"(link="cloglog"),
+            data=Nasa)
+mod2
+#plot(mod2)
+```
+Predicted Plots
+
+```{r}
+#temperature = runif(100,45,85)
+#temperature = order(temperature)
+p_logit = exp(15.0 - 0.23*temp)/(1 + exp(15.0 - 0.23*temp))
+p_cll = 1 - exp(-exp(12.3 - 0.19*temp))
+plot(temp,p_logit)
+plot(temp,p_cll)
+#diff=p_cll - p_logit
+#plot(temperature,diff)
+```
+List of Predictive Probability of Failure
+```{r}
+cbind(temp, p_logit, p_cll)
+```
+

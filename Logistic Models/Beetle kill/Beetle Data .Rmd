@@ -1,0 +1,121 @@
+---
+title: "Beetle Kill Data Example"
+author: "jdt"
+date: "3/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+
+```
+
+Needed Packages
+```{r, message=FALSE}
+
+if(!require(FSA)){install.packages("FSA")}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if(!require(car)){install.packages("car")}
+if(!require(multcompView)){install.packages("multcompView")}
+if(!require(lsmeans)){install.packages("lsmeans")}
+if(!require(grid)){install.packages("grid")}
+if(!require(nlme)){install.packages("nlme")}
+if(!require(lme4)){install.packages("lme4")}
+if(!require(Rmisc)){install.packages("Rmisc")}
+if(!require(rms)){install.packages("rms")}
+if(!require(FSA)){install.packages("FSA")}
+#if(!require(lmerTest)){install.packages("lmerTest")} 
+#if(!require(rcompanion)){install.packages("rcompanion")}
+```
+
+Read data from SAS input file
+```{r}
+### --------------------------------------------------------------
+### Two-way anova, SAS example Activity by Genotype
+### --------------------------------------------------------------
+
+Input = ("
+logdose nbeetles nkilled
+1.691 59 6
+1.724 60 13
+1.755 62 18
+1.784 56 28
+1.811 63 52
+1.837 59 53
+1.861 62 61
+1.884 60 60
+")
+beetle = read.table(textConnection(Input),header=TRUE)
+beetle = data.frame(beetle)
+
+logdose = beetle$logdose
+nbeetles = beetle$nbeetles
+nkilled = beetle$nkilled
+nsurvive=nbeetles-nkilled;
+
+per.killed = nkilled/nbeetles
+```
+Descriptive Statistics
+```{r, message=FALSE}
+library(Rmisc)
+
+sum = summary(beetle)
+sum
+```
+
+Descriptive Plots
+
+```{r}
+boxplot(nkilled ~ logdose,
+        data = beetle,
+        xlab = "Log Dose",
+        ylab = "number killed")
+
+```
+
+Fit Linear Regression Model
+```{r}
+mod1 = lm( per.killed ~ logdose, data=beetle)
+mod1
+```
+Fit Logistic Model with PROBIT link
+```{r, message=FALSE}
+mod2 = glm( nkilled/nbeetles ~ logdose,
+            family = "binomial"(link="probit"),
+            data=beetle)
+mod2
+#plot(mod1)
+```
+
+Fit Logistic Model with LOGIT link
+```{r, message=FALSE}
+mod3 = glm( nkilled/nbeetles ~ logdose,
+            family = "binomial"(link="logit"),
+            data=beetle)
+mod3
+#plot(mod1)
+```
+
+Fit Logistic Model with Cloglog link
+```{r, message=FALSE}
+mod4 = glm( nkilled/nbeetles ~ logdose,
+            family = "binomial"(link="cloglog"),
+            data=beetle)
+mod4
+#plot(mod2)
+```
+List of Predictive Probabilities
+
+```{r}
+#temperature = runif(100,45,85)
+#temperature = order(temperature)
+p_linear = -8.95 + 5.33*logdose
+p_probit = pnorm((-34.82 + 19.82*logdose),0,1)
+p_logit = exp(-60.48+34.14*logdose)/(1 + exp(-60.48+34.14*logdose))
+p_cll = 1 - exp(-exp(-39.48 + 21.99*logdose))
+
+cbind(logdose, per.killed, p_linear,p_probit, p_logit, p_cll)
+```
+
+
