@@ -1,0 +1,597 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\PassOptionsToPackage{hyphens}{url} % url is loaded by hyperref
+\usepackage[unicode=true]{hyperref}
+\hypersetup{
+            pdftitle={Agresti Coronary Data},
+            pdfauthor={jdt},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+
+\title{Agresti Coronary Data}
+\author{jdt}
+\date{3/10/2021}
+
+\begin{document}
+\maketitle
+
+Needed Packages
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(FSA))\{}\KeywordTok{install.packages}\NormalTok{(}\StringTok{"FSA"}\NormalTok{)\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(ggplot2))\{}\KeywordTok{install.packages}\NormalTok{(}\StringTok{"ggplot2"}\NormalTok{)\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(car))\{}\KeywordTok{install.packages}\NormalTok{(}\StringTok{"car"}\NormalTok{)\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(multcompView))\{}\KeywordTok{install.packages}\NormalTok{(}\StringTok{"multcompView"}\NormalTok{)\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(lsmeans))\{}\KeywordTok{install.packages}\NormalTok{(}\StringTok{"lsmeans"}\NormalTok{)\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(grid))\{}\KeywordTok{install.packages}\NormalTok{(}\StringTok{"grid"}\NormalTok{)\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(nlme))\{}\KeywordTok{install.packages}\NormalTok{(}\StringTok{"nlme"}\NormalTok{)\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(lme4))\{}\KeywordTok{install.packages}\NormalTok{(}\StringTok{"lme4"}\NormalTok{)\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(Rmisc))\{}\KeywordTok{install.packages}\NormalTok{(}\StringTok{"Rmisc"}\NormalTok{)\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(FSA))\{}\KeywordTok{install.packages}\NormalTok{(}\StringTok{"FSA"}\NormalTok{)\}}
+\CommentTok{#if(!require(lmerTest))\{install.packages("lmerTest")\}}
+\CommentTok{#if(!require(rcompanion))\{install.packages("rcompanion")\}}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Example 1}\label{example-1}
+
+Read data from SAS input file
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Input =}\StringTok{ }\NormalTok{(}\StringTok{"}
+\StringTok{sex ecg ca total }
+\StringTok{0 0 4 15 }
+\StringTok{0 1 8 18}
+\StringTok{1 0 9 18}
+\StringTok{1 1 21 27}
+\StringTok{"}\NormalTok{)}
+\NormalTok{coronary1 =}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}\KeywordTok{textConnection}\NormalTok{(Input),}\DataTypeTok{header=}\OtherTok{TRUE}\NormalTok{)}
+\NormalTok{coronary1 =}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(coronary1)}
+
+\NormalTok{sex =}\StringTok{ }\NormalTok{coronary1}\OperatorTok{$}\NormalTok{sex}
+\NormalTok{ecg =}\StringTok{ }\NormalTok{coronary1}\OperatorTok{$}\NormalTok{ecg}
+\NormalTok{ca =}\StringTok{ }\NormalTok{coronary1}\OperatorTok{$}\NormalTok{ca}
+\NormalTok{total =}\StringTok{ }\NormalTok{coronary1}\OperatorTok{$}\NormalTok{total}
+\NormalTok{per.ca =}\StringTok{ }\NormalTok{ca}\OperatorTok{/}\NormalTok{total}
+\end{Highlighting}
+\end{Shaded}
+
+Fit Logistic Model with Identity Link
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod1 =}\StringTok{ }\KeywordTok{glm}\NormalTok{( per.ca }\OperatorTok{~}\StringTok{ }\NormalTok{sex }\OperatorTok{+}\StringTok{ }\NormalTok{ecg,}
+            \DataTypeTok{family =} \StringTok{"gaussian"}\NormalTok{(}\DataTypeTok{link=}\StringTok{"identity"}\NormalTok{),}
+            \DataTypeTok{data=}\NormalTok{coronary1)}
+\NormalTok{mod1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:  glm(formula = per.ca ~ sex + ecg, family = gaussian(link = "identity"), 
+##     data = coronary1)
+## 
+## Coefficients:
+## (Intercept)          sex          ecg  
+##      0.2417       0.2833       0.2278  
+## 
+## Degrees of Freedom: 3 Total (i.e. Null);  1 Residual
+## Null Deviance:       0.1347 
+## Residual Deviance: 0.0025    AIC: -10.16
+\end{verbatim}
+
+Fit Logistic Model with LOGIT link
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod2 =}\StringTok{ }\KeywordTok{glm}\NormalTok{( ca}\OperatorTok{/}\NormalTok{total }\OperatorTok{~}\StringTok{ }\NormalTok{sex }\OperatorTok{+}\StringTok{ }\NormalTok{ecg,}
+            \DataTypeTok{family =} \StringTok{"binomial"}\NormalTok{(}\DataTypeTok{link=}\StringTok{"logit"}\NormalTok{),}
+            \DataTypeTok{data=}\NormalTok{coronary1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in eval(family$initialize): non-integer #successes in a binomial glm!
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:  glm(formula = ca/total ~ sex + ecg, family = binomial(link = "logit"), 
+##     data = coronary1)
+## 
+## Coefficients:
+## (Intercept)          sex          ecg  
+##      -1.141        1.240        1.017  
+## 
+## Degrees of Freedom: 3 Total (i.e. Null);  1 Residual
+## Null Deviance:       0.5656 
+## Residual Deviance: 0.01141   AIC: 9.874
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#plot(mod1)}
+\end{Highlighting}
+\end{Shaded}
+
+Fit Logistic Model with Cloglog link
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod3 =}\StringTok{ }\KeywordTok{glm}\NormalTok{( ca}\OperatorTok{/}\NormalTok{total }\OperatorTok{~}\StringTok{ }\NormalTok{sex }\OperatorTok{+}\StringTok{ }\NormalTok{ecg,}
+            \DataTypeTok{family =} \StringTok{"binomial"}\NormalTok{(}\DataTypeTok{link=}\StringTok{"cloglog"}\NormalTok{),}
+            \DataTypeTok{data=}\NormalTok{coronary1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in eval(family$initialize): non-integer #successes in a binomial glm!
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod3}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:  glm(formula = ca/total ~ sex + ecg, family = binomial(link = "cloglog"), 
+##     data = coronary1)
+## 
+## Coefficients:
+## (Intercept)          sex          ecg  
+##     -1.2244       0.8864       0.7247  
+## 
+## Degrees of Freedom: 3 Total (i.e. Null);  1 Residual
+## Null Deviance:       0.5656 
+## Residual Deviance: 0.001879  AIC: 9.749
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#plot(mod2)}
+\end{Highlighting}
+\end{Shaded}
+
+Fit Results
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p_linear =}\StringTok{ }\FloatTok{0.76} \OperatorTok{-}\StringTok{ }\FloatTok{0.28}\OperatorTok{*}\NormalTok{sex }\OperatorTok{-}\StringTok{ }\FloatTok{0.23}\OperatorTok{*}\NormalTok{ecg}
+\NormalTok{p_logit =}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\FloatTok{1.14}\OperatorTok{-}\FloatTok{1.24}\OperatorTok{*}\NormalTok{sex}\OperatorTok{-}\FloatTok{1.02}\OperatorTok{*}\NormalTok{ecg)}\OperatorTok{/}\NormalTok{(}\DecValTok{1} \OperatorTok{+}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\FloatTok{1.14}\OperatorTok{-}\FloatTok{1.24}\OperatorTok{*}\NormalTok{sex}\OperatorTok{-}\FloatTok{1.02}\OperatorTok{*}\NormalTok{ecg))}
+\NormalTok{p_cll =}\StringTok{ }\DecValTok{1} \OperatorTok{-}\StringTok{ }\KeywordTok{exp}\NormalTok{( }\OperatorTok{-}\KeywordTok{exp}\NormalTok{(}\FloatTok{0.36} \OperatorTok{-}\StringTok{ }\FloatTok{0.84}\OperatorTok{*}\NormalTok{sex }\OperatorTok{-}\StringTok{ }\FloatTok{0.68}\OperatorTok{*}\NormalTok{ecg))}
+\NormalTok{p_linear =}\StringTok{ }\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{p_linear}
+\NormalTok{p_logit =}\StringTok{ }\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{p_logit}
+\NormalTok{p_cll =}\StringTok{ }\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{p_cll}
+\NormalTok{## Probability for CA event}
+\KeywordTok{cbind}\NormalTok{(sex,ecg,per.ca,p_linear,p_logit,p_cll)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      sex ecg    per.ca p_linear   p_logit     p_cll
+## [1,]   0   0 0.2666667     0.24 0.2423204 0.2385135
+## [2,]   0   1 0.4444444     0.47 0.4700359 0.4837684
+## [3,]   1   0 0.5000000     0.52 0.5249792 0.5385993
+## [4,]   1   1 0.7777778     0.75 0.7539887 0.7308945
+\end{verbatim}
+
+Odds For Sex and ECG
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{odds_sex =}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\FloatTok{1.24}\NormalTok{)}
+\NormalTok{odds_sex                   }\CommentTok{#male vs female for CA event}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 3.455613
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{odds_ecg =}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\FloatTok{1.02}\NormalTok{)}
+\NormalTok{odds_ecg                   }\CommentTok{#high vs low (ECG) for CA event}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.773195
+\end{verbatim}
+
+\section{Example 2}\label{example-2}
+
+Read data from SAS input file
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Input =}\StringTok{ }\NormalTok{(}\StringTok{"}
+\StringTok{sex ecg age ca}
+\StringTok{0 0 28 0   }
+\StringTok{1 0 42 1    }
+\StringTok{0 1 46 0  }
+\StringTok{1 1 45 0}
+\StringTok{0 0 34 0   }
+\StringTok{1 0 44 1    }
+\StringTok{0 1 48 1  }
+\StringTok{1 1 45 1}
+\StringTok{0 0 38 0   }
+\StringTok{1 0 45 0    }
+\StringTok{0 1 49 0  }
+\StringTok{1 1 45 1}
+\StringTok{0 0 41 1   }
+\StringTok{1 0 46 0    }
+\StringTok{0 1 49 0  }
+\StringTok{1 1 46 1}
+\StringTok{0 0 44 0   }
+\StringTok{1 0 48 0    }
+\StringTok{0 1 52 0  }
+\StringTok{1 1 48 1}
+\StringTok{0 0 45 1   }
+\StringTok{1 0 50 0    }
+\StringTok{0 1 53 1  }
+\StringTok{1 1 57 1}
+\StringTok{0 0 46 0   }
+\StringTok{1 0 52 1    }
+\StringTok{0 1 54 1  }
+\StringTok{1 1 57 1}
+\StringTok{0 0 47 0   }
+\StringTok{1 0 52 1    }
+\StringTok{0 1 55 0  }
+\StringTok{1 1 59 1}
+\StringTok{0 0 50 0   }
+\StringTok{1 0 54 0  }
+\StringTok{0 1 57 1  }
+\StringTok{1 1 60 1}
+\StringTok{0 0 51 0   }
+\StringTok{1 0 55 0    }
+\StringTok{0 2 46 1  }
+\StringTok{1 1 63 1}
+\StringTok{0 0 51 0   }
+\StringTok{1 0 59 1    }
+\StringTok{0 2 48 0  }
+\StringTok{1 2 35 0}
+\StringTok{0 0 53 0   }
+\StringTok{1 0 59 1    }
+\StringTok{0 2 57 1  }
+\StringTok{1 2 37 1}
+\StringTok{0 0 55 1   }
+\StringTok{1 1 32 0    }
+\StringTok{0 2 60 1  }
+\StringTok{1 2 43 1}
+\StringTok{0 0 59 0   }
+\StringTok{1 1 37 0    }
+\StringTok{1 0 30 0  }
+\StringTok{1 2 47 1}
+\StringTok{0 0 60 1   }
+\StringTok{1 1 38 1    }
+\StringTok{1 0 34 0  }
+\StringTok{1 2 48 1}
+\StringTok{0 1 32 1   }
+\StringTok{1 1 38 1    }
+\StringTok{1 0 36 1  }
+\StringTok{1 2 49 0}
+\StringTok{0 1 33 0   }
+\StringTok{1 1 42 1    }
+\StringTok{1 0 38 1  }
+\StringTok{1 2 58 1}
+\StringTok{0 1 35 0   }
+\StringTok{1 1 43 0    }
+\StringTok{1 0 39 0  }
+\StringTok{1 2 59 1}
+\StringTok{0 1 39 0   }
+\StringTok{1 1 43 1    }
+\StringTok{1 0 42 0  }
+\StringTok{1 2 60 1}
+\StringTok{0 1 40 0   }
+\StringTok{1 1 44 1}
+\StringTok{"}\NormalTok{)}
+\NormalTok{coronary2 =}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}\KeywordTok{textConnection}\NormalTok{(Input),}\DataTypeTok{header=}\OtherTok{TRUE}\NormalTok{)}
+\NormalTok{coronary2 =}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(coronary2)}
+
+\NormalTok{sex =}\StringTok{ }\NormalTok{coronary2}\OperatorTok{$}\NormalTok{sex}
+\NormalTok{ecg =}\StringTok{ }\NormalTok{coronary2}\OperatorTok{$}\NormalTok{ecg}
+\NormalTok{ca =}\StringTok{ }\NormalTok{coronary2}\OperatorTok{$}\NormalTok{ca}
+\NormalTok{age =}\StringTok{ }\NormalTok{coronary2}\OperatorTok{$}\NormalTok{age}
+\NormalTok{ca[ca}\OperatorTok{==}\DecValTok{2}\NormalTok{] =}\StringTok{ }\DecValTok{1}
+\end{Highlighting}
+\end{Shaded}
+
+Fit Logistic Model with LOGIT link
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod2 =}\StringTok{ }\KeywordTok{glm}\NormalTok{( ca }\OperatorTok{~}\StringTok{ }\NormalTok{sex }\OperatorTok{+}\StringTok{ }\NormalTok{ecg }\OperatorTok{+}\StringTok{ }\NormalTok{age,}
+            \DataTypeTok{family =} \StringTok{"binomial"}\NormalTok{(}\DataTypeTok{link=}\StringTok{"logit"}\NormalTok{),}
+            \DataTypeTok{data=}\NormalTok{coronary2)}
+\NormalTok{mod2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:  glm(formula = ca ~ sex + ecg + age, family = binomial(link = "logit"), 
+##     data = coronary2)
+## 
+## Coefficients:
+## (Intercept)          sex          ecg          age  
+##    -5.64176      1.35643      0.87320      0.09285  
+## 
+## Degrees of Freedom: 77 Total (i.e. Null);  74 Residual
+## Null Deviance:       107.9 
+## Residual Deviance: 86.81     AIC: 94.81
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#plot(mod1)}
+\end{Highlighting}
+\end{Shaded}
+
+Odds for CA
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{odds_sex =}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\FloatTok{1.36}\NormalTok{)}
+\NormalTok{odds_sex                   }\CommentTok{#male vs female for CA event}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 3.896193
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{odds_ecg =}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\FloatTok{0.87}\NormalTok{)}
+\NormalTok{odds_ecg                   }\CommentTok{#high vs low (ECG) for CA event}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.386911
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{odds_age =}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\FloatTok{0.09}\NormalTok{)}
+\NormalTok{odds_age                   }\CommentTok{#for each year of age for CA event}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1.094174
+\end{verbatim}
+
+Fit Logistic Model with Cloglog link
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod3 =}\StringTok{ }\KeywordTok{glm}\NormalTok{( ca }\OperatorTok{~}\StringTok{ }\NormalTok{sex }\OperatorTok{+}\StringTok{ }\NormalTok{ecg }\OperatorTok{+}\StringTok{ }\NormalTok{age,}
+            \DataTypeTok{family =} \StringTok{"binomial"}\NormalTok{(}\DataTypeTok{link=}\StringTok{"cloglog"}\NormalTok{),}
+            \DataTypeTok{data=}\NormalTok{coronary2)}
+\NormalTok{mod3}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:  glm(formula = ca ~ sex + ecg + age, family = binomial(link = "cloglog"), 
+##     data = coronary2)
+## 
+## Coefficients:
+## (Intercept)          sex          ecg          age  
+##    -4.48090      0.92131      0.56107      0.06809  
+## 
+## Degrees of Freedom: 77 Total (i.e. Null);  74 Residual
+## Null Deviance:       107.9 
+## Residual Deviance: 86    AIC: 94
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#plot(mod2)}
+\end{Highlighting}
+\end{Shaded}
+
+Fit Results
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p_logit =}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\OperatorTok{-}\FloatTok{5.64}\OperatorTok{+}\FloatTok{1.36}\OperatorTok{*}\NormalTok{sex}\OperatorTok{+}\FloatTok{0.87}\OperatorTok{*}\NormalTok{ecg}\OperatorTok{+}\FloatTok{0.09}\OperatorTok{*}\NormalTok{age)}\OperatorTok{/}\NormalTok{(}\DecValTok{1} \OperatorTok{+}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\OperatorTok{-}\FloatTok{5.64}\OperatorTok{+}\FloatTok{1.36}\OperatorTok{*}\NormalTok{sex}\OperatorTok{+}\FloatTok{0.87}\OperatorTok{*}\NormalTok{ecg}\OperatorTok{+}\FloatTok{0.09}\OperatorTok{*}\NormalTok{age))}
+\NormalTok{p_cll =}\StringTok{ }\DecValTok{1} \OperatorTok{-}\StringTok{ }\KeywordTok{exp}\NormalTok{( }\OperatorTok{-}\KeywordTok{exp}\NormalTok{(}\OperatorTok{-}\FloatTok{4.48}\OperatorTok{+}\FloatTok{0.92}\OperatorTok{*}\NormalTok{sex}\OperatorTok{+}\FloatTok{0.56}\OperatorTok{*}\NormalTok{ecg}\OperatorTok{+}\FloatTok{0.07}\OperatorTok{*}\NormalTok{age))}
+\KeywordTok{cbind}\NormalTok{(sex,ecg,age,p_logit,p_cll)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       sex ecg age    p_logit      p_cll
+##  [1,]   0   0  28 0.04228977 0.07730783
+##  [2,]   1   0  42 0.37754067 0.41605264
+##  [3,]   0   1  46 0.34751054 0.39139468
+##  [4,]   1   1  45 0.65475346 0.68708830
+##  [5,]   0   0  34 0.07043673 0.11525555
+##  [6,]   1   0  44 0.42067575 0.46140070
+##  [7,]   0   1  48 0.38936077 0.43515790
+##  [8,]   1   1  45 0.65475346 0.68708830
+##  [9,]   0   0  38 0.09796880 0.14958069
+## [10,]   1   0  45 0.44275215 0.48503186
+## [11,]   0   1  49 0.41095957 0.45807431
+## [12,]   1   1  45 0.65475346 0.68708830
+## [13,]   0   0  41 0.12455336 0.18117723
+## [14,]   1   0  46 0.46505705 0.50922540
+## [15,]   0   1  49 0.41095957 0.45807431
+## [16,]   1   1  46 0.67480527 0.71236896
+## [17,]   0   0  44 0.15709547 0.21854442
+## [18,]   1   0  48 0.50999867 0.55900897
+## [19,]   0   1  52 0.47751518 0.53035761
+## [20,]   1   1  48 0.71300016 0.76148651
+## [21,]   0   0  45 0.16938390 0.23239290
+## [22,]   1   0  50 0.55477924 0.61006083
+## [23,]   0   1  53 0.50000000 0.55540176
+## [24,]   1   1  57 0.84812884 0.93220281
+## [25,]   0   0  46 0.18242552 0.24697287
+## [26,]   1   0  52 0.59868766 0.66151892
+## [27,]   0   1  54 0.52248482 0.58077950
+## [28,]   1   1  57 0.84812884 0.93220281
+## [29,]   0   0  47 0.19623406 0.26230238
+## [30,]   1   0  52 0.59868766 0.66151892
+## [31,]   0   1  55 0.54487889 0.60638965
+## [32,]   1   1  59 0.86989153 0.95475470
+## [33,]   0   0  50 0.24232036 0.31292450
+## [34,]   1   0  54 0.64106741 0.71236896
+## [35,]   0   1  57 0.58904043 0.65785073
+## [36,]   1   1  60 0.87974314 0.96385140
+## [37,]   0   0  51 0.25922510 0.33136986
+## [38,]   1   0  55 0.66150316 0.73721721
+## [39,]   0   2  46 0.55971365 0.58077950
+## [40,]   1   1  63 0.90550963 0.98336016
+## [41,]   0   0  51 0.25922510 0.33136986
+## [42,]   1   0  59 0.73691590 0.82937158
+## [43,]   0   2  48 0.60348325 0.63212056
+## [44,]   1   2  35 0.64794080 0.63579929
+## [45,]   0   0  53 0.29525430 0.37061559
+## [46,]   1   0  59 0.73691590 0.82937158
+## [47,]   0   2  57 0.77381857 0.84704486
+## [48,]   1   2  37 0.68783133 0.68708830
+## [49,]   0   0  55 0.33403307 0.41291860
+## [50,]   1   1  32 0.37051689 0.37353754
+## [51,]   0   2  60 0.81757448 0.90136873
+## [52,]   1   2  43 0.79084063 0.82937158
+## [53,]   0   0  59 0.41824062 0.50573728
+## [54,]   1   1  37 0.48001066 0.48503186
+## [55,]   1   0  30 0.17079548 0.20724121
+## [56,]   1   2  47 0.84422416 0.90363834
+## [57,]   0   0  60 0.44028635 0.53035761
+## [58,]   1   1  38 0.50249998 0.50922540
+## [59,]   1   0  34 0.22793645 0.26455442
+## [60,]   1   2  48 0.85569687 0.91867407
+## [61,]   0   1  32 0.13124447 0.17003685
+## [62,]   1   1  38 0.50249998 0.50922540
+## [63,]   1   0  36 0.26114999 0.29774218
+## [64,]   1   2  49 0.86645828 0.93220281
+## [65,]   0   1  33 0.14185106 0.18117723
+## [66,]   1   1  42 0.59145898 0.61006083
+## [67,]   1   0  38 0.29733935 0.33406929
+## [68,]   1   2  58 0.93583612 0.99361044
+## [69,]   0   1  35 0.16520487 0.20540719
+## [70,]   1   1  43 0.61301418 0.63579929
+## [71,]   1   0  39 0.31647911 0.35341414
+## [72,]   1   2  59 0.94103299 0.99557055
+## [73,]   0   1  39 0.22097389 0.26230238
+## [74,]   1   1  43 0.61301418 0.63579929
+## [75,]   1   0  42 0.37754067 0.41605264
+## [76,]   1   2  60 0.94583330 0.99700987
+## [77,]   0   1  40 0.23685498 0.27839674
+## [78,]   1   1  44 0.63413559 0.66151892
+\end{verbatim}
+
+\end{document}

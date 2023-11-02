@@ -1,0 +1,231 @@
+---
+title: "Agresti Coronary Data"
+author: "jdt"
+date: "3/10/2021"
+output: latex_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+
+```
+
+Needed Packages
+```{r, message=FALSE}
+
+if(!require(FSA)){install.packages("FSA")}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if(!require(car)){install.packages("car")}
+if(!require(multcompView)){install.packages("multcompView")}
+if(!require(lsmeans)){install.packages("lsmeans")}
+if(!require(grid)){install.packages("grid")}
+if(!require(nlme)){install.packages("nlme")}
+if(!require(lme4)){install.packages("lme4")}
+if(!require(Rmisc)){install.packages("Rmisc")}
+if(!require(FSA)){install.packages("FSA")}
+#if(!require(lmerTest)){install.packages("lmerTest")}
+#if(!require(rcompanion)){install.packages("rcompanion")}
+```
+# Example 1
+
+Read data from SAS input file
+```{r}
+Input = ("
+sex ecg ca total 
+0 0 4 15 
+0 1 8 18
+1 0 9 18
+1 1 21 27
+")
+coronary1 = read.table(textConnection(Input),header=TRUE)
+coronary1 = data.frame(coronary1)
+
+sex = coronary1$sex
+ecg = coronary1$ecg
+ca = coronary1$ca
+total = coronary1$total
+per.ca = ca/total
+```
+
+Fit Logistic Model with Identity Link
+```{r}
+mod1 = glm( per.ca ~ factor(sex) + factor(ecg),
+            family = "gaussian"(link="identity"),
+            data=coronary1)
+mod1
+```
+
+
+Fit Logistic Model with LOGIT link
+```{r, message=FALSE}
+mod2 = glm( ca/total ~ factor(sex) + factor(ecg),
+            family = "binomial"(link="logit"),
+            data=coronary1)
+mod2
+#plot(mod1)
+```
+
+Fit Logistic Model with Cloglog link
+```{r, message=FALSE}
+mod3 = glm( ca/total ~ factor(sex) + factor(ecg),
+            family = "binomial"(link="cloglog"),
+            data=coronary1)
+mod3
+#plot(mod2)
+```
+
+Fit Results
+```{r}
+p_linear = 0.24 + 0.28*sex + 0.23*ecg
+p_logit = exp(-1.14+1.24*sex+1.02*ecg)/(1 + exp(-1.14+1.24*sex+1.02*ecg))
+p_cll = 1 - exp( -exp(-1.22 + 0.89*sex + 0.72*ecg))
+#p_linear = 1 - p_linear
+#p_logit = 1 - p_logit
+#p_cll = 1 - p_cll
+## Probability for CA event
+cbind(sex,ecg,per.ca,p_linear,p_logit,p_cll)
+```
+Odds For Sex and ECG
+```{r}
+odds_sex = exp(1.24)
+odds_sex                   #male vs female for CA event
+odds_ecg = exp(1.02)
+odds_ecg                   #high vs low (ECG) for CA event
+```
+# Example 2
+
+Read data from SAS input file
+```{r}
+Input = ("
+sex ecg age ca
+0 0 28 0   
+1 0 42 1    
+0 1 46 0  
+1 1 45 0
+0 0 34 0   
+1 0 44 1    
+0 1 48 1  
+1 1 45 1
+0 0 38 0   
+1 0 45 0    
+0 1 49 0  
+1 1 45 1
+0 0 41 1   
+1 0 46 0    
+0 1 49 0  
+1 1 46 1
+0 0 44 0   
+1 0 48 0    
+0 1 52 0  
+1 1 48 1
+0 0 45 1   
+1 0 50 0    
+0 1 53 1  
+1 1 57 1
+0 0 46 0   
+1 0 52 1    
+0 1 54 1  
+1 1 57 1
+0 0 47 0   
+1 0 52 1    
+0 1 55 0  
+1 1 59 1
+0 0 50 0   
+1 0 54 0  
+0 1 57 1  
+1 1 60 1
+0 0 51 0   
+1 0 55 0    
+0 1 46 1  
+1 1 63 1
+0 0 51 0   
+1 0 59 1    
+0 1 48 0  
+1 1 35 0
+0 0 53 0   
+1 0 59 1    
+0 1 57 1  
+1 1 37 1
+0 0 55 1   
+1 1 32 0    
+0 1 60 1  
+1 1 43 1
+0 0 59 0   
+1 1 37 0    
+1 0 30 0  
+1 1 47 1
+0 0 60 1   
+1 1 38 1    
+1 0 34 0  
+1 1 48 1
+0 1 32 1   
+1 1 38 1    
+1 0 36 1  
+1 1 49 0
+0 1 33 0   
+1 1 42 1    
+1 0 38 1  
+1 1 58 1
+0 1 35 0   
+1 1 43 0    
+1 0 39 0  
+1 1 59 1
+0 1 39 0   
+1 1 43 1    
+1 0 42 0  
+1 1 60 1
+0 1 40 0   
+1 1 44 1
+")
+coronary2 = read.table(textConnection(Input),header=TRUE)
+coronary2 = data.frame(coronary2)
+
+sex = coronary2$sex
+ecg = coronary2$ecg
+ca = coronary2$ca
+age = coronary2$age
+#ecg[ecg==2] = 1
+```
+
+
+Fit Logistic Model with LOGIT link
+```{r, message=FALSE}
+mod2 = glm( ca ~ factor(sex) + factor(ecg) + age,
+            family = "binomial"(link="logit"),
+            data=coronary2)
+mod2
+#plot(mod1)
+```
+
+Odds for CA
+```{r}
+odds_sex = exp(1.41)
+odds_sex                   #male vs female for CA event
+odds_ecg = exp(1.24)
+odds_ecg                   #high vs low (ECG) for CA event
+odds_age = exp(0.10)
+odds_age                   #for each year of age for CA event
+```
+
+Fit Logistic Model with Cloglog link
+```{r, message=FALSE}
+mod3 = glm( ca ~ factor(sex) + factor(ecg) + age,
+            family = "binomial"(link="cloglog"),
+            data=coronary2)
+mod3
+#plot(mod2)
+```
+
+Fit Results
+```{r}
+p_logit = exp(-5.99+1.41*sex+1.24*ecg+0.10*age)/(1 + exp(-5.99+1.41*sex+1.24*ecg+0.10*age))
+p_cll = 1 - exp( -exp(-4.89+1.00*sex+0.94*ecg+0.07*age))
+cbind(sex,ecg,age,p_logit,p_cll)
+```
+
+
+
+
+
+
