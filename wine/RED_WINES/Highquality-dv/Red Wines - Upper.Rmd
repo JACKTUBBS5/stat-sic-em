@@ -31,6 +31,19 @@ red$highquality = factor((red$quality >= 6))
 red$highquality <- as.integer(as.logical(red$highquality))
 ```
 
+# Descriptive Statistics
+```{r}
+library("Rmisc")
+
+sum = summary(red)
+sum
+```
+
+# Plot high quality vs low quality distribution
+```{r}
+hist (red$highquality)
+```
+
 # Random Forest 
 ```{r}
 library("randomForest")
@@ -41,6 +54,19 @@ library("rpart")
 rf <- randomForest(highquality ~ . - quality, data = red, mtry = 4, importance = TRUE, ntree = 50, na.action = na.omit)
 print(rf)
 varImpPlot(rf)
+```
+
+# Random Forest Model
+```{r}
+# Logit
+randomforestmodlogit <- glm(highquality ~ alcohol + sulphates + total_sulfur + vol_acidity, data = red, family = "binomial"(link = "logit"))
+summary(randomforestmodlogit)
+
+# Cloglog
+randomforestmodcloglog <- glm(highquality ~ alcohol + sulphates + total_sulfur + vol_acidity, data = red, family = "binomial"(link = "cloglog"))
+summary(randomforestmodcloglog)
+
+# The logit model performed better with a lower AIC value
 ```
 
 # Cart
@@ -54,4 +80,38 @@ library("rpart.plot")
 cartmodel = rpart(highquality ~ . - quality, data = red)
 print(cartmodel)
 prp(cartmodel)
+```
+
+# Cart Model
+```{r}
+# Logit
+cartmodlogit <- glm(highquality ~ alcohol + sulphates + total_sulfur + fix_acidity, data = red, family = "binomial"(link = "logit"))
+summary(cartmodlogit)
+
+# Cloglog
+cartmodcloglog <- glm(highquality ~ alcohol + sulphates + total_sulfur + fix_acidity, data = red, family = "binomial"(link = "cloglog"))
+summary(cartmodcloglog)
+
+# The logit model performed better with the lower AIC value
+```
+
+# Compare best logit model with AIC
+```{r}
+library("AICcmodavg")
+models <- list(randomforestmodlogit, cartmodlogit)
+mod.names <- c('RandomForest', 'Cart')
+aictab(cand.set = models, modnames = mod.names)
+
+# The random forest logit model performed the best
+```
+
+# Compare best model with BIC
+```{r}
+library("flexmix")
+BIC(randomforestmodlogit)
+BIC(randomforestmodcloglog)
+BIC(cartmodlogit)
+BIC(cartmodcloglog)
+
+# The random forest logit model performed the best
 ```
