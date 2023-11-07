@@ -1,10 +1,6 @@
 options center nodate pagesize=120 ls=80;
 libname ldata '/home/u63561478/sasuser.v94/Data';
 
-/* Simplified LaTeX output that uses plain LaTeX tables  */
-ods latex path='/home/jacktubbs/my_shared_file_links/jacktubbs/LaTeX/Output'
- file='archosaur.tex' style=journal 
-stylesheet="sas.sty"(url="sas");
 
 /*
 http://support.sas.com/rnd/base/ods/odsmarkup/latex.html 
@@ -16,9 +12,52 @@ ods graphics / reset width=5in  outputfmt=png
 This data set is from the JMP Case Study Library 
 */
 
-title "Archosaurs: Linear Regression Example";
+
+title "Archosaurs: Linear Regression";
+data brain; set ldata.archosaur; 
+data body; set ldata.archosaur;
+run;
+
+proc univariate data=ldata.archosaur;
+var brain_weight;
+histogram;
+run;
+
+proc sgplot data=ldata.archosaur;
+vbox brain_weight;
+run;
+
+proc univariate data=ldata.archosaur;
+var body_weight;
+histogram;
+run;
+
+proc sgplot data=ldata.archosaur;
+vbox body_weight;
+run;
+
+proc contents data=brain short; 
+run;
+
+data brain; set brain;
+brain_wt = brain_weight;
+body_wt = body_weight;
+run;
+
+proc sgplot data=brain;
+scatter y=brain_wt x=body_wt;
+reg y=brain_wt x=body_wt;
+run;
+
+proc reg data=ldata.archosaur plots=diagnostics;
+model brain_weight = body_weight;
+run;
+
+
+title "Archosaurs: Linear Regression with Logarithm";
 data brain; set ldata.archosaur; 
 run;
+
 
 proc contents data=brain short; 
 run;
@@ -26,6 +65,24 @@ run;
 data brain; set brain;
 log_brain_wt = log(brain_weight);
 log_body_wt = log(body_weight);
+run;
+
+proc univariate data=brain;
+var log_brain_wt;
+histogram;
+run;
+
+proc sgplot data=brain;
+vbox log_brain_wt;
+run;
+
+proc univariate data=brain;
+var log_body_wt;
+histogram;
+run;
+
+proc sgplot data=brain;
+vbox log_body_wt;
 run;
 
 proc sgplot data=brain;
@@ -38,14 +95,7 @@ model log_brain_wt = log_body_wt;
 run;
 
 
-ods latex close;
+/* Overall, the data does not support the theory because the slope generated (0.51621)
+ is too far from the power law regression line's slope of 2/3. The power law regression 
+ model fits the data better. */
 
-/* Stream a CSV representation of new_bwgt directly to the user's browser. */
-/*
-proc export data=new_heart
-            outfile=_dataout
-            dbms=csv replace;
-run;
-
-%let _DATAOUT_MIME_TYPE=text/csv;
-%let _DATAOUT_NAME=heart.csv;
