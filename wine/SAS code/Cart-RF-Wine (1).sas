@@ -25,6 +25,28 @@ proc hpforest data=wine maxtrees=100 inbagfraction=.3;
 run;
 
 
+title1 'High Quality Wine';
+data wine; 
+set files.wines_red; 
+high_quality = (quality > 6);
+run;
+
+
+title2 'Classification';
+
+proc logistic data=wine plots=roc;
+class high_quality;
+model high_quality = alcohol sulphates;
+run;
+
+proc hpsplit data=wine cvmodelfit seed=123;
+   class high_quality;
+   model high_quality =
+      vol_acidity  chlorides free_sulfur total_sulfur 
+    pH sulphates alcohol;
+   grow entropy;
+   prune costcomplexity;
+run;
 
 
 
