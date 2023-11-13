@@ -1,0 +1,96 @@
+---
+title: "SA Heart Study Data"
+author: "author"
+date: "date"
+output: html_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+
+```
+
+Needed Packages
+```{r, message=FALSE}
+if(!require(knitr)){install.packages("knitr")}
+if(!require(dplyr)){install.packages("dplyr")}
+if (!require("readr")) install.packages("readr", dep=FALSE)
+if (!require("gridExtra")) install.packages("gridExtra", dep=TRUE)
+
+if(!require(FSA)){install.packages("FSA")}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if (!require("mosaic")) install.packages("mosaic", dep=FALSE)
+if (!require("nortest")) install.packages("nortest", dep=TRUE)
+if (!require("epitools")) install.packages("epitools", dep=TRUE)
+if (!require("prettyR")) install.packages("prettyR", dep=TRUE)
+if (!require("rms")) install.packages("rms", dep=TRUE)
+# add other as needed
+```
+## Observational Cohort Data
+
+```{r, message=FALSE}
+heart = read.csv('SAHeart_Disease.csv', header = TRUE)
+#                       fileEncoding = 'UTF-8-BOM') #latest version
+heart = data.frame(heart)
+
+
+library(tidyr)
+#Remove rows with NA's using drop_na()
+heart <- heart %>% drop_na()
+
+summary(heart)
+dim(heart)
+```
+
+The objective is to model the probability that of CHD (CHD = '1'). 
+
+Instead of creating a table at each cutoff point one can construct a ROC plot for a continuous variable Y. Which is constructing using the pairs (TPR, FPR) at each cutoff point (in R). Sometimes (as in SAS) this curve is smoothed.
+
+Using ldl
+```{r}
+library(ROCR)
+chd=heart$chd
+adiposity = heart$adiposity
+ldl = heart$ldl
+hist(ldl)
+
+pred = prediction(ldl,chd)
+
+perf=performance(pred, "tpr", "fpr")
+plot(perf)
+
+library(caTools)
+
+colAUC(ldl, chd, plotROC=TRUE)
+```
+
+
+Using adiposity
+```{r}
+
+hist(adiposity)
+
+pred = prediction(adiposity,chd)
+
+perf=performance(pred, "tpr", "fpr")
+plot(perf)
+
+library(caTools)
+
+colAUC(adiposity, chd, plotROC=TRUE)
+```
+
+Using ldl and adiposity
+```{r}
+
+mod = ldl + adiposity
+pred = prediction(mod,chd)
+
+perf=performance(pred, "tpr", "fpr")
+plot(perf)
+
+library(caTools)
+
+colAUC(mod, chd, plotROC=TRUE)
+```
