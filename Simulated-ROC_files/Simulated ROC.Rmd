@@ -1,0 +1,100 @@
+---
+title: "Simulated ROC"
+author: "jdt"
+date: "12/13/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+Set seed for the simulation
+```{r}
+
+  # clear the environment and set seed
+rm(list = ls())
+set.seed(12345)
+```
+Function to generate normal data.
+For dis=0 ("Control") and dis=1 ("Disease"). The separation between the two groups is controlled by one's choice of c0, c1, sd_e0, and sd_e1. n0 and n1 are the sample sizes for the groups.
+
+```{r}
+library(ggplot2)
+
+gen_Norm_data = function(c0,sd_e0,n0,c1,sd_e1,n1){
+  eps0 = rnorm(n0,0,sd_e0)
+  eps1 = rnorm(n1,0,sd_e1)
+  y0 = c0 + eps0
+  y1 = c1 + eps1
+  
+  data.frame(y = c(y0, y1), 
+             dis = as.factor(c(rep(0,n0), rep(1,n1))))
+}
+dat1 = gen_Norm_data(1.5,1.5,200,2.5,1.5,200)
+
+#plot density functions
+ggplot(dat1, aes(color = dis, y)) + geom_density()
+```
+Create discrete variables for Y
+```{r}
+y=dat1[,1]
+summary(y)
+case=dat1[,2]
+```
+
+Create binary table with cutoff y > 2.5
+```{r}
+high_y = y > 2.5
+tex1 = table(case,high_y)
+addmargins(tex1)
+prop.out = prop.table(tex1,1)
+specificity = prop.out[1,1]
+sensitivity = prop.out[2,2]
+prop.out
+sensitivity
+specificity
+TPR = sensitivity
+FPR = 1 - specificity
+TPR
+FPR
+```
+
+Create binary table with cutoff y > 3.0
+```{r}
+high_y = y > 3.0
+tex1 = table(case,high_y)
+addmargins(tex1)
+prop.out = prop.table(tex1,1)
+specificity = prop.out[1,1]
+sensitivity = prop.out[2,2]
+prop.out
+sensitivity
+specificity
+TPR = sensitivity
+FPR = 1 - specificity
+TPR
+FPR
+```
+Instead of creating a table at each cutoff point one can construct a ROC plot for a continuous variable Y. Which is constructing using the pairs (TPR, FPR) at each cutoff point (in R). Sometimes (as in SAS) this curve is smoothed.
+```{r}
+library(ROCR)
+hist(y)
+
+pred = prediction(y,case)
+perf=performance(pred, "tpr", "fpr")
+plot(perf)
+```
+
+
+```{r}
+library(caTools)
+colAUC(y, case, plotROC=TRUE)
+
+```
+
+
+
+
+
+
