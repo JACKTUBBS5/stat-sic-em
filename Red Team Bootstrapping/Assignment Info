@@ -1,3 +1,0 @@
-1. Repeat the R simulation with a new function for the statistic V = Y(1) + Y(n).
-2. Generate data from an exponential distribution with mean λ = 8. Perform the simulation using the bootstrap
-code with the statistic x ̄ and the sample median(x).
