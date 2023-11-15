@@ -31,6 +31,29 @@ red$highquality = factor((red$quality >= 6))
 red$highquality <- as.integer(as.logical(red$highquality))
 ```
 
+# Create Test and Training Data
+```{r}
+library("caTools")
+set.seed = 100
+split = sample.split(red$highquality, SplitRatio = 0.6)
+train = subset(red, split == TRUE)
+test = subset(red, split == FALSE)
+print(dim(train)); print(dim(test))
+```
+
+# Descriptive Statistics
+```{r}
+library("Rmisc")
+
+sum = summary(red)
+sum
+```
+
+# Plot high quality vs low quality distribution
+```{r}
+hist (red$highquality)
+```
+
 # Random Forest 
 ```{r}
 library("randomForest")
@@ -38,20 +61,137 @@ library("caret")
 library("e1071")
 library("rpart")
 
-rf <- randomForest(highquality ~ . - quality, data = red, mtry = 4, importance = TRUE, ntree = 50, na.action = na.omit)
+rf <- randomForest(highquality ~ . - quality, data = train, mtry = 4, importance = TRUE, ntree = 50, na.action = na.omit)
 print(rf)
 varImpPlot(rf)
+
+# predictions on test set
+set.seed(100)
+predictTest = predict(rf, newdata = test, type = "response")
+
+# confusion matrix on test set
+table(test$highquality, predictTest >= 0.5)
+520/nrow(test)
+
+# the model is accurate 81.3 percent of the time
+```
+
+# Random Forest Model
+```{r}
+# Logit
+randomforestmodlogit <- glm(highquality ~ alcohol + sulphates + total_sulfur + vol_acidity, data = red, family = "binomial"(link = "logit"))
+summary(randomforestmodlogit)
+
+# Cloglog
+randomforestmodcloglog <- glm(highquality ~ alcohol + sulphates + total_sulfur + vol_acidity, data = red, family = "binomial"(link = "cloglog"))
+summary(randomforestmodcloglog)
+
+# The logit model performed better with a lower AIC value
 ```
 
 # Cart
 ```{r}
-library("randomForest")
 library("caret")
 library("e1071")
 library("rpart")
 library("rpart.plot")
 
-cartmodel = rpart(highquality ~ . - quality, data = red)
+cartmodel = rpart(highquality ~ . - quality, data = train)
 print(cartmodel)
 prp(cartmodel)
+
+# predictions on test set
+set.seed(100)
+predictTest = predict(cartmodel, newdata = test, type = "matrix")
+
+# confusion matrix on test set
+table(test$highquality, predictTest >= 0.5)
+```
+
+# Cart Model
+```{r}
+# Logit
+cartmodlogit <- glm(highquality ~ alcohol + sulphates + total_sulfur + fix_acidity, data = red, family = "binomial"(link = "logit"))
+summary(cartmodlogit)
+
+# Cloglog
+cartmodcloglog <- glm(highquality ~ alcohol + sulphates + total_sulfur + fix_acidity, data = red, family = "binomial"(link = "cloglog"))
+summary(cartmodcloglog)
+
+# The logit model performed better with the lower AIC value
+```
+
+# Compare best logit model with AIC
+```{r}
+library("AICcmodavg")
+models <- list(randomforestmodlogit, cartmodlogit)
+mod.names <- c('RandomForest', 'Cart')
+aictab(cand.set = models, modnames = mod.names)
+
+# The random forest logit model performed the best
+```
+
+# Compare best model with BIC
+```{r}
+library("flexmix")
+BIC(randomforestmodlogit)
+BIC(randomforestmodcloglog)
+BIC(cartmodlogit)
+BIC(cartmodcloglog)
+
+# The random forest logit model performed the best
+```
+
+# Confusion matrix for random forest logit model
+```{r}
+confusionred = predict(randomforestmodlogit, newdata = red, type = "response")
+
+# confusion matrix on test set
+table(red$highquality, confusionred >= 0.5)
+```
+
+# Predictions for random forest logit model
+```{r}
+pred_test <- predict(randomforestmodlogit, test, type = "response")
+
+pred_test
+```
+
+# Model Diagnostics
+```{r}
+accuracy = (548+639)/(548+196+216+639)
+accuracy
+
+sensitivity = 639/(639+196)
+sensitivity
+
+specificity = 548/(548+216)
+specificity
+```
+
+# AUC and ROC
+```{r}
+library("pROC")
+
+test_prob = predict(randomforestmodlogit, test, type = "response")
+
+test_roc = roc(test$highquality ~ test_prob, plot = TRUE, print.auc = TRUE)
+
+as.numeric(test_roc$auc)
+```
+
+# AUC and ROC with just one variable
+```{r}
+library("ggplot2")
+
+simple <- glm(highquality ~ vol_acidity, data = red, family = "binomial"(link = "logit"))
+summary(simple)
+
+ggplot(red, aes(x = vol_acidity, y = highquality)) +geom_point()+stat_smooth(method="glm", color="green", se=TRUE, method.args = list(family=binomial))
+
+test_prop1 = predict(simple, red, type = "response")
+
+test_roc1 = roc(red$highquality ~ test_prop1, plot = TRUE, print.auc = TRUE)
+
+as.numeric(test_roc1$auc)
 ```
