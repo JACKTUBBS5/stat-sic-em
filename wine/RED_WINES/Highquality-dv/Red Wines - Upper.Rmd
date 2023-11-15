@@ -182,8 +182,12 @@ as.numeric(test_roc$auc)
 
 # AUC and ROC with just one variable
 ```{r}
+library("ggplot2")
+
 simple <- glm(highquality ~ vol_acidity, data = red, family = "binomial"(link = "logit"))
 summary(simple)
+
+ggplot(red, aes(x = vol_acidity, y = highquality)) +geom_point()+stat_smooth(method="glm", color="green", se=TRUE, method.args = list(family=binomial))
 
 test_prop1 = predict(simple, red, type = "response")
 
