@@ -1,0 +1,133 @@
+Loading in necessary data set
+```{r}
+library("ggplot2")
+library("dplyr")
+library("arsenal")
+library("tidyverse")
+library("rstatix")
+library("ggpubr")
+library("mosaic")
+library("dgof")
+```
+
+Loading in the data set
+```{r}
+dat <- read.csv("baseball.csv", header=TRUE)
+```
+
+# Problem 1
+```{r}
+catcher <- filter(dat, Position == 'C')
+CrHits2 <- dat$CrHits*dat$CrHits
+in_fielder <- filter(dat, Position == '1B' | Position == '2B' |
+                       Position == 'SS' | Position == '3B')
+out_fielder <- filter(dat, Position == 'CF' | Position == 'RF' |
+                        Position == 'LF' | Position == 'OF')
+```
+
+```{r}
+leagueDiv <- table(dat$League, dat$Division)
+div <- freqlist(leagueDiv)
+summary(div)
+```
+
+```{r}
+df <- filter(dat, League == 'American')
+leagueDiv2 <- table(df$Division)
+div2 <- freqlist(leagueDiv2)
+summary(div2)
+```
+
+```{r}
+df <- subset(df, select = c(Salary, Team, Division, YrMajor, logSalary, nAtBat,
+                                nBB, nError, nHits, nHome, nRuns))
+print(df[order(df$Division), ])
+subDiv <- 
+  df |>
+  group_by(Division) |>
+  summarize(c(total_count = n()), (mean_hits = mean(nHits)), (sd_hits = sd(nHits)),
+            (se_hits = sd(nHits)/sqrt(n())), (min_hits = min(nHits)), (max_hits = max(nHits)))
+print(subDiv)
+```
+
+```{r}
+testSample <- t.test(df$nHits ~ df$Division, var.equal = TRUE)
+print(testSample)
+```
+
+```{r}
+t.test(df$nHits ~ df$Division)
+```
+
+Plot for West
+```{r}
+westDiv <- filter(df, Division == 'West')
+
+qqnorm(westDiv$nHits)
+
+ggplot(westDiv, aes(x = nHits)) +
+  geom_boxplot()
+
+ggplot((westDiv), aes(x = nHits)) +
+  geom_histogram(aes(y = after_stat(density)), fill = 'green', col = 'black', bins = 20) +
+  scale_x_continuous(limits = c(-50,300)) +
+  stat_function(fun = dnorm, args = list(mean = mean(westDiv$nHits), sd = sd(westDiv$nHits)))
+```
+
+Plot of East
+```{r}
+eastDiv <- filter(df, Division == 'East')
+
+qqnorm(eastDiv$nHits)
+
+ggplot(eastDiv, aes(x = nHits)) +
+  geom_boxplot()
+
+ggplot((eastDiv), aes(x = nHits)) +
+  geom_histogram(aes(y = after_stat(density)), fill = 'green', col = 'black', bins = 20) +
+  scale_x_continuous(limits = c(-50,300)) +
+  stat_function(fun = dnorm, args = list(mean = mean(eastDiv$nHits), sd=sd(eastDiv$nHits)))
+```
+
+```{r}
+df |>
+  group_by(Division) |>
+  get_summary_stats(nHits, type = "median_iqr")
+
+box <- ggboxplot(df, x = "Division", y = "nHits", ylab = "nHits", xlab = "Division")
+box
+
+wilcox.test(df$nHits~df$Division)
+
+kruskal.test(df$nHits~df$Division)
+```
+Based on the results that we have calculated above, we found a small difference 
+between the median and mean hits for each of the divisions. The p-values we have
+calculated for the t-test shows that the results are not significant and concluding
+that the mean and median have different values and results. 
+
+# Problem 2
+```{r}
+df2 <- filter(dat, League == 'National' | Division == 'East')
+dim(df2)
+new_df = subset(df2, select = c(CrAtBat, CrBB, CrHits, CrHits2,CrRbi, CrRuns,
+                                 Div, Salary, YrMajor, nBB, nHits, nHome)); 
+```
+
+```{r}
+n_hits = df2$nHits
+n_home = (df2$CrHits) / (df2$YrMajor)
+
+summary(n_hits)
+summary(n_home )
+
+ggplot(df2, aes(x = n_hits, y = n_home)) +
+  geom_boxplot()
+
+t.test(n_hits,n_home)
+wilcox.test(n_hits,n_home)
+```
+We changed the variable of interest by comparing the National League East with career
+variables. Based on the results, we found that the results of the p-value from 
+the t-test is significant, meaning that the there is no difference between
+the measures of central tendency. 
