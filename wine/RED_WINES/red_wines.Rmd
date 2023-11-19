@@ -1,0 +1,589 @@
+---
+title: "Red Wines"
+author: "White team"
+date: "2023-10-25"
+output: html_document  # or word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 
+
+## load package
+
+```{r}
+library(GGally)
+library(car)
+library(readr)
+library(caret)
+library(randomForest)
+library(ggplot2)
+library(gridExtra)
+library(corrplot)
+library(nnet)
+library(rpart)
+library(rpart.plot)
+library(caret)
+library(randomForest)
+library(pROC)
+library(MLmetrics)
+library(mgcv)
+library(nnet)
+library(caret)
+library(VGAM)
+```
+
+## load data
+
+```{r}
+dat_red_wine <- read_csv("C:\\Users\\Chang\\Downloads\\wineQualityReds.csv", show_col_types = FALSE)
+```
+
+## Data Preprocesing
+
+### missing values
+
+```{r}
+missing_values <- sapply(dat_red_wine, function(x) sum(is.na(x)))
+print(missing_values)
+```
+
+We found that the quality of the data is still relatively high, without any missing data, so we do not need to do much preprocessing for the dataset.
+
+### Descriptive Statistics
+
+```{r}
+dat_red_wine <- dat_red_wine[, !(names(dat_red_wine) %in% c("id"))]
+summary(dat_red_wine)
+```
+
+```{r}
+#we need to separate the data set into training data and test data.
+
+# Split the data based on density
+data_density_low <- dat_red_wine[dat_red_wine$density == 0.99, ]
+data_density_high <- dat_red_wine[dat_red_wine$density == 1, ]
+
+# Create partition for low-density subset
+trainIndex_low <- createDataPartition(data_density_low$quality, p = 0.8, list = FALSE)
+training_data_low <- data_density_low[trainIndex_low, ]
+test_data_low <- data_density_low[-trainIndex_low, ]
+
+# Create partition for high-density subset
+trainIndex_high <- createDataPartition(data_density_high$quality, p = 0.8, list = FALSE)
+training_data_high <- data_density_high[trainIndex_high, ]
+test_data_high <- data_density_high[-trainIndex_high, ]
+
+# Combine the two training datasets and two test datasets
+training_data <- rbind(training_data_low, training_data_high)
+test_data <- rbind(test_data_low, test_data_high)
+
+training_data$quality <- as.factor(training_data$quality)
+test_data$quality <- as.factor(test_data$quality)
+
+```
+
+It's easy to miss crucial details. Upon further examination, we found a significant disparity in the distribution of the two values within the 'density' variable. Specifically, the value of 0.99 has 239 data points. Given its substantial representation, it's imperative not to disregard this predictor. Thus, when splitting the dataset into TRAINING DATA and TEST DATA, we must ensure a randomized sampling to maintain a balancedA representation.
+
+### examine the variables.
+
+```{r}
+
+
+plot_list <- lapply(names(dat_red_wine), function(feature) {
+  ggplot(dat_red_wine, aes_string(feature)) +
+    geom_histogram(binwidth = (max(dat_red_wine[[feature]]) - min(dat_red_wine[[feature]])) / 30, fill = "blue", alpha = 0.7) +
+    labs(title = feature, x = NULL) +
+    theme(
+      axis.text.y = element_text(size = 10),               # Adjust the y-axis text size
+      plot.title = element_text(size = 10, hjust = 0.5),   # Adjust the plot title size and center it
+      axis.text.x = element_text(angle = 45, hjust = 1)    # Optionally, rotate x-axis text for better visibility
+    )
+})
+
+# Combine all the plots into a matrix
+do.call(grid.arrange, c(plot_list, ncol = 3))
+
+
+
+```
+
+```{r}
+
+
+# Using ggplot2 for Q-Q plots
+qq_plot_list <- lapply(names(dat_red_wine), function(feature) {
+  ggplot(dat_red_wine, aes(sample = .data[[feature]])) +
+    geom_qq() +
+    geom_qq_line(color = "red") +
+    labs(title = paste("Q-Q Plot for", feature))
+})
+
+# Display the Q-Q plots, 3 plots in a row
+do.call(grid.arrange, c(qq_plot_list, ncol = 3))
+
+
+
+```
+
+```{r}
+# Compute the correlation matrix
+cor_matrix <- cor(dat_red_wine)
+
+# Visualize the correlation matrix using corrplot
+corrplot(cor_matrix, method = "circle")
+
+```
+
+fix_acidity, vol_acidity, and pH have distributions that somewhat resemble a normal distribution, but with slight skews. sugar, chlorides, and total_sulfur are right-skewed. density shows a significant spike at one value, indicating that many data points have similar values.
+
+## Model selection
+
+Combined with some of our exploration of the dataset above, we find that there are no missing values in the dataset and the sample size is relatively large, so I feel that we should perhaps not consider the effect of outliers for each variable at the outset. Combined with the fact that the wine quality score (the dependent variable) is a MULTIPLE CLASS CLASSIFICATION, we should probably start by trying a multinomial logistic regression model.
+
+\\textcolor{red}{It's crucial to highlight that the 'density' variable possesses only two distinct values: 0.99 and 1. This observation can be made both from the descriptive statistics table and histogram plots. Despite being represented numerically, 'density' effectively functions as a binary categorical variable. Consequently, we need to make appropriate adjustments for its representation.}
+
+### logistic regression model
+
+```{r}
+
+
+# Convert density into a factor with levels "Low" and "High"
+training_data$density <- as.factor(ifelse(training_data$density == 0.99, "Low", "High"))
+test_data$density <- as.factor(ifelse(test_data$density == 0.99, "Low", "High"))
+
+# Now check the number of "Low" values in both datasets
+sum(training_data$density == "Low")
+sum(test_data$density == "Low")
+
+
+
+
+```
+
+```{r}
+
+# Fit the multinomial logistic regression model directly
+model_logistic <- nnet::multinom(quality ~ ., data = training_data)
+
+# Summary of the model
+summary(model_logistic)
+
+
+
+
+```
+
+```{r}
+# Predict classes on test data
+predicted_classes <- predict(model_logistic, test_data)
+
+# Generate confusion matrix
+confusion <- table(test_data$quality, predicted_classes)
+
+# Print confusion matrix
+print(confusion)
+
+# Compute accuracy
+accuracy <- sum(diag(confusion)) / sum(confusion)
+cat("Accuracy:", accuracy, "\n")
+
+
+```
+
+```{r}
+# Extract deviance residuals
+residuals_deviance <- residuals(model_logistic, type = "deviance")
+
+# Plot residuals
+plot(residuals_deviance, main="Deviance Residuals", ylab="Residuals")
+abline(h = 0, col = "red")
+
+
+
+
+# Compute VIF for the model
+vif_values <- vif(model_logistic)
+print(vif_values)
+
+```
+
+The clustering of points away from the zero line indicates potential issues with model fit. Additionally, the warning message indicates an extremely large variance inflation factor (VIF) for some variables, suggesting multicollinearity.
+
+### **Ridge Regression (L2 regularization):**
+
+```{r}
+# Ridge Regression with the 'glmnet' package
+
+library(glmnet)
+
+
+# Create a model matrix
+X_train <- model.matrix(quality ~ . - 1, data=training_data)
+y_train <- training_data$quality
+
+X_test <- model.matrix(~ . - 1, data=test_data)
+
+
+# Fit the ridge regression model for multinomial logistic regression
+ridge_model <- cv.glmnet(X_train, y_train, alpha=0, family="multinomial")
+
+# Best lambda value
+best_lambda_ridge <- ridge_model$lambda.min
+
+# Coefficients at best lambda
+coef(ridge_model, s=best_lambda_ridge)
+
+
+
+```
+
+```{r}
+# Count of each class in training_data
+quality_counts_train <- table(training_data$quality)
+print(quality_counts_train)
+
+# Count of each class in test_data
+quality_counts_test <- table(test_data$quality)
+print(quality_counts_test)
+```
+
+```{r}
+
+# Fit the ridge regression model for multinomial logistic regression
+ridge_model <- cv.glmnet(X_train, y_train, alpha=0, family="multinomial")
+
+# Best lambda value
+best_lambda_ridge <- ridge_model$lambda.min
+
+# Coefficients at best lambda
+coef(ridge_model, s=best_lambda_ridge)
+```
+
+```{r}
+# Fit the lasso regression model for multinomial logistic regression
+lasso_model <- cv.glmnet(X_train, y_train, alpha=1, family="multinomial")
+
+# Best lambda value
+best_lambda_lasso <- lasso_model$lambda.min
+
+# Coefficients at best lambda
+coef(lasso_model, s=best_lambda_lasso)
+
+```
+
+From the WARNING results, we identified a significant issue. For the validation and testing phases of our model, our training dataset exhibited problems in both the lasso model and the Ridge Regression model. This stemmed from an insufficient number of observations (fewer than 8) for some categories of our dependent variable, 'quality'. In line with AI recommendations, one straightforward solution could be to reclassify the QUALITY scores: grouping (3-4), (5-6), and (7-8). However, we're hesitant about this approach. We noticed that the count disparity between scores 3 and 4 is notable, making a direct merge questionable. Merging them might oversimplify the nuances between these scores. Additionally, while AI offered other methods, they seem more intricate. We're considering the application of a random forest approach as a potential resolution to this challenge.
+
+### random forest
+
+```{r}
+###decision tree
+# Fit a decision tree
+tree_model <- rpart(quality ~ ., data=training_data, method="class")
+
+# Visualize the tree
+
+
+rpart.plot(tree_model)
+
+# Predict on test data
+tree_predictions <- predict(tree_model, test_data, type="class")
+
+# Evaluate the performance (assuming 'quality' is a factor)
+confusionMatrix(tree_predictions, test_data$quality)
+
+```
+
+```{r}
+
+
+
+set.seed(34)
+
+rf_model <- randomForest(quality ~ ., data=training_data, ntree=100)
+
+# Predict on test data
+rf_predictions <- predict(rf_model, test_data)
+
+# Evaluate the performance
+confusionMatrix(rf_predictions, test_data$quality)
+
+
+```
+
+The random forest model has moderate performance with an accuracy of 69% on the test set. The model struggles with predicting some classes (e.g., 3 and 8) possibly due to class imbalances. While the model does relatively well for classes 5 and 6, there is room for improvement, especially for other classes.
+
+```{r}
+
+feature_importance <- importance(rf_model)
+
+feature_importance_df <- data.frame(
+  Feature = row.names(feature_importance),
+  Importance = feature_importance[, "MeanDecreaseGini"] # or "MeanDecreaseAccuracy"
+)
+
+ggplot(feature_importance_df, aes(x = reorder(Feature, Importance), y = Importance)) +
+  geom_bar(stat="identity") +
+  coord_flip() +
+  labs(title = "Feature Importance from Random Forest", 
+       x = "Features", 
+       y = "Importance (Mean Decrease in Gini)") +
+  theme_minimal()
+
+
+```
+
+Alcohol: This feature has the highest importance, meaning that it plays the most significant role in predicting wine quality in the Random Forest model. It might suggest that the alcohol content in the wine is a strong predictor of its quality.
+
+Sulphates: The next important feature. Sulphates can influence the taste and longevity of wine, potentially playing a role in perceived quality.
+
+Vol_acidity (Volatile Acidity): Also has a significant importance. Volatile acidity can affect the wine's aroma and taste, hence its quality.
+
+Total_sulfur, pH, Fix_acidity (Fixed Acidity), and others follow in descending order of importance. Each of these factors influences wine quality in their unique ways, either by affecting taste, aroma, or other sensory attributes.
+
+Density: Appears to be the least important feature in predicting wine quality. This might suggest that, in the context of the other features, density doesn't provide much additional information for predicting quality.
+
+## improve model --- remove least important feature
+
+```{r}
+# Removing least important features from the dataset
+training_data <- training_data[, !names(training_data) %in% c('density', 'chlorides', 'free_sulfur')]
+test_data <- test_data[, !names(test_data) %in% c('density', 'chlorides', 'free_sulfur')]
+
+
+# Recreate the Random Forest model using the updated dataset
+set.seed(123) # Setting seed for reproducibility
+
+# Assuming 'quality' is the target variable
+rf_model_updated <- randomForest(quality ~ ., data = training_data, ntree = 500, importance = TRUE)
+
+# Checking the model's performance on the test set
+predictions_updated <- predict(rf_model_updated, newdata = test_data)
+
+# Calculating accuracy
+accuracy_updated <- sum(predictions_updated == test_data$quality) / nrow(test_data)
+
+print(paste("Updated Model Accuracy: ", round(accuracy_updated * 100, 2), "%"))
+
+# If you want to view the updated feature importance, you can do the following:
+feature_importance_updated <- importance(rf_model_updated)
+
+feature_importance_df_updated <- data.frame(
+  Feature = row.names(feature_importance_updated),
+  Importance = feature_importance_updated[, "MeanDecreaseGini"]
+)
+
+library(ggplot2)
+
+ggplot(feature_importance_df_updated, aes(x = reorder(Feature, Importance), y = Importance)) +
+  geom_bar(stat="identity") +
+  coord_flip() +
+  labs(title = "Updated Feature Importance from Random Forest", 
+       x = "Features", 
+       y = "Importance (Mean Decrease in Gini)") +
+  theme_minimal()
+
+```
+
+After removing these variables, it still can not get a significant improvement in the model's accuracy...
+
+```{r}
+grid <- expand.grid(
+  mtry = seq(2, ncol(training_data)-1),  # Number of variables randomly sampled as candidates at each split
+  splitrule = c("gini", "extratrees"),    # Rule used to guide the recursive partitioning (for ranger method)
+  min.node.size = c(1, 3, 5)              # Minimum sum of instance weights needed in a node (for ranger method)
+)
+
+# Use caret's train function for tuning
+model <- train(
+  quality ~ .,                             # Assuming 'quality' is your target column
+  data=training_data, 
+  method="ranger",                         # Using 'ranger' method as it's similar to randomForest but faster
+  trControl=trainControl(
+    method="cv",                           # Cross-validation
+    number=3,                              # Number of folds
+    search="grid"                          # Use grid search
+  ),
+  tuneGrid=grid
+)
+
+print(model)
+
+predictions <- predict(model, newdata=test_data)
+
+# Calculate accuracy
+accuracy <- sum(predictions == test_data$quality) / nrow(test_data)
+print(paste("Accuracy:", accuracy))
+
+
+
+
+
+
+```
+
+The Random Forest model's accuracy of approximately 69% is reasonable but may not be optimal. This depends on the domain and the acceptable accuracy thresholds. In some domains, 65% might be very good, while in others, it might be considered low.The model struggles with predicting the extreme classes ('3' and '8'). It might be due to an imbalance in the dataset. If there are very few samples of these classes, the model might struggle to learn their patterns.
+
+### **Spline:**
+
+Based on the correlation matrix images and histograms above, we decided to prioritize the construction of the splines based on the variables vol_acidity and alcohol (which are strongly correlated with the dependent variable quality and whose histograms exhibit some bimodal characteristics, indicating that these predictors are most likely to exhibit a nonlinear relationship with the dependent variable).
+
+Fit the VGAM Model: Use the vglm function to fit the model. In this example, we'll use spline terms for vol_acidity and alcohol since you mentioned these variables previously:
+
+```{r}
+vgam_model <- vglm(quality ~ s(vol_acidity) + s(alcohol), 
+                   family = multinomial(), 
+                   data = training_data)
+summary(vgam_model)
+```
+
+### Prediction and Evaluation
+
+
+
+
+```{r}
+predictions <- predict(vgam_model, newdata = test_data, type = "response")
+predicted_classes <- apply(predictions, 1, which.max)
+predicted_classes <- factor(predicted_classes, levels = 1:nlevels(training_data$quality), labels = levels(training_data$quality))
+
+# Assuming test_data$quality is available for comparison
+confusionMatrix(predicted_classes, test_data$quality)
+
+```
+
+```{r}
+# Calculate and plot residuals
+residuals <- residuals(vgam_model, type = "response")
+plot(residuals ~ fitted(vgam_model), xlab = "Fitted Values", ylab = "Residuals")
+
+
+AIC(vgam_model)
+BIC(vgam_model)
+
+```
+
+
+The funnel-like shape, where the residuals are more spread out for the middle range of fitted values, suggests heteroscedasticity – the variance of the residuals is not constant. In the context of a multinomial model, this could mean that the probabilities predicted by the model for certain outcome categories are less consistent for certain ranges of predictors.
+### **Examine the Effect of Spline Complexity:**
+```{r}
+
+
+# Fit models with different degrees of freedom for splines
+models <- list()
+df_values <- c(3, 4, 5)
+
+for (df in df_values) {
+    model_name <- paste("Model_DF", df, sep = "_")
+    models[[model_name]] <- vglm(quality ~ s(vol_acidity, df = df) + s(alcohol, df = df), 
+                                 family = multinomial(), 
+                                 data = training_data)
+}
+
+# Compare models using AIC and BIC
+aic_values <- sapply(models, AIC)
+bic_values <- sapply(models, BIC)
+
+# Print the AIC and BIC values for each model
+aic_values
+bic_values
+
+# Model summaries
+lapply(models, summary)
+
+
+best_df <- df_values[which.min(aic_values)]
+best_model <- models[[paste("Model_DF", best_df, sep = "_")]]
+summary(best_model)
+# Plot the splines
+plot(best_model, select = 1)  # vol_acidity spline
+plot(best_model, select = 2)  # alcohol spline
+
+# Plot residuals
+residuals <- residuals(best_model)
+plot(residuals)
+
+
+```
+
+
+
+```{r}
+
+
+
+
+independent_vars <- training_data[, !(names(training_data) %in% c("quality"))]
+
+
+# Standardize the independent variables
+independent_vars_scaled <- scale(independent_vars)
+
+# Perform PCA
+pca_result <- prcomp(independent_vars_scaled, center = TRUE, scale. = TRUE)
+
+# Summary of PCA
+summary(pca_result)
+
+
+plot(pca_result, type = "l")  # Scree plot
+biplot(pca_result)
+
+pca_data <- as.data.frame(pca_result$x[, 1:3])
+
+# For example, if using in a clustering algorithm
+clusters <- kmeans(pca_data, centers = 3)
+
+pca_data$quality <- training_data$quality
+pca_model <- lm(quality ~ ., data = pca_data)
+
+library(ggplot2)
+ggplot(pca_data, aes(PC1, PC2, color = quality)) + geom_point()
+
+
+
+library(scatterplot3d)
+
+# Assuming pca_data is a data frame with the first three principal components and the quality variable
+pca_data <- as.data.frame(pca_result$x[, 1:3])
+pca_data$quality <- training_data$quality  # Make sure to match the quality with its principal components
+
+# Create a 3D scatter plot
+scatterplot3d(x = pca_data$PC1, y = pca_data$PC2, z = pca_data$PC3, 
+              color = as.factor(pca_data$quality), pch = 19,
+              xlab = "PC1", ylab = "PC2", zlab = "PC3")
+
+# Adding a legend, if needed
+legend("topright", legend = levels(factor(pca_data$quality)), col = 1:length(levels(factor(pca_data$quality))), pch = 19)
+
+
+```
+
+
+
+```{r}
+library(plotly)
+
+# Assuming pca_data is a data frame with the first three principal components and the quality variable
+pca_data <- as.data.frame(pca_result$x[, 1:3])
+pca_data$quality <- as.factor(training_data$quality)  # Make sure to match the quality with its principal components
+
+# Create an interactive 3D scatter plot
+fig <- plot_ly(data = pca_data, x = ~PC1, y = ~PC2, z = ~PC3, 
+               color = ~quality, colors = RColorBrewer::brewer.pal(length(unique(pca_data$quality)), "Set1"),
+               type = "scatter3d", mode = "markers")
+
+# Add axes labels
+fig <- fig %>% layout(scene = list(xaxis = list(title = 'PC1'),
+                                   yaxis = list(title = 'PC2'),
+                                   zaxis = list(title = 'PC3')))
+
+# Render the plot
+fig
+
+```
+
+
+
