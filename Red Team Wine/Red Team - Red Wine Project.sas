@@ -168,6 +168,19 @@ data new; set wines_red;
 alcohol2 = alcohol*alcohol;
 run;
 
+title2 'KDE';
+proc kde data=wines_red;
+   univar quality(bwm=.5) quality(bwm=1) quality(bwm=1.5) quality(bwm=2);
+run;
+
+proc kde data=wines_red;
+univar quality;
+run;
+
+proc kde data=wines_red;
+   bivar quality good_quality;
+run;
+
 title2 'Correlation and Scatterplot for all the variables';
 data wines_red;
 	set ldata.wines_red;
@@ -183,6 +196,7 @@ proc hpforest data=wines_red maxtrees=100 inbagfraction=0.3;
 free_sulfur pH  sugar sulphates total_sulfur vol_acidity/level=interval;
 	target quality/level=binary;
 	ods output WineStatistics=winestats(rename=(Ntrees=Trees));
+	ods output VariableImportance = Variable_Importance;
 run;
 
 data winestats;
@@ -199,7 +213,6 @@ proc sgplot data=winestats;
 	yaxis label='Misclassification Rate';
 run;
 title;
-
 
 title2 'Multiple Regression (citric_acid, pH, and fix_acidity)';
   proc reg data=new  plots = (diagnostics partial);
@@ -233,11 +246,3 @@ proc reg data=new plots(only)=cpplot(labelvars);
 model quality=alcohol chlorides citric_acid density fix_acidity 
 free_sulfur pH  sugar sulphates total_sulfur vol_acidity/selection=cp best=10;
 	run;
-
-/* ROC	 */
-
-proc logistic data=new plots(only)=roc;
-class quality ;
-model quality(event='good_quality')=r_quality;
-run;
-
