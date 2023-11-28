@@ -1,0 +1,102 @@
+---
+title: "Text Mining with AI Bot Comparison Data"
+author: "jdt"
+date: "2023-11-27"
+output: html_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+
+```
+
+```{r, include=FALSE}
+
+if(!require(worcloud)){install.packages("wordcloud")}
+#if(!require(ggplot2)){install.packages("ggplot2")}
+#if(!require(tm)){install.packages("tm")}
+#library(palmerpenguins)
+#library(ggplot2)
+#library(dplyr)
+# Load the necessary library
+library(wordcloud)
+#library(tm)
+#ggplot2::theme_set(ggplot2::theme_minimal())
+```
+
+## This data was created using chatGPT 3.5
+
+The dialog was as follows:
+$$\begin{itemize}
+\item Provide 25 short sentences describing the advantages of using AI bots
+\item Repeat the above listing the dangers of using AI bots
+\item Provide the r code for producing a word cloud with each list
+\end{itemize}$$
+```{r}
+
+# Create a vector of advantages and dangers
+advantages <- c(
+" operate 24/7- providing round-the-clock support and assistance.",
+" handle repetitive tasks freeing up human employees for more creative and complex work.",
+" analyze vast amounts of data quickly- aiding in data-driven decision-making.",
+" offer consistent and standardized responses",
+" personalize recommendations and content for individual users.",
+" improve customer service by providing instant answers to common questions",
+" identify and flag potential security threats or unusual activity in real-time.",
+" reduce human error- leading to higher accuracy and productivity.",
+" automate routine administrative tasks- streamlining operations.",
+" scale easily handling multiple conversations or transactions simultaneously.",
+" analyze sentiment and feedback to gauge customer satisfaction.",
+" adapt and learn from interactions- becoming more efficient over time.",
+" assist with language translation- breaking down language barriers.",
+" offer cost savings by reducing the need for extensive human support teams.",
+" handle high volumes of customer inquiries during peak periods.",
+" provide immediate responses- enhancing user experience and satisfaction.",
+" assist in healthcare by analyzing medical data and offering diagnoses.",
+" facilitate automation in industries like manufacturing and logistics.",
+" provide educational support by offering explanations and guidance.",
+" assist in sales and marketing by identifying potential leads and prospects.",
+" automate content creation and curation for websites and social media.",
+" enhance accessibility by providing assistance to individuals with disabilities.",
+" assist in HR processes- such as resume screening and candidate sourcing.",
+" improve efficiency in customer onboarding and account management.",
+" analyze user behavior to predict trends and recommend strategies.")
+
+library(wordcloud)
+
+# Create a word cloud for advantages
+wordcloud(advantages, scale=c(3,0.5),min.freq=3,max.words=10,rot.per=.1,
+          random.order=TRUE, random.color=FALSE, colors=brewer.pal(8,"Dark2"))
+
+dangers <- c(
+  " make mistakes if not properly programmed",
+  "leading to errors and misunderstandings.",
+" lack empathy and human touch resulting in poor customer experiences.",
+" perpetuate biases present in their training data",
+"leading to discrimination.",
+"vulnerable to hacking and malicious use", 
+"posing security risks.",
+" lead to job displacement as they automate tasks traditionally done by humans.",
+" struggle with complex or nuanced inquiries frustrating users.",
+"  invade privacy by collecting and analyzing user data without consent.",
+"  contribute to the spread of misinformation or fake news if used maliciously.",
+"  lead to overreliance on technology",
+"diminishing critical thinking skills.",
+"  escalate conflicts or provide inappropriate responses in sensitive situations.",
+"not understand cultural or regional nuances causing offense.",
+" used for spamming and automated scams harming individuals.",
+" prioritize efficiency over ethical considerations in decision-making.",
+"  create a sense of isolation as human interaction is reduced.",
+"suffer from technical issues or downtime causing disruptions.",
+"  be used for surveillance and tracking without consent.",
+" may lead to data breaches if not properly secured and monitored.",
+" amplify echo chambers and filter bubbles in online discussions.",
+" misinterpret user"
+)
+
+
+# Create a word cloud for dangers
+wordcloud(dangers, scale=c(3,0.5),min.freq=3,max.words=10,rot.per=.1,
+          random.order=TRUE, random.color=FALSE, colors=brewer.pal(8,"Dark2"))
+```
