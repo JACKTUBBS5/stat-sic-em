@@ -127,7 +127,7 @@ title 'Red Wine Data';
 data wines_red; set ldata.wines_red;
 if quality < 6 then r_quality = 0;
 if quality > 6 then r_quality = 1;
-good_quality = (r_quality = 0);
+good_quality = (r_quality = 1);
 run;
 
 
@@ -145,12 +145,12 @@ free_sulfur pH  sugar sulphates total_sulfur vol_acidity ; by quality;
         
 
 PROC SGPLOT data=wines_red;
-vbox sugar/group=quality;
+vbox total_sulfur/group=quality;
 RUN;
 
 PROC SGPLOT data=wines_red;
-histogram sugar;
-density sugar /type=kernel group=quality;
+histogram total_sulfur;
+density total_sulfur /type=kernel group=quality;
 RUN;
 
 proc sgscatter data=wines_red;
@@ -202,31 +202,34 @@ title;
 
 
 title2 'Multiple Regression (citric_acid, pH, and fix_acidity)';
-  proc reg data=wines_red  plots = (diagnostics partial);
+  proc reg data=new  plots = (diagnostics partial);
 model quality=citric_acid pH fix_acidity /b ss1 ss2 ;
 run;
     
 title2 'Multiple Regression (citric_acid, pH, and sugar)';
-  proc reg data=wines_red  plots = (diagnostics partial);
+  proc reg data=new  plots = (diagnostics partial);
 model quality=citric_acid pH sugar /b ss1 ss2 ;
 run;  
 
 title2 'Multiple Regression (alcohol, density, and sulphates)';
-  proc reg data=wines_red  plots = (diagnostics partial);
+  proc reg data=new plots = (diagnostics partial);
 model quality=alcohol density sulphates /b ss1 ss2 ;
 run;  
-//chosen based off of variable importance in random forest procedure. R squared still not very high (0.27)
+/*chosen based off of variable importance in random forest procedure. R squared still not very high (0.27)*/
+
+title2 'Multiple Regression (alcohol, chlorides, free_sulfur, pH, Sulphates, total_sulfur, vol_acidity)';
+	proc reg data=new plots = (diagnostics partial);
+model quality=alcohol chlorides free_sulfur pH sulphates total_sulfur vol_acidity /b ss1 ss2 ;
+run;
 
 title2 'Polynomial Regression - second degree Quadratic - alcohol';
   proc reg data=new  plots = (diagnostics partial);
 model quality=alcohol alcohol2/ b ss1;
 run;
-//not working(?)
 
-/*ods graphics on;
+ods graphics on;
 title 'Model Selection with Proc Reg';
 proc reg data=new plots(only)=cpplot(labelvars);
-model mass=fore bicep chest neck shoulder waist height calf 
-	thigh head/selection=cp best=10;
+model quality=alcohol chlorides citric_acid density fix_acidity 
+free_sulfur pH  sugar sulphates total_sulfur vol_acidity/selection=cp best=10;
 	run;
-	do for wine*/
