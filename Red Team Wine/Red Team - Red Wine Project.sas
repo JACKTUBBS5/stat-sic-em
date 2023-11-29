@@ -246,3 +246,9 @@ proc reg data=new plots(only)=cpplot(labelvars);
 model quality=alcohol chlorides citric_acid density fix_acidity 
 free_sulfur pH  sugar sulphates total_sulfur vol_acidity/selection=cp best=10;
 	run;
+
+
+proc logistic data=new plots(only)=roc ;
+class quality ;
+model quality(event='good_quality')=r_quality;
+run;
