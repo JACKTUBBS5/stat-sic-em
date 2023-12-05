@@ -168,6 +168,24 @@ data new; set wines_red;
 alcohol2 = alcohol*alcohol;
 run;
 
+title2 'Simple Linear Regression';
+proc reg data=new plots=FITPLOT;
+	model quality = alcohol;
+	run;
+	
+proc reg data=new plots=FITPLOT;
+	model r_quality = alcohol;
+	run;
+	
+proc reg data=new plots=FITPLOT;
+	model r_quality = vol_acidity;
+	run;
+	
+proc reg data=new plots=FITPLOT;
+	model r_quality = sulphates;
+	run;
+	
+
 title2 'KDE';
 proc kde data=wines_red;
    univar quality(bwm=.5) quality(bwm=1) quality(bwm=1.5) quality(bwm=2);
@@ -191,10 +209,10 @@ proc corr data=wines_red pearson spearman kendall;
 run;
 
 title2 'Classification - Random Forest';
-proc hpforest data=wines_red maxtrees=100 inbagfraction=0.3;
+proc hpforest data=new maxtrees=100 inbagfraction=0.3;
 	input alcohol chlorides citric_acid density fix_acidity 
 free_sulfur pH  sugar sulphates total_sulfur vol_acidity/level=interval;
-	target quality/level=binary;
+	target r_quality/level=binary;
 	ods output WineStatistics=winestats(rename=(Ntrees=Trees));
 	ods output VariableImportance = Variable_Importance;
 run;
@@ -246,9 +264,10 @@ proc reg data=new plots(only)=cpplot(labelvars);
 model quality=alcohol chlorides citric_acid density fix_acidity 
 free_sulfur pH  sugar sulphates total_sulfur vol_acidity/selection=cp best=10;
 	run;
-
-
+	
+title2 'ROC Procedure';
 proc logistic data=new plots(only)=roc ;
-class quality ;
-model quality(event='good_quality')=r_quality;
+class good_quality ;
+model good_quality(event= '1')= alcohol;
+effectplot;
 run;
