@@ -1,0 +1,175 @@
+---
+title: "Physical Measure for Selection and Diagnostic"
+author: "Red Team"
+---
+
+# Loading Libraries & Data Set
+```{r}
+library(GGally)
+library(readxl)
+library("MASS")
+library("broom")
+library("glmnet")
+
+dat <- read_xlsx("physicalmeasures.xlsx")
+```
+# Scatterplot Matrix for Physical Measures
+```{r}
+ggpairs(dat, axisLabels = "none", 
+        title = "Scatterplot Matrix of Physical Measures")
+```
+
+# Multiple Regression Model
+```{r}
+step <- lm(formula = Mass ~ Fore + Bicep + Chest + Neck + Shoulder +
+                   Waist + Height + Calf + Thigh + Head , data = dat)
+summary(step)
+
+info <- augment(step)
+```
+
+# Residuals for Fore
+```{r}
+ggplot(info) +
+  geom_point(aes(x = dat$Fore, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals for Bicep
+```{r}
+ggplot(info) +
+  geom_point(aes(x = dat$Bicep, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals for Chest
+```{r}
+ggplot(info) +
+  geom_point(aes(x = dat$Chest, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals for Neck
+```{r}
+ggplot(info) +
+  geom_point(aes(x = dat$Neck, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals for Shoulder
+```{r}
+ggplot(info) +
+  geom_point(aes(x = dat$Shoulder, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals for Waist
+```{r}
+ggplot(info) +
+  geom_point(aes(x = dat$Waist, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals for Height
+```{r}
+ggplot(info) +
+  geom_point(aes(x = dat$Height, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals for Calf
+```{r}
+ggplot(info) +
+  geom_point(aes(x = dat$Calf, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals for Thigh
+```{r}
+ggplot(info) +
+  geom_point(aes(x = dat$Thigh, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Residuals for Head
+```{r}
+ggplot(info) +
+  geom_point(aes(x = dat$Head, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  ylab("Residual") +
+  theme_minimal()
+```
+
+# Stepwise Regression Model
+```{r}
+model <- lm(Mass ~ ., data = dat)
+step <- stepAIC(model, direction = "both", 
+                      trace = FALSE)
+summary(step)
+```
+
+
+```{r}
+mass_res = residuals(step)
+mass_pred= predict(step)
+plot(mass_res, mass_pred)
+
+plot(dat$Mass, mass_pred)
+reg = lm(mass_pred ~ dat$Mass)
+abline(reg)
+
+plot(step, which = c(1,2,3,4,5,6))
+```
+
+# Lasso Regression Model
+```{r}
+body = data.matrix(dat [,c('Fore', 'Bicep', 'Chest', 'Neck', 'Shoulder',
+                                     'Waist','Height', 'Calf', 'Thigh', 'Head')])
+weight = dat$Mass
+model_lasso <- glmnet(body, weight, alpha = 0)
+summary(model_lasso)
+
+model_two <- cv.glmnet(body, weight, alpha = 0)
+top_lambda <- model_two$lambda.min
+top_lambda
+plot(model_two)
+
+top <- glmnet(body, weight, alpha = 0, lambda = top_lambda)
+coef(top)
+```
+
+# Ridge Regression Model
+```{r}
+body = data.matrix(dat [,c('Fore', 'Bicep', 'Chest', 'Neck', 'Shoulder',
+                                     'Waist','Height', 'Calf', 'Thigh', 'Head')])
+weight = dat$Mass
+model_ridge <- glmnet(body, weight, alpha = 1)
+summary(model_ridge)
+
+model_two <- cv.glmnet(body, weight, alpha = 1)
+top_lambda <- model_two$lambda.min
+top_lambda
+plot(model_two)
+
+top <- glmnet(body, weight, alpha = 1, lambda = top_lambda)
+coef(top)
+```
+

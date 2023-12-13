@@ -1,0 +1,40 @@
+---
+title: "Red-Team-Polynomial & Multiple Regression using Physical Measure Data"
+author: "Red Team"
+---
+
+# Loading Libraries & Data Set
+```{r}
+library(GGally)
+library(readxl)
+
+PhysicalMeasures <- read_xlsx("physicalmeasures.xlsx")
+```
+
+# ScatterPlot Matrix for Physical Measure
+```{r}
+ggpairs(PhysicalMeasures, axisLabels = "none", 
+        title = "Scatterplot Matrix of Physical Measures")
+```
+
+# ScatterPlot Matrix for Physical Measure
+```{r}
+ggpairs(PhysicalMeasures, axisLabels = "none", 
+        title = "Scatterplot Matrix of Physical Measures")
+```
+
+```{r}
+newFore = (PhysicalMeasures$Fore) * (PhysicalMeasures$Fore)
+fit_new_Fore <- lm(Mass ~ Fore + newFore, data = PhysicalMeasures)
+summary(fit_new_Fore) 
+plot(Mass ~ Fore, data = PhysicalMeasures)
+```
+
+# Multiple Regression Model Between Forearms and Waist with Mass
+```{r}
+fit_fore <- lm(Mass ~ Fore + Waist, data = PhysicalMeasures)
+summary(fit_fore) 
+plot(Mass ~ Fore + Waist, data = PhysicalMeasures)
+abline(fit_fore)
+```
+
