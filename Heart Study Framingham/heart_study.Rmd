@@ -1,0 +1,41 @@
+---
+title: "Heart Study"
+author: "author"
+date: "date"
+output: html_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+
+```
+
+Needed Packages
+```{r, message=FALSE}
+if(!require(knitr)){install.packages("knitr")}
+if(!require(dplyr)){install.packages("dplyr")}
+if (!require("readr")) install.packages("readr", dep=FALSE)
+if (!require("gridExtra")) install.packages("gridExtra", dep=TRUE)
+
+if(!require(FSA)){install.packages("FSA")}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if (!require("mosaic")) install.packages("mosaic", dep=FALSE)
+if (!require("nortest")) install.packages("nortest", dep=TRUE)
+if (!require("epitools")) install.packages("epitools", dep=TRUE)
+if (!require("prettyR")) install.packages("prettyR", dep=TRUE)
+if (!require("rms")) install.packages("rms", dep=TRUE)
+# add other as needed
+```
+## Observational Cohort Data
+
+```{r}
+frame = read.csv('class_framingham.csv', header = TRUE,
+                       fileEncoding = 'UTF-8-BOM') #latest version
+
+heart = data.frame(frame)
+summary(heart)
+dim(heart)
+```
+
+The objective is to model the probability that a subject with CHD lives longer than 10 years (TenYearCHD = '1'). Note: you can probably find this data and R programs via Google, yet this data is not the same as that found on the internet.
