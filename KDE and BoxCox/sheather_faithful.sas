@@ -17,6 +17,14 @@ http://support.sas.com/rnd/base/ods/odsmarkup/latex.html
 title 'Sheather KDE Simulated Data';
 ods graphics on;
 data bimodal; set ldata.bimodal; run;
+
+% Using default graphics method;
+proc sgplot data=bimodal;
+histogram x;
+density x/type=kernel;
+run;
+
+
 proc kde data=bimodal;
    univar x(bwm=.2) x(bwm=0.4) x(bwm=.6) x(bwm=0.8);
 run;
