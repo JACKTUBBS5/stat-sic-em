@@ -1,0 +1,24 @@
+---
+title: "BoxCox Plot for Bodyfat"
+author: " "
+date: " "
+output: latex_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(foreign)
+bfat = read.dbf("new_bfat.dbf")
+abdomen=bfat$abdomen
+per_fat = bfat$per_fat
+hist(abdomen)
+hist(per_fat)
+
+# Box Cox transformation
+library(MASS)
+boxcox(abdomen ~ per_fat, lambda=seq(-2, 2, length=100))
+```
+
