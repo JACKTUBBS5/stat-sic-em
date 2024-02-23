@@ -1,0 +1,501 @@
+---
+title: "Body Fat Data Analysis"
+author: "jdt"
+date: "11/10/2020"
+output: html_document
+
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+```
+
+```{r}
+  # clear the environment and set seed
+rm(list = ls())
+set.seed(123)
+```
+
+Read Body Fat Data
+```{r}
+library(foreign)
+bfat = read.csv("new_bfat.csv", header=TRUE)
+
+```
+Define a few variables
+```{r}
+abdomen=bfat$abdomen
+thigh = bfat$thigh
+neck = bfat$neck
+per_fat = bfat$per_fat
+density = bfat$density
+age=bfat$age
+wt = bfat$wt
+ht = bfat$ht
+chest = bfat$chest
+hip = bfat$hip
+thigh = bfat$thigh
+knee = bfat$knee
+ankle = bfat$ankle
+biceps = bfat$biceps
+forearm = bfat$forearm
+wrist = bfat$wrist
+```
+Plots of Percent Fat and Abdomen Circumference
+```{r}
+with(bfat, hist(per_fat, main="", freq=FALSE))
+with(bfat, lines(density(per_fat), main="PERCENT FAT", lty=2, lwd=2))
+xvals = with(bfat, seq(from=min(per_fat), to=max(per_fat), length=100))
+with(bfat, lines(xvals, dnorm(xvals, mean(per_fat), sd(per_fat)), lwd=2))
+            
+with(bfat, hist(abdomen, main="", freq=FALSE))
+with(bfat, lines(density(abdomen), main="ABDOMEN", lty=2, lwd=2))
+xvals = with(bfat, seq(from=min(abdomen), to=max(abdomen), length=100))
+with(bfat, lines(xvals, dnorm(xvals, mean(abdomen), sd(abdomen)), lwd=2)) 
+``` 
+
+Box Cox transformation for Abdomen
+```{r}
+library(MASS)
+boxcox(per_fat ~. ,data=bfat, lambda=seq(-.5, 2.0, length=200))
+```
+
+##ROC Curves for High Percent Fat
+```{r}
+library(ROCR)
+#The code for the ROC with abdomen
+disease=(per_fat > 26)
+pred = prediction(abdomen,disease)
+perf=performance(pred, "tpr", "fpr")
+plot(perf)
+
+
+# ROC for abdomen + thigh
+pred = prediction(abdomen + thigh,disease) 
+perf=performance(pred, "tpr", "fpr")
+plot(perf)
+```
+
+##Linear Regression - model per_fat = abdomen
+```{r}
+mod1 = lm(per_fat ~ abdomen, data=bfat)
+summary(mod1)
+
+covb = vcov(mod1)
+coeff.mod1 = coef(mod1)
+
+covb = vcov(mod1)
+covb
+
+pred.per_fat = predict(mod1)
+res.per_fat = residuals(mod1)
+summary(res.per_fat)
+```
+
+Residual Plots
+```{r}
+#par(mfrow=c(1,1))
+plot(mod1, which = c(1, 2))
+```
+
+##Multiple Regression
+```{r}
+mod2 = lm(per_fat ~ abdomen + thigh + neck, data=bfat)
+summary(mod2)
+```
+
+Predicted values and Residuals
+```{r}
+residual.per_fat=residuals(mod2)
+predicted.per_fat=predict(mod2)
+plot(residual.per_fat, predicted.per_fat)
+plot(per_fat, predicted.per_fat)
+```
+
+##Model Selection
+```{r}
+#remove missing data
+bfat = na.omit(bfat)
+colNames <- colnames(bfat[,2:14])
+colNames
+```
+```{r}
+#Define a function to normalize data
+
+normalize <- function(df, cols) {
+  result <- df # make a copy of the input data frame
+    for (j in cols) { # each specified col
+    m <- mean(df[,j]) # column mean
+    std <- sd(df[,j]) # column sd
+
+    result[,j] <- sapply(result[,j], function(x) (x - m) / std)
+    }
+    return(result)
+    }
+    
+    bfat.norm <- normalize(bfat, colNames)
+    bfat.norm = bfat.norm[,2:14]
+```    
+
+Scatter Matrix for variables
+```{r}
+pairs(data=bfat, ~per_fat+hip+thigh+knee+ankle+biceps
+      +forearm+wrist)
+```
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+if(!require(dplyr)){install.packages("dplyr")}
+```
+```{r}
+model.null = lm(per_fat ~ 1, data=bfat.norm)
+model.full = lm(per_fat ~., data=bfat.norm)
+summary.aov(model.null)
+summary.aov(model.full)
+```
+
+##Stepwise Model Selection
+```{r}
+step(model.null,
+     scope = list(upper=model.full),
+     direction="both", data=bfat.norm, trace = FALSE)  
+```
+Final Model
+```{r}
+model.final = lm(formula = per_fat ~ abdomen + hip + wrist 
+                 + thigh, data = bfat.norm)
+summary(model.final)
+```
+
+##LASSO, Elastic Net and Ridge Regression
+
+Stepwise regression assumes that the predictor variables are not highly correlated. During each step in stepwise regression, a variable is considered for addition to or subtraction from the set of predictor variables based on some pre-specified criterion (e.g. adjusted R-squared). The two main approaches involve forward selection, starting with no variables in the model, and backwards selection, starting with all candidate predictors.
+
+Lasso (least absolute shrinkage and selection operator) is a regression analysis method that performs both variable selection and regularization in order to enhance the prediction accuracy and interpretability of the statistical model it produces.
+
+The elastic net is a regularized regression method that linearly combines the L1 and L2 penalties of the lasso and ridge methods. The elastic net penalty is controlled by alpha, and bridges the gap between lasso (alpha=1) and ridge (alpha=0). Note that the ridge penalty shrinks the coefficients of correlated predictors towards each other while the lasso tends to pick one and discard the others. Ridge is generally good at prediction but tends to be less interpretable.
+
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+   # Install these libraries
+#library(MASS)
+if(!require(MASS)){install.packages("MASS")}
+#library(ggplot2)
+if(!require(ggplot2)){install.packages("ggplot2")}
+#library(gridExtra)
+if(!require(gridExtra)){install.packages("gridExtra")}
+#   library(ISLR)
+#library(glmnet)
+if(!require(glmnet)){install.packages("glmnet")}
+#   library(dplyr)
+#   library(tidyr)
+if(!require(ISLR)){install.packages("ISLR")}
+if(!require(caret)){install.packages("caret")}
+```
+Data Preparation for Lasso and Ridge Regression
+
+We will use the `glmnet` package in order to perform ridge regression and lasso. The main function in this package is `glmnet()`, which can be used to fit ridge regression models, lasso models, and more. This function has a slightly different syntax from other model-fitting functions that we have encountered thus far in this book. In particular, we must pass in an $x$ matrix as well as a $y$ vector, and we do not use the $y \sim x$ syntax.
+
+```{r}
+#Prepare Data for Lasso
+#building lasso
+
+XP=data.matrix(bfat.norm[,-1])
+summary(XP)
+x=XP
+YP=data.matrix(bfat.norm[,1])
+summary(YP)
+y=YP
+lasso=cv.glmnet(x, 
+                y, alpha=1,
+                nfolds = 5, type.measure="mse", 
+                family="gaussian")
+```
+Output the coefficients of the variables selected by lasso.
+
+```{r}
+coef(lasso, s=lasso$lambda.min)
+```
+
+## Ridge Regression
+The `glmnet()` function has an alpha argument that determines what type of model is fit. If `alpha = 0` then a ridge regression model is fit, and if `alpha = 1` then a lasso model is fit. We first fit a ridge regression model:
+  
+```{r}
+grid = 10^seq(10, -2, length = 100)
+ridge_mod = glmnet(x, y, alpha = 0, lambda = grid)
+
+```
+By default the `glmnet()` function performs ridge regression for an automatically selected range of $\lambda$ values. However, here we have chosen to implement the function over a grid of values ranging from $\lambda = 10^{10}$ to $\lambda = 10^{-2}$, essentially covering the full range of scenarios from the null model containing only the intercept, to the least squares fit.
+
+As we will see, we can also compute model fits for a particular value of $\lambda$ that is not one of the original grid values. Note that by default, the `glmnet()` function standardizes the variables so that they are on the same scale. To turn off this default setting use the argument `standardize = FALSE`.
+
+Associated with each value of $\lambda$ is a vector of ridge regression coefficients, stored in a matrix that can be accessed by `coef()`. In this case, it is a $15 \times 100$ matrix, with 15 rows (one for each predictor, plus an intercept) and 100 columns (one for each value of $\lambda$).
+
+```{r}
+dim(coef(ridge_mod))
+plot(ridge_mod)    # Draw plot of coefficients
+```
+  
+We expect the coefficient estimates to be much smaller, in terms of $l_2$ norm when a large value of $\lambda$ is used, as compared to when a small value of $\lambda$ is used. These are the coefficients when $\lambda = 11498$, along with their $l_2$ norm:
+  
+```{r}
+ridge_mod$lambda[50] # Display 50th lambda value"
+```  
+```{r}
+coef(ridge_mod)[,50] # Display coefficients associated with 50th lambda value"
+```
+```{r}
+sqrt(sum(coef(ridge_mod)[-1,50]^2)) # Calculate l2 norm"
+```
+In contrast, here are the coefficients when $\lambda = 705$, along with their $l_2$ norm. Note the much larger $l_2$ norm of the coefficients associated with this smaller value of $\lambda$."
+  
+```{r}
+ridge_mod$lambda[60] #Display 60th lambda value\n",
+coef(ridge_mod)[,60] # Display coefficients associated with 60th lambda value\n",
+sqrt(sum(coef(ridge_mod)[-1,60]^2)) # Calculate l2 norm"
+```
+We can use the `predict()` function for a number of purposes. For instance we can obtain the ridge regression coefficients for a new value of $\lambda$, say 50:
+  
+```{r}
+predict(ridge_mod, s = 50, type =  "coefficients")
+```
+We now split the samples into a training set and a test set in order to estimate the test error of ridge regression and the lasso.
+```{r}
+set.seed(1)
+    
+train = bfat.norm %>%
+  sample_frac(0.5)
+    
+test = bfat.norm %>%
+  setdiff(train)
+
+d_train = train[,-1]
+d_test = test[,-1]
+x_train = model.matrix(train$per_fat~., data=d_train)
+x_test = model.matrix(test$per_fat~., data=d_test)
+  
+y_train = train %>%
+  select(per_fat) %>%
+  unlist() %>%
+  as.numeric()
+
+y_test = test %>%
+  select(per_fat) %>%
+  unlist() %>%
+  as.numeric()
+```
+Next we fit a ridge regression model on the training set, and evaluate its MSE on the test set, using $\lambda = 4$. Note the use of the `predict()` function again: this time we get predictions for a test set, by replacing
+`type=\"coefficients\"` with the `newx` argument.
+
+```{r}
+ridge_mod = glmnet(x_train, y_train, alpha=0, lambda = grid, thresh = 1e-12)
+ridge_pred = predict(ridge_mod, s = 4, newx = x_test)
+mean((ridge_pred - y_test)^2)
+```
+The test MSE is 101242.7. Note that if we had instead simply fit a model with just an intercept, we would have predicted each test observation using
+the mean of the training observations. In that case, we could compute the test set MSE like this:
+   
+```{r}
+mean((mean(y_train) - y_test)^2)
+```
+We could also get the same result by fitting a ridge regression model with a very large value of $\lambda$. Note that `1e10` means $10^{10}$.
+
+```{r}
+ridge_pred = predict(ridge_mod, s = 1e10, newx = x_test)
+mean((ridge_pred - y_test)^2)
+```
+
+So fitting a ridge regression model with $\lambda = 4$ leads to a much lower test MSE than fitting a model with just an intercept. We now check whether
+there is any benefit to performing ridge regression with $\lambda = 4$ instead of just performing least squares regression. Recall that least squares is simply ridge regression with $\lambda = 0$.
+  
+\* Note: In order for `glmnet()` to yield the **exact** least squares coefficients when $\lambda = 0$ we use the argument `exact=T` when calling the `predict()` function. Otherwise, the `predict()` function will interpolate over the grid of $\lambda$ values used in fitting the `glmnet()` model, yielding approximate results. Even when we use `exact = TRUE`, there remains a slight discrepancy in the third decimal place between the output of `glmnet()` when $\lambda = 0$ and the output of `lm()`; this is due to numerical approximation on the part of `glmnet()`.
+
+```{r}
+ridge_pred = predict(ridge_mod, s = 0, newx = x_test, exact = FALSE)
+mean((ridge_pred - y_test)^2)
+    
+lm(per_fat~., data = train)
+predict(ridge_mod, s = 0, exact = FALSE, type="coefficients")
+```
+
+It looks like we are indeed improving over regular least-squares! Side note: in general, if we want to fit a (unpenalized) least squares model, then we should use the `lm()` function, since that function provides more useful outputs, such as standard errors and $p$-values for the coefficients.
+
+Instead of arbitrarily choosing $\lambda = 4$, it would be better to use cross-validation to choose the tuning parameter $\lambda$. We can do this using the built-in cross-validation function, `cv.glmnet()`. By default, the function performs 10-fold cross-validation, though this can be changed using the argument `folds`. Note that we set a random seed first so our results will be reproducible, since the choice of the cross-validation folds is random.
+
+```{r}
+set.seed(1)
+
+cv.out = cv.glmnet(x_train, y_train, alpha = 0) # Fit ridge regression model on training data
+bestlam = cv.out$lambda.min  # Select lamda that minimizes training MSE
+bestlam
+```
+
+Therefore, we see that the value of $\lambda$ that results in the smallest cross-validation error is 339.1845 We can also plot the MSE as a function of $\lambda$:
+
+```{r}
+plot(cv.out) # Draw plot of training MSE as a function of lambda
+```
+
+What is the test MSE associated with this value of $\lambda$?
+
+```{r}
+ridge_pred = predict(ridge_mod, s = bestlam, newx = x_test) # Use best lambda to predict test data
+mean((ridge_pred - y_test)^2) # Calculate test MSE
+
+```
+
+This represents a further improvement over the test MSE that we got using $\lambda = 4$. Finally, we refit our ridge regression model on the full data set using the value of $\lambda$ chosen by cross-validation, and examine the coefficient estimates.
+
+```{r}
+out = glmnet(x, y, alpha = 0) # Fit ridge regression model on full dataset
+predict(out, type = "coefficients", s = bestlam) # Display coefficients using lambda chosen by CV
+```
+
+As expected, none of the coefficients are exactly zero - ridge regression does not perform variable selection!
+
+## The Lasso
+We saw that ridge regression with a wise choice of $\lambda$ can outperform least squares as well as the null model on the Hitters data set. We now ask
+whether the lasso can yield either a more accurate or a more interpretable model than ridge regression. In order to fit a lasso model, we once again use the `glmnet()` function; however, this time we use the argument `alpha=1`. Other than that change, we proceed just as we did in fitting a ridge model:
+
+```{r}
+
+lasso_mod = glmnet(x_train, 
+                   y_train, 
+                   alpha = 1, 
+                   lambda = grid) # Fit lasso model on training data
+
+plot(lasso_mod)    # Draw plot of coefficients
+```
+
+Notice that in the coefficient plot that depending on the choice of tuning parameter, some of the coefficients are exactly equal to zero. We now
+perform cross-validation and compute the associated test error:
+
+```{r}
+set.seed(1)
+cv.out = cv.glmnet(x_train, y_train, alpha = 1) # Fit lasso model on training data
+plot(cv.out) # Draw plot of training MSE as a function of lambda
+bestlam = cv.out$lambda.min # Select lamda that minimizes training MSE
+lasso_pred = predict(lasso_mod, s = bestlam, newx = x_test) # Use best lambda to predict test data
+mean((lasso_pred - y_test)^2) # Calculate test MSE
+```
+
+This is substantially lower than the test set MSE of the null model and of least squares, and very similar to the test MSE of ridge regression with $\lambda$ chosen by cross-validation.
+
+However, the lasso has a substantial advantage over ridge regression in that the resulting coefficient estimates are sparse. Here we see that 12 of
+the 14 coefficient estimates are exactly zero:
+
+```{r}
+out = glmnet(x, y, alpha = 1, lambda = grid) # Fit lasso model on full dataset
+lasso_coef = predict(out, type = "coefficients", 
+s = bestlam) # Display coefficients using lambda chosen by CV
+lasso_coef
+```
+
+Selecting only the predictors with non-zero (greater than 1e-02) coefficients, we see that the lasso model with $\lambda$ chosen by cross-validation contains only seven variables:
+
+```{r}
+lasso_coef[lasso_coef > 1e-02] # Display only non-zero coefficients
+```
+##Check for Multcollinearity
+This file produces the resulte for VIF using R
+
+##Method 1
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(usdm)
+#install.packages("usdm")
+#library("usdm", lib.loc="~/Library/R/4.0/library")
+
+vif(bfat.norm)
+```
+
+##Method 2
+```{r}
+# Source of function is 
+# http://highstat.com/Books/BGS/GAMM/RCodeP2/HighstatLibV6.R
+
+#To use:  corvif(YourDataFile)
+corvif <- function(dataz) {
+  dataz <- as.data.frame(dataz)
+  #correlation part
+  #cat("Correlations of the variables\n\n")
+  #tmp_cor <- cor(dataz,use="complete.obs")
+  #print(tmp_cor)
+  
+  #vif part
+  form    <- formula(paste("fooy ~ ",paste(strsplit(names(dataz)," "),
+                            collapse=" + ")))
+  dataz   <- data.frame(fooy=1,dataz)
+  lm_mod  <- lm(form,dataz)
+  
+  cat("\n\nVariance inflation factors\n\n")
+#  print(myvif(lm_mod))
+}
+
+```
+The results for the Body Fat data are
+```{r}
+myvif = corvif(bfat.norm)
+myvif
+```
+
+##Method 3
+
+```{r}
+## Install mcvis package
+
+library(mcvis)
+####################################
+#devtools::install_github("kevinwang09/mcvis")
+####################################
+```
+
+
+```{r}
+
+X = cbind(age,wt,ht,neck,chest,abdomen,hip,thigh,knee,
+         ankle,biceps,forearm)
+mcvis_result = mcvis(X = X)
+mcvis_result
+plot(mcvis_result)
+```
+
+Remove wt
+ 
+```{r}
+X = cbind(age,ht,neck,chest,abdomen,hip,thigh,knee,
+         ankle,biceps,forearm)
+mcvis_result = mcvis(X = X)
+mcvis_result
+```
+
+```{r}
+plot(mcvis_result)
+```
+ 
+Remove Abdomen
+
+```{r}
+X = cbind(age,ht,neck,chest,hip,thigh,knee,
+         ankle,biceps,forearm)
+mcvis_result = mcvis(X = X)
+mcvis_result
+```
+
+```{r}
+plot(mcvis_result)
+```
+
+Remove thigh
+
+```{r}
+X = cbind(age,ht,neck,chest,hip,knee,
+         ankle,biceps,forearm)
+mcvis_result = mcvis(X = X)
+mcvis_result
+```
+
+```{r}
+plot(mcvis_result)
+```
+
+
