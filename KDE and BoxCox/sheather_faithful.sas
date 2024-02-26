@@ -1,11 +1,10 @@
 options center nodate pagesize=100 ls=70;
-libname LDATA '/home/jacktubbs/my_shared_file_links/jacktubbs/LaTeX/';
+*libname LDATA '/home/jacktubbs/my_shared_file_links/jacktubbs/LaTeX/';
 
-/* Simplified LaTeX output that uses plain LaTeX tables */
+/* Simplified LaTeX output that uses plain LaTeX tables *
 ods tagsets.simplelatex file="/home/jacktubbs/my_shared_file_links/jacktubbs/LaTeX/sheather_faithful.tex" 
 stylesheet="/home/jacktubbs/my_shared_file_links/jacktubbs/LaTeX/sas.sty"(url="sas");
 
-/*
 The above will create a new file that can be inputed into LaTeX (simple.tex) and the new style needed by LaTex (sas.sty).
 In this case I asked that these files be placed in My SAS Files folder in My Documents. You can put these anywhere. 
 The following example can be found at
@@ -16,7 +15,10 @@ http://support.sas.com/rnd/base/ods/odsmarkup/latex.html
 *ods graphics on;
 title 'Sheather KDE Simulated Data';
 ods graphics on;
-data bimodal; set ldata.bimodal; run;
+
+
+
+data bimodal; set sasuser.bimodal; run;
 
 % Using default graphics method;
 proc sgplot data=bimodal;
@@ -31,7 +33,7 @@ run;
 
 
 title 'Old Faithful Data';
-data faithful; set ldata.faithful;
+data faithful; set sasuser.faithful;
 run;
 
 proc sgplot data=faithful;
