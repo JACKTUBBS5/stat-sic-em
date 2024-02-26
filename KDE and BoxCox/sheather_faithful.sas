@@ -16,7 +16,7 @@ http://support.sas.com/rnd/base/ods/odsmarkup/latex.html
 title 'Sheather KDE Simulated Data';
 ods graphics on;
 
-
+PLACE the BIMODAL and FAITHFUL data into the sasuser folder
 
 data bimodal; set sasuser.bimodal; run;
 
