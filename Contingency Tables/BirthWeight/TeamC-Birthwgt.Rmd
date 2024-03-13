@@ -1,0 +1,370 @@
+---
+title: "Birth Weight"
+author: "Team C"
+date: "11/03/2021"
+output: latex_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+
+```
+
+Needed Packages
+```{r, message=FALSE}
+
+if(!require(FSA)){install.packages("FSA")}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if (!require("mosaic")) install.packages("mosaic", dep=FALSE)
+if (!require("nortest")) install.packages("nortest", dep=TRUE)
+if (!require("epitools")) install.packages("epitools", dep=TRUE)
+if (!require("prettyR")) install.packages("prettyR", dep=TRUE)
+if (!require("rms")) install.packages("rms", dep=TRUE)
+library(tidyverse)
+# add other as needed
+```
+
+## Problem -- Infant Birth Weight Data
+
+Read data into R
+```{r}
+# this data came from SASHELP.BWEIGHT
+bw <- read.csv('bwgt.csv')
+bw <- data.frame(bw)
+#summary(bw)
+bw = transform(bw, AgeGroup.f = as.factor(AgeGroup))
+bw = transform(bw, Race.f = as.factor(Race))
+bw = transform(bw, Drinking.f = as.factor(Drinking))
+bw = transform(bw, Death.f = as.factor(Death))
+bw = transform(bw, Smoking.f = as.factor(Smoking))
+bw = transform(bw, SomeCollege.f = as.factor(SomeCollege))
+bw = transform(bw, LowBirthWgt.f = as.factor(bw$LowBirthWgt))
+```
+
+
+\newpage
+# Code 1 - Data Summary
+
+```{r}
+summary(bw)
+summary(bw$LowBirthWgt)
+summary(bw$Smoking)
+```
+
+
+
+```{r message=FALSE, warning=FALSE}
+mytab <- tally(~ Race.f | AgeGroup.f, data=bw)
+addmargins(mytab)
+
+```
+
+
+```{r message=FALSE, warning=FALSE}
+mytab1 <- tally(~ Married | AgeGroup.f, data=bw)
+addmargins(mytab1)
+
+```
+
+
+```{r  message=FALSE, warning=FALSE}
+mytab2 <- tally(~ LowBirthWgt.f | Race.f, data=bw)
+addmargins(mytab2)
+```
+
+
+\newpage
+
+# Code 2
+
+```{r}
+bw <- read.csv('bwgt.csv')
+# Create a new smaller data set of size 2500
+set.seed(1568)
+ssize <- sample(1:nrow(bw),round(nrow(bw) * .8092))
+new_bwgt <- bw %>% slice(ssize)
+new_bwgt <-new_bwgt  %>% na_if("") %>%  na.omit
+ 
+# Make the following columns 
+new_bwgt <- new_bwgt %>% mutate( AgeGroup.f = factor(AgeGroup), Race.f = factor(Race), 
+Drinking.f = factor(Drinking), Death.f = factor(Death),Smoking.f = factor(Smoking),
+SomeCollege.f = factor(SomeCollege), LowBirthWgt.f = factor(LowBirthWgt))
+```
+
+### Test for Association between Low Birth Weight and smoking
+```{r}
+#Risk ratio
+RR1<-riskratio(x=new_bwgt$Smoking.f, y=new_bwgt$LowBirthWgt.f)
+RR1$measure
+RR1$p.value
+```
+
+Since 95% C.I. does contain the value of 1, which is the value of no smoking. So, there is insufficient evidence to conclude that the two groups are statistically significantly different.
+Also, the p.values can confirm our found.
+
+
+```{r}
+#chisq test
+chisq.test(new_bwgt$Smoking.f,new_bwgt$LowBirthWgt.f)
+```
+
+The chi-squared result shows that there is not enough evidence to say the low birth weight is causing by the smoking. 
+
+
+```{r}
+#oddsratio
+oddsratio(new_bwgt$Smoking.f, new_bwgt$LowBirthWgt.f,rev=c("b"),method="wald")$measure
+```
+
+Even though the odd ratio of the non-smoking group is greater than one, the value is just 1.17. Also, the 95% C.I. does include 1, so our conclusion will be the same as above. We cannot say when women is smoking, it is more likely to deliver a low birth weight baby.
+
+
+```{r}
+# Fisher’s Exact Test 
+tab22<- table(x=new_bwgt$Smoking.f , y=new_bwgt$LowBirthWgt.f)
+tab22<- as.matrix(tab22)
+
+# Two-sided alternative hypothesis
+fisher.test(tab22)
+# One-sided less than alternative hypothesis
+fisher.test(tab22,alternative="less")
+# One-sided greater than alternative hypothesis
+fisher.test(tab22,alternative="greater")
+```
+
+All these three will lead to the same conclusion as we mentioned above, that is, there is no significant association at $\alpha=0.5$ between smoking and low birth weight. 
+
+
+#
+```{r}
+# MH test:
+mantelhaen.test(new_bwgt$Smoking.f, new_bwgt$LowBirthWgt.f, new_bwgt$Drinking.f,correct=T)
+```
+
+\vspace{1 in}
+### Test for Association between Low Birth Weight and drinking
+```{r}
+#Risk ratio
+RR1<-riskratio(x=new_bwgt$Drinking.f, y=new_bwgt$LowBirthWgt.f)
+RR1$measure
+RR1$p.value
+```
+
+
+```{r}
+#chisq test
+chisq.test(new_bwgt$Drinking.f,new_bwgt$LowBirthWgt.f)
+```
+
+
+```{r}
+#oddsratio
+oddsratio(new_bwgt$Drinking.f, new_bwgt$LowBirthWgt.f,rev=c("b"),method="wald")$measure
+```
+
+
+```{r}
+# Fisher’s Exact Test 
+tab23<- table(x=new_bwgt$Drinking.f, y=new_bwgt$LowBirthWgt.f)
+tab22<- as.matrix(tab23)
+
+# Two-sided alternative hypothesis
+fisher.test(tab22)
+# One-sided less than alternative hypothesis
+fisher.test(tab22,alternative="less")
+# One-sided greater than alternative hypothesis
+fisher.test(tab22,alternative="greater")
+```
+
+```{r}
+# MH test:
+mantelhaen.test(new_bwgt$Drinking.f, new_bwgt$LowBirthWgt.f, new_bwgt$Smoking.f,correct=T)
+```
+
+All 5 tests' outputs give the same result, at $\alpha=0.5$,there is no strong evidence to conclude the relation between having a low birth weight baby and drinking is significant.
+
+
+\newpage
+# Code 3
+
+### Test for Association between Low Birth Weight and Smoking controlling for Death
+```{r}
+new_bwgt1<-table(new_bwgt)
+tab1<-margin.table(new_bwgt1, c(15,13,12))
+d_yes<-tab1[, , Death.f = "No"]
+d_no<-tab1[, , Death.f = "Yes"]
+```
+
+
+```{r}
+#Risk ratio for Death= Yes
+RR1<-riskratio(d_yes)
+RR1$measure
+RR1$p.value
+
+#Risk ratio for Death= No
+RR1<-riskratio(d_no)
+RR1$measure
+RR1$p.value
+
+```
+
+
+```{r}
+#chisq test for Death= Yes
+chisq.test(d_yes)
+
+#chisq test for Death= No
+chisq.test(d_no)
+
+```
+
+
+```{r}
+#oddsratio for Death= Yes
+oddsratio(d_yes,rev=c("b"),method="wald")$measure
+
+#oddsratio for Death= No
+oddsratio(d_no,rev=c("b"),method="wald")$measure
+```
+
+
+```{r}
+# Fisher’s Exact Test for Death=Yes
+# Two-sided alternative hypothesis
+fisher.test(d_yes)
+# One-sided less than alternative hypothesis
+fisher.test(d_yes,alternative="less")
+# One-sided greater than alternative hypothesis
+fisher.test(d_yes,alternative="greater")
+
+
+# Fisher’s Exact Test for Death=No
+# Two-sided alternative hypothesis
+fisher.test(d_no)
+# One-sided less than alternative hypothesis
+fisher.test(d_no,alternative="less")
+# One-sided greater than alternative hypothesis
+fisher.test(d_no,alternative="greater")
+```
+
+```{r}
+# MH test:
+mantelhaen.test(tab1,correct=T)
+```
+
+
+\vspace{0.5in}
+### Test for Association between Low Birth Weight and Drinking controlling for Death
+```{r}
+
+tab2<-margin.table(new_bwgt1, c(15,11,12))
+d_yes1<-tab2[, , Death.f = "No"]
+d_no1<-tab2[, , Death.f = "Yes"]
+```
+
+
+```{r}
+#Risk ratio for Death= Yes
+RR1<-riskratio(d_yes1)
+RR1$measure
+RR1$p.value
+
+#Risk ratio for Death= No
+RR1<-riskratio(d_no1)
+RR1$measure
+RR1$p.value
+
+```
+
+
+```{r}
+#chisq test for Death= Yes
+chisq.test(d_yes1)
+
+#chisq test for Death= No
+chisq.test(d_no1)
+
+```
+
+
+```{r}
+#oddsratio for Death= Yes
+oddsratio(d_yes1,rev=c("b"),method="wald")$measure
+
+#oddsratio for Death= No
+oddsratio(d_no1,rev=c("b"),method="wald")$measure
+```
+
+
+```{r}
+# Fisher’s Exact Test for Death=Yes
+# Two-sided alternative hypothesis
+fisher.test(d_yes1)
+# One-sided less than alternative hypothesis
+fisher.test(d_yes1,alternative="less")
+# One-sided greater than alternative hypothesis
+fisher.test(d_yes1,alternative="greater")
+
+
+# Fisher’s Exact Test for Death=No
+# Two-sided alternative hypothesis
+fisher.test(d_no1)
+# One-sided less than alternative hypothesis
+fisher.test(d_no1,alternative="less")
+# One-sided greater than alternative hypothesis
+fisher.test(d_no1,alternative="greater")
+```
+
+```{r}
+# MH test:
+mantelhaen.test(tab2,correct=T)
+```
+
+According to the tests results shows above, we conclude the association between low birth weight and drinking controlling for death is not statistical significant.
+
+\newpage
+# Code 4
+
+### Test for Association between Low Birth Weight and Death
+```{r}
+#Risk ratio
+RR1<-riskratio(x=new_bwgt$Death.f, y=new_bwgt$LowBirthWgt.f)
+RR1$measure
+RR1$p.value
+```
+According to the risk ratio, since the 95% confidence interval does not contain 1, the association between the low birth weight and death is statistical significant.
+
+```{r}
+#chisq test
+chisq.test(new_bwgt$Death.f,new_bwgt$LowBirthWgt.f)
+```
+
+
+```{r}
+#oddsratio
+oddsratio(new_bwgt$Death.f, new_bwgt$LowBirthWgt.f,rev=c("b"),method="wald")$measure
+```
+
+
+```{r}
+# Fisher’s Exact Test 
+tab24<- table(x=new_bwgt$Death.f , y=new_bwgt$LowBirthWgt.f)
+tab22<- as.matrix(tab24)
+
+# Two-sided alternative hypothesis
+fisher.test(tab24)
+# One-sided less than alternative hypothesis
+fisher.test(tab24,alternative="less")
+# One-sided greater than alternative hypothesis
+fisher.test(tab24,alternative="greater")
+```
+
+```{r}
+# MH test:
+mantelhaen.test(new_bwgt$Death.f, new_bwgt$LowBirthWgt.f, new_bwgt$Drinking.f,correct=T)
+```
+
+
+

@@ -1,0 +1,1234 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\title{Birth Weight}
+\author{Team A}
+\date{11/30/2021}
+
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Birth Weight},
+  pdfauthor={Team A},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\begin{document}
+\maketitle
+
+Needed Packages
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(FSA))\{}\FunctionTok{install.packages}\NormalTok{(}\StringTok{"FSA"}\NormalTok{)\}}
+\ControlFlowTok{if}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(ggplot2))\{}\FunctionTok{install.packages}\NormalTok{(}\StringTok{"ggplot2"}\NormalTok{)\}}
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"mosaic"}\NormalTok{)) }\FunctionTok{install.packages}\NormalTok{(}\StringTok{"mosaic"}\NormalTok{, }\AttributeTok{dep=}\ConstantTok{FALSE}\NormalTok{)}
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"nortest"}\NormalTok{)) }\FunctionTok{install.packages}\NormalTok{(}\StringTok{"nortest"}\NormalTok{, }\AttributeTok{dep=}\ConstantTok{TRUE}\NormalTok{)}
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"epitools"}\NormalTok{)) }\FunctionTok{install.packages}\NormalTok{(}\StringTok{"epitools"}\NormalTok{, }\AttributeTok{dep=}\ConstantTok{TRUE}\NormalTok{)}
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"prettyR"}\NormalTok{)) }\FunctionTok{install.packages}\NormalTok{(}\StringTok{"prettyR"}\NormalTok{, }\AttributeTok{dep=}\ConstantTok{TRUE}\NormalTok{)}
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"rms"}\NormalTok{)) }\FunctionTok{install.packages}\NormalTok{(}\StringTok{"rms"}\NormalTok{, }\AttributeTok{dep=}\ConstantTok{TRUE}\NormalTok{)}
+\CommentTok{\# add other as needed}
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"DescTools"}\NormalTok{)) }\FunctionTok{install.packages}\NormalTok{(}\StringTok{"DescTools"}\NormalTok{, }\AttributeTok{dep=}\ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{problem-infant-birth-weight-data}{%
+\subsection{Problem -- Infant Birth Weight
+Data}\label{problem-infant-birth-weight-data}}
+
+Read data from SAS input file
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# this data came from SASHELP.BWEIGHT}
+\NormalTok{bw }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{\textquotesingle{}bwgt.csv\textquotesingle{}}\NormalTok{, }\AttributeTok{header =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{stringsAsFactors =} \ConstantTok{TRUE}\NormalTok{,}\AttributeTok{na.strings=}\FunctionTok{c}\NormalTok{(}\StringTok{""}\NormalTok{,}\StringTok{"NA"}\NormalTok{))}
+\FunctionTok{colnames}\NormalTok{(bw)[}\DecValTok{1}\NormalTok{] }\OtherTok{\textless{}{-}} \StringTok{"LowBirthWgt"}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ AgeGroup }\SpecialCharTok{+}\NormalTok{ Race, }\AttributeTok{data=}\NormalTok{bw)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         Race
+## AgeGroup Asian Black Hispanic Native White
+##        1     8    91       83      6   169
+##        2   101   375      475     22  1337
+##        3    36    52       66      4   264
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ Race }\SpecialCharTok{|}\NormalTok{ AgeGroup, }\AttributeTok{data=}\NormalTok{bw)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           AgeGroup
+## Race          1    2    3
+##   Asian       8  101   36
+##   Black      91  375   52
+##   Hispanic   83  475   66
+##   Native      6   22    4
+##   White     169 1337  264
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(mosaic)}
+\NormalTok{mytab }\OtherTok{=} \FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ Race }\SpecialCharTok{|}\NormalTok{ AgeGroup, }\AttributeTok{data=}\NormalTok{bw)}
+\FunctionTok{addmargins}\NormalTok{(mytab)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           AgeGroup
+## Race          1    2    3  Sum
+##   Asian       8  101   36  145
+##   Black      91  375   52  518
+##   Hispanic   83  475   66  624
+##   Native      6   22    4   32
+##   White     169 1337  264 1770
+##   Sum       357 2310  422 3089
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{prop.table}\NormalTok{(mytab, }\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           AgeGroup
+## Race                1          2          3
+##   Asian    0.05517241 0.69655172 0.24827586
+##   Black    0.17567568 0.72393822 0.10038610
+##   Hispanic 0.13301282 0.76121795 0.10576923
+##   Native   0.18750000 0.68750000 0.12500000
+##   White    0.09548023 0.75536723 0.14915254
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(epitools)}
+\FunctionTok{attach}\NormalTok{(bw)}
+\NormalTok{mytab }\OtherTok{=} \FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ LowBirthWgt }\SpecialCharTok{|}\NormalTok{ Death, }\AttributeTok{data=}\NormalTok{bw)}
+\FunctionTok{addmargins}\NormalTok{(mytab)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            Death
+## LowBirthWgt   No  Yes  Sum
+##         No  2278  198 2476
+##         Yes  205  408  613
+##         Sum 2483  606 3089
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{prop.table}\NormalTok{(mytab, }\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            Death
+## LowBirthWgt         No        Yes
+##         No  0.92003231 0.07996769
+##         Yes 0.33442088 0.66557912
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{riskratio}\NormalTok{(}\AttributeTok{x=}\NormalTok{Smoking, }\AttributeTok{y=}\NormalTok{Death)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $data
+##          Outcome
+## Predictor   No Yes Total
+##     No    1786 405  2191
+##     Yes    541 160   701
+##     Total 2327 565  2892
+## 
+## $measure
+##          risk ratio with 95% C.I.
+## Predictor estimate    lower    upper
+##       No  1.000000       NA       NA
+##       Yes 1.234779 1.050052 1.452004
+## 
+## $p.value
+##          two-sided
+## Predictor midp.exact fisher.exact chi.square
+##       No          NA           NA         NA
+##       Yes  0.0127352   0.01371876 0.01165276
+## 
+## $correction
+## [1] FALSE
+## 
+## attr(,"method")
+## [1] "Unconditional MLE & normal approximation (Wald) CI"
+\end{verbatim}
+
+\hypertarget{first-5-entries}{%
+\subsubsection{First 5 entries}\label{first-5-entries}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bw[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{5}\NormalTok{,]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   LowBirthWgt Married AgeGroup   Race Drinking Death Smoking SomeCollege
+## 1         Yes     Yes        2 Native       No   Yes      No          No
+## 2         Yes     Yes        1  White       No   Yes     Yes          No
+## 3          No     Yes        2  White       No   Yes     Yes          No
+## 4         Yes      No        2  Black       No   Yes     Yes          No
+## 5          No     Yes        1  White       No   Yes     Yes          No
+\end{verbatim}
+
+\hypertarget{statistics-for-low-birthweight-by-smoking}{%
+\subsubsection{Statistics for low birthweight by
+smoking}\label{statistics-for-low-birthweight-by-smoking}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lbxs }\OtherTok{\textless{}{-}} \FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ LowBirthWgt }\SpecialCharTok{|}\NormalTok{ Smoking, }\AttributeTok{useNA =} \StringTok{"no"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ bw)}
+\FunctionTok{addmargins}\NormalTok{(lbxs)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            Smoking
+## LowBirthWgt   No  Yes  Sum
+##         No  1771  546 2317
+##         Yes  420  155  575
+##         Sum 2191  701 2892
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{chisq.test}\NormalTok{(lbxs)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's Chi-squared test with Yates' continuity correction
+## 
+## data:  lbxs
+## X-squared = 2.7038, df = 1, p-value = 0.1001
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{fisher.test}\NormalTok{(lbxs)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  lbxs
+## p-value = 0.09208
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.9655756 1.4791492
+## sample estimates:
+## odds ratio 
+##    1.19693
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{riskratio}\NormalTok{(lbxs)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $data
+##            Smoking
+## LowBirthWgt   No Yes Total
+##       No    1771 546  2317
+##       Yes    420 155   575
+##       Total 2191 701  2892
+## 
+## $measure
+##            risk ratio with 95% C.I.
+## LowBirthWgt estimate     lower    upper
+##         No  1.000000        NA       NA
+##         Yes 1.143924 0.9814062 1.333355
+## 
+## $p.value
+##            two-sided
+## LowBirthWgt midp.exact fisher.exact chi.square
+##         No          NA           NA         NA
+##         Yes 0.09171747   0.09208221 0.08937601
+## 
+## $correction
+## [1] FALSE
+## 
+## attr(,"method")
+## [1] "Unconditional MLE & normal approximation (Wald) CI"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{oddsratio}\NormalTok{(lbxs)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $data
+##            Smoking
+## LowBirthWgt   No Yes Total
+##       No    1771 546  2317
+##       Yes    420 155   575
+##       Total 2191 701  2892
+## 
+## $measure
+##            odds ratio with 95% C.I.
+## LowBirthWgt estimate     lower    upper
+##         No  1.000000        NA       NA
+##         Yes 1.197546 0.9708918 1.471548
+## 
+## $p.value
+##            two-sided
+## LowBirthWgt midp.exact fisher.exact chi.square
+##         No          NA           NA         NA
+##         Yes 0.09171747   0.09208221 0.08937601
+## 
+## $correction
+## [1] FALSE
+## 
+## attr(,"method")
+## [1] "median-unbiased estimate & mid-p exact CI"
+\end{verbatim}
+
+In the tests above, we obtain p-values that are \textgreater{} 0.05.
+Additionally, confidence intervals above include 1. These results
+indicate that there is no statistically significant relationship between
+low birth weight and smoking.
+
+\hypertarget{statistics-for-low-birthweight-by-drinking}{%
+\subsubsection{Statistics for low birthweight by
+drinking}\label{statistics-for-low-birthweight-by-drinking}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lbxd }\OtherTok{\textless{}{-}} \FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ LowBirthWgt }\SpecialCharTok{|}\NormalTok{ Drinking, }\AttributeTok{useNA =}\StringTok{"no"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ bw)}
+\FunctionTok{addmargins}\NormalTok{(lbxd)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            Drinking
+## LowBirthWgt   No  Yes  Sum
+##         No  1992  325 2317
+##         Yes  501   74  575
+##         Sum 2493  399 2892
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{chisq.test}\NormalTok{(lbxd)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's Chi-squared test with Yates' continuity correction
+## 
+## data:  lbxd
+## X-squared = 0.42596, df = 1, p-value = 0.514
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{fisher.test}\NormalTok{(lbxd)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  lbxd
+## p-value = 0.4998
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.6807265 1.1925401
+## sample estimates:
+## odds ratio 
+##  0.9053474
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{riskratio}\NormalTok{(lbxd)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $data
+##            Drinking
+## LowBirthWgt   No Yes Total
+##       No    1992 325  2317
+##       Yes    501  74   575
+##       Total 2493 399  2892
+## 
+## $measure
+##            risk ratio with 95% C.I.
+## LowBirthWgt estimate     lower    upper
+##         No  1.000000        NA       NA
+##         Yes 0.917501 0.7250909 1.160969
+## 
+## $p.value
+##            two-sided
+## LowBirthWgt midp.exact fisher.exact chi.square
+##         No          NA           NA         NA
+##         Yes  0.4753695    0.4997707  0.4714005
+## 
+## $correction
+## [1] FALSE
+## 
+## attr(,"method")
+## [1] "Unconditional MLE & normal approximation (Wald) CI"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{oddsratio}\NormalTok{(lbxd)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $data
+##            Drinking
+## LowBirthWgt   No Yes Total
+##       No    1992 325  2317
+##       Yes    501  74   575
+##       Total 2493 399  2892
+## 
+## $measure
+##            odds ratio with 95% C.I.
+## LowBirthWgt  estimate     lower    upper
+##         No  1.0000000        NA       NA
+##         Yes 0.9066809 0.6872112 1.182556
+## 
+## $p.value
+##            two-sided
+## LowBirthWgt midp.exact fisher.exact chi.square
+##         No          NA           NA         NA
+##         Yes  0.4753695    0.4997707  0.4714005
+## 
+## $correction
+## [1] FALSE
+## 
+## attr(,"method")
+## [1] "median-unbiased estimate & mid-p exact CI"
+\end{verbatim}
+
+In the tests above, we obtain results similar to before when
+conditioning upon smoking. In particular, we found p-values
+\textgreater{} 0.05 and confidence intervals that include 1. These
+results also indicate that drinking is not a statistically significant
+factor in understanding low birth weight.
+
+\hypertarget{statistics-for-low-birthweight-by-smoking-when-deathno}{%
+\subsubsection{Statistics for low birthweight by smoking when
+death=no}\label{statistics-for-low-birthweight-by-smoking-when-deathno}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bwlife }\OtherTok{\textless{}{-}}\NormalTok{ bw }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(bw[,}\DecValTok{6}\NormalTok{]}\SpecialCharTok{==}\StringTok{\textquotesingle{}No\textquotesingle{}}\NormalTok{)}
+\NormalTok{lbxsxdn}\OtherTok{\textless{}{-}} \FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ LowBirthWgt }\SpecialCharTok{|}\NormalTok{ Smoking, }\AttributeTok{useNA =}\StringTok{"no"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ bwlife)}
+\FunctionTok{addmargins}\NormalTok{(lbxsxdn)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            Smoking
+## LowBirthWgt   No  Yes  Sum
+##         No  1647  488 2135
+##         Yes  139   53  192
+##         Sum 1786  541 2327
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{chisq.test}\NormalTok{(lbxsxdn)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's Chi-squared test with Yates' continuity correction
+## 
+## data:  lbxsxdn
+## X-squared = 1.9666, df = 1, p-value = 0.1608
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{fisher.test}\NormalTok{(lbxsxdn)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  lbxsxdn
+## p-value = 0.1532
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.9045874 1.8091393
+## sample estimates:
+## odds ratio 
+##   1.286723
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{riskratio}\NormalTok{(lbxsxdn)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $data
+##            Smoking
+## LowBirthWgt   No Yes Total
+##       No    1647 488  2135
+##       Yes    139  53   192
+##       Total 1786 541  2327
+## 
+## $measure
+##            risk ratio with 95% C.I.
+## LowBirthWgt estimate    lower    upper
+##         No  1.000000       NA       NA
+##         Yes 1.207682 0.948135 1.538279
+## 
+## $p.value
+##            two-sided
+## LowBirthWgt midp.exact fisher.exact chi.square
+##         No          NA           NA         NA
+##         Yes  0.1411444    0.1531612  0.1358244
+## 
+## $correction
+## [1] FALSE
+## 
+## attr(,"method")
+## [1] "Unconditional MLE & normal approximation (Wald) CI"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{oddsratio}\NormalTok{(lbxsxdn)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $data
+##            Smoking
+## LowBirthWgt   No Yes Total
+##       No    1647 488  2135
+##       Yes    139  53   192
+##       Total 1786 541  2327
+## 
+## $measure
+##            odds ratio with 95% C.I.
+## LowBirthWgt estimate     lower    upper
+##         No  1.000000        NA       NA
+##         Yes 1.288961 0.9173865 1.786667
+## 
+## $p.value
+##            two-sided
+## LowBirthWgt midp.exact fisher.exact chi.square
+##         No          NA           NA         NA
+##         Yes  0.1411444    0.1531612  0.1358244
+## 
+## $correction
+## [1] FALSE
+## 
+## attr(,"method")
+## [1] "median-unbiased estimate & mid-p exact CI"
+\end{verbatim}
+
+P-values and confidence intervals above indicate that, for those who did
+not die, smoking was not a statistically significant factor for low
+birth weight.
+
+\hypertarget{statistics-for-low-birthweight-by-smoking-when-deathyes}{%
+\subsubsection{Statistics for low birthweight by smoking when
+death=yes}\label{statistics-for-low-birthweight-by-smoking-when-deathyes}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bwdeath }\OtherTok{\textless{}{-}}\NormalTok{ bw }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(bw[,}\DecValTok{6}\NormalTok{]}\SpecialCharTok{==}\StringTok{\textquotesingle{}Yes\textquotesingle{}}\NormalTok{)}
+\NormalTok{lbxsxdy}\OtherTok{\textless{}{-}} \FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ LowBirthWgt }\SpecialCharTok{|}\NormalTok{ Smoking, }\AttributeTok{useNA =}\StringTok{"no"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ bwdeath)}
+\FunctionTok{addmargins}\NormalTok{(lbxsxdy)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            Smoking
+## LowBirthWgt  No Yes Sum
+##         No  124  58 182
+##         Yes 281 102 383
+##         Sum 405 160 565
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{chisq.test}\NormalTok{(lbxsxdy)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's Chi-squared test with Yates' continuity correction
+## 
+## data:  lbxsxdy
+## X-squared = 1.4185, df = 1, p-value = 0.2337
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{fisher.test}\NormalTok{(lbxsxdy)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  lbxsxdy
+## p-value = 0.2304
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.5194112 1.1657032
+## sample estimates:
+## odds ratio 
+##  0.7764222
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{riskratio}\NormalTok{(lbxsxdy)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $data
+##            Smoking
+## LowBirthWgt  No Yes Total
+##       No    124  58   182
+##       Yes   281 102   383
+##       Total 405 160   565
+## 
+## $measure
+##            risk ratio with 95% C.I.
+## LowBirthWgt  estimate     lower    upper
+##         No  1.0000000        NA       NA
+##         Yes 0.8356892 0.6381175 1.094432
+## 
+## $p.value
+##            two-sided
+## LowBirthWgt midp.exact fisher.exact chi.square
+##         No          NA           NA         NA
+##         Yes  0.1999799    0.2304282  0.1967364
+## 
+## $correction
+## [1] FALSE
+## 
+## attr(,"method")
+## [1] "Unconditional MLE & normal approximation (Wald) CI"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{oddsratio}\NormalTok{(lbxsxdy)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $data
+##            Smoking
+## LowBirthWgt  No Yes Total
+##       No    124  58   182
+##       Yes   281 102   383
+##       Total 405 160   565
+## 
+## $measure
+##            odds ratio with 95% C.I.
+## LowBirthWgt estimate     lower    upper
+##         No  1.000000        NA       NA
+##         Yes 0.775938 0.5284087 1.145069
+## 
+## $p.value
+##            two-sided
+## LowBirthWgt midp.exact fisher.exact chi.square
+##         No          NA           NA         NA
+##         Yes  0.1999799    0.2304282  0.1967364
+## 
+## $correction
+## [1] FALSE
+## 
+## attr(,"method")
+## [1] "median-unbiased estimate & mid-p exact CI"
+\end{verbatim}
+
+When controlling for those who did die, the p-values and confidence
+intervals above indicate that smoking is not a statistically significant
+factor for low birth weight.
+
+\hypertarget{statistics-for-low-birthweight-by-smoking-by-death}{%
+\subsubsection{Statistics for low birthweight by smoking by
+death}\label{statistics-for-low-birthweight-by-smoking-by-death}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{mantelhaen.test}\NormalTok{(}\FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ LowBirthWgt }\SpecialCharTok{|}\NormalTok{ Smoking }\SpecialCharTok{+}\NormalTok{ Death, }\AttributeTok{useNA =}\StringTok{"no"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ bw))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Mantel-Haenszel chi-squared test with continuity correction
+## 
+## data:  tally(~LowBirthWgt | Smoking + Death, useNA = "no", data = bw)
+## Mantel-Haenszel X-squared = 0.034773, df = 1, p-value = 0.8521
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.8003662 1.3327269
+## sample estimates:
+## common odds ratio 
+##          1.032797
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{DescTools}\SpecialCharTok{::}\FunctionTok{BreslowDayTest}\NormalTok{(}\FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ LowBirthWgt }\SpecialCharTok{|}\NormalTok{ Smoking }\SpecialCharTok{+}\NormalTok{ Death, }\AttributeTok{useNA =}\StringTok{"no"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ bw))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Breslow-Day test on Homogeneity of Odds Ratios
+## 
+## data:  tally(~LowBirthWgt | Smoking + Death, useNA = "no", data = bw)
+## X-squared = 3.8091, df = 1, p-value = 0.05098
+\end{verbatim}
+
+\hypertarget{statistics-for-low-birthweight-by-drinking-when-deathno}{%
+\subsubsection{Statistics for low birthweight by drinking when
+death=no}\label{statistics-for-low-birthweight-by-drinking-when-deathno}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lbxdrxdn}\OtherTok{\textless{}{-}} \FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ LowBirthWgt }\SpecialCharTok{|}\NormalTok{ Drinking, }\AttributeTok{useNA =}\StringTok{"no"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ bwlife)}
+\FunctionTok{addmargins}\NormalTok{(lbxdrxdn)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            Drinking
+## LowBirthWgt   No  Yes  Sum
+##         No  1835  300 2135
+##         Yes  163   29  192
+##         Sum 1998  329 2327
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{chisq.test}\NormalTok{(lbxdrxdn)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's Chi-squared test with Yates' continuity correction
+## 
+## data:  lbxdrxdn
+## X-squared = 0.085771, df = 1, p-value = 0.7696
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{fisher.test}\NormalTok{(lbxdrxdn)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  lbxdrxdn
+## p-value = 0.666
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.6933439 1.6580559
+## sample estimates:
+## odds ratio 
+##    1.08822
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{riskratio}\NormalTok{(lbxdrxdn)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $data
+##            Drinking
+## LowBirthWgt   No Yes Total
+##       No    1835 300  2135
+##       Yes    163  29   192
+##       Total 1998 329  2327
+## 
+## $measure
+##            risk ratio with 95% C.I.
+## LowBirthWgt estimate     lower    upper
+##         No  1.000000        NA       NA
+##         Yes 1.074913 0.7564402 1.527468
+## 
+## $p.value
+##            two-sided
+## LowBirthWgt midp.exact fisher.exact chi.square
+##         No          NA           NA         NA
+##         Yes  0.6771593    0.6660338  0.6884273
+## 
+## $correction
+## [1] FALSE
+## 
+## attr(,"method")
+## [1] "Unconditional MLE & normal approximation (Wald) CI"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{oddsratio}\NormalTok{(lbxdrxdn)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $data
+##            Drinking
+## LowBirthWgt   No Yes Total
+##       No    1835 300  2135
+##       Yes    163  29   192
+##       Total 1998 329  2327
+## 
+## $measure
+##            odds ratio with 95% C.I.
+## LowBirthWgt estimate     lower    upper
+##         No  1.000000        NA       NA
+##         Yes 1.092841 0.7091925 1.628725
+## 
+## $p.value
+##            two-sided
+## LowBirthWgt midp.exact fisher.exact chi.square
+##         No          NA           NA         NA
+##         Yes  0.6771593    0.6660338  0.6884273
+## 
+## $correction
+## [1] FALSE
+## 
+## attr(,"method")
+## [1] "median-unbiased estimate & mid-p exact CI"
+\end{verbatim}
+
+The confidence intervals containing 1 and p-values \textgreater{} 0.05
+above lead us to conclude that, for those who did not die, drinking was
+not a statistically significant factor for low birth weight.
+
+\hypertarget{statistics-for-low-birthweight-by-drinking-when-deathyes}{%
+\subsubsection{Statistics for low birthweight by drinking when
+death=yes}\label{statistics-for-low-birthweight-by-drinking-when-deathyes}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lbxdrxdy}\OtherTok{\textless{}{-}} \FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ LowBirthWgt }\SpecialCharTok{|}\NormalTok{ Drinking, }\AttributeTok{useNA =}\StringTok{"no"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ bwdeath)}
+\FunctionTok{addmargins}\NormalTok{(lbxdrxdy)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            Drinking
+## LowBirthWgt  No Yes Sum
+##         No  157  25 182
+##         Yes 338  45 383
+##         Sum 495  70 565
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{chisq.test}\NormalTok{(lbxdrxdy)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's Chi-squared test with Yates' continuity correction
+## 
+## data:  lbxdrxdy
+## X-squared = 0.28434, df = 1, p-value = 0.5939
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{fisher.test}\NormalTok{(lbxdrxdy)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  lbxdrxdy
+## p-value = 0.4976
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.4821691 1.4775211
+## sample estimates:
+## odds ratio 
+##  0.8363789
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{riskratio}\NormalTok{(lbxdrxdy)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $data
+##            Drinking
+## LowBirthWgt  No Yes Total
+##       No    157  25   182
+##       Yes   338  45   383
+##       Total 495  70   565
+## 
+## $measure
+##            risk ratio with 95% C.I.
+## LowBirthWgt  estimate     lower    upper
+##         No  1.0000000        NA       NA
+##         Yes 0.8553525 0.5421632 1.349461
+## 
+## $p.value
+##            two-sided
+## LowBirthWgt midp.exact fisher.exact chi.square
+##         No          NA           NA         NA
+##         Yes  0.5028278    0.4975632  0.5029438
+## 
+## $correction
+## [1] FALSE
+## 
+## attr(,"method")
+## [1] "Unconditional MLE & normal approximation (Wald) CI"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{oddsratio}\NormalTok{(lbxdrxdy)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $data
+##            Drinking
+## LowBirthWgt  No Yes Total
+##       No    157  25   182
+##       Yes   338  45   383
+##       Total 495  70   565
+## 
+## $measure
+##            odds ratio with 95% C.I.
+## LowBirthWgt  estimate    lower    upper
+##         No  1.0000000       NA       NA
+##         Yes 0.8343183 0.496737 1.429282
+## 
+## $p.value
+##            two-sided
+## LowBirthWgt midp.exact fisher.exact chi.square
+##         No          NA           NA         NA
+##         Yes  0.5028278    0.4975632  0.5029438
+## 
+## $correction
+## [1] FALSE
+## 
+## attr(,"method")
+## [1] "median-unbiased estimate & mid-p exact CI"
+\end{verbatim}
+
+The confidence intervals containing 1 and p-values \textgreater{} 0.05
+above lead us to conclude that, for those who did die, drinking was not
+a statistically significant factor for low birth weight.
+
+\hypertarget{statistics-for-low-birthweight-by-drinking-by-death}{%
+\subsubsection{Statistics for low birthweight by drinking by
+death}\label{statistics-for-low-birthweight-by-drinking-by-death}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{mantelhaen.test}\NormalTok{(}\FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ LowBirthWgt }\SpecialCharTok{|}\NormalTok{ Drinking }\SpecialCharTok{+}\NormalTok{ Death, }\AttributeTok{useNA =}\StringTok{"no"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ bw))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Mantel-Haenszel chi-squared test with continuity correction
+## 
+## data:  tally(~LowBirthWgt | Drinking + Death, useNA = "no", data = bw)
+## Mantel-Haenszel X-squared = 0.00027035, df = 1, p-value = 0.9869
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.7080307 1.3658739
+## sample estimates:
+## common odds ratio 
+##         0.9834026
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{DescTools}\SpecialCharTok{::}\FunctionTok{BreslowDayTest}\NormalTok{(}\FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ LowBirthWgt }\SpecialCharTok{|}\NormalTok{ Drinking }\SpecialCharTok{+}\NormalTok{ Death, }\AttributeTok{useNA =}\StringTok{"no"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ bw))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Breslow-Day test on Homogeneity of Odds Ratios
+## 
+## data:  tally(~LowBirthWgt | Drinking + Death, useNA = "no", data = bw)
+## X-squared = 0.59941, df = 1, p-value = 0.4388
+\end{verbatim}
+
+\hypertarget{statistics-for-death-by-low-birthweight}{%
+\subsubsection{Statistics for death by low
+birthweight}\label{statistics-for-death-by-low-birthweight}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dxlb }\OtherTok{\textless{}{-}} \FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ Death }\SpecialCharTok{|}\NormalTok{ LowBirthWgt, }\AttributeTok{useNA =}\StringTok{"no"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ bw)}
+\FunctionTok{addmargins}\NormalTok{(dxlb)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      LowBirthWgt
+## Death   No  Yes  Sum
+##   No  2278  205 2483
+##   Yes  198  408  606
+##   Sum 2476  613 3089
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{chisq.test}\NormalTok{(dxlb)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's Chi-squared test with Yates' continuity correction
+## 
+## data:  dxlb
+## X-squared = 1064.8, df = 1, p-value < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{fisher.test}\NormalTok{(dxlb)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  dxlb
+## p-value < 2.2e-16
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  18.22451 28.77091
+## sample estimates:
+## odds ratio 
+##   22.85229
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{riskratio}\NormalTok{(dxlb)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $data
+##        LowBirthWgt
+## Death     No Yes Total
+##   No    2278 205  2483
+##   Yes    198 408   606
+##   Total 2476 613  3089
+## 
+## $measure
+##      risk ratio with 95% C.I.
+## Death estimate    lower    upper
+##   No  1.000000       NA       NA
+##   Yes 8.154745 7.072643 9.402408
+## 
+## $p.value
+##      two-sided
+## Death midp.exact  fisher.exact    chi.square
+##   No          NA            NA            NA
+##   Yes          0 9.077892e-197 2.250904e-234
+## 
+## $correction
+## [1] FALSE
+## 
+## attr(,"method")
+## [1] "Unconditional MLE & normal approximation (Wald) CI"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{oddsratio}\NormalTok{(dxlb)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $data
+##        LowBirthWgt
+## Death     No Yes Total
+##   No    2278 205  2483
+##   Yes    198 408   606
+##   Total 2476 613  3089
+## 
+## $measure
+##      odds ratio with 95% C.I.
+## Death estimate    lower    upper
+##   No   1.00000       NA       NA
+##   Yes 22.84305 18.33355 28.59066
+## 
+## $p.value
+##      two-sided
+## Death midp.exact  fisher.exact    chi.square
+##   No          NA            NA            NA
+##   Yes          0 9.077892e-197 2.250904e-234
+## 
+## $correction
+## [1] FALSE
+## 
+## attr(,"method")
+## [1] "median-unbiased estimate & mid-p exact CI"
+\end{verbatim}
+
+Since the p-values above are \textless{} 0.05, and since the confidence
+intervals do not include 1, we conclude that there is a significant
+relationship between low birth weight and infants that died. In
+particular, the infants with low birth weight were found to be
+approximately 8.15 times more likely to die than those who did not have
+low birth weight.
+
+\end{document}

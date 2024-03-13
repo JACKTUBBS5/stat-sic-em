@@ -1,0 +1,160 @@
+---
+title: "Birth Weight"
+author: "Team A"
+date: "11/30/2021"
+output: latex_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+
+```
+Needed Packages
+```{r, message=FALSE}
+
+if(!require(FSA)){install.packages("FSA")}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if (!require("mosaic")) install.packages("mosaic", dep=FALSE)
+if (!require("nortest")) install.packages("nortest", dep=TRUE)
+if (!require("epitools")) install.packages("epitools", dep=TRUE)
+if (!require("prettyR")) install.packages("prettyR", dep=TRUE)
+if (!require("rms")) install.packages("rms", dep=TRUE)
+# add other as needed
+if (!require("DescTools")) install.packages("DescTools", dep=TRUE)
+```
+
+## Problem -- Infant Birth Weight Data
+
+Read data from SAS input file
+```{r}
+# this data came from SASHELP.BWEIGHT
+bw <- read.csv('bwgt.csv', header = TRUE, stringsAsFactors = TRUE,na.strings=c("","NA"))
+colnames(bw)[1] <- "LowBirthWgt"
+
+```
+
+
+```{r}
+tally(~ AgeGroup + Race, data=bw)
+tally(~ Race | AgeGroup, data=bw)
+
+library(mosaic)
+mytab = tally(~ Race | AgeGroup, data=bw)
+addmargins(mytab)
+prop.table(mytab, 1)
+```
+
+```{r, message=FALSE, warning=FALSE}
+library(epitools)
+attach(bw)
+mytab = tally(~ LowBirthWgt | Death, data=bw)
+addmargins(mytab)
+prop.table(mytab, 1)
+riskratio(x=Smoking, y=Death)
+```
+<!-- nathaniel code starting here. -->
+### First 5 entries
+```{r}
+bw[1:5,]
+```
+### Statistics for low birthweight by smoking
+```{r}
+lbxs <- tally(~ LowBirthWgt | Smoking, useNA = "no", data = bw)
+addmargins(lbxs)
+chisq.test(lbxs)
+fisher.test(lbxs)
+riskratio(lbxs)
+oddsratio(lbxs)
+```
+
+In the tests above, we obtain p-values that are > 0.05. Additionally, confidence intervals above include 1. These results indicate that there is no statistically significant relationship between low birth weight and smoking.
+
+### Statistics for low birthweight by drinking
+```{r}
+lbxd <- tally(~ LowBirthWgt | Drinking, useNA ="no", data = bw)
+addmargins(lbxd)
+chisq.test(lbxd)
+fisher.test(lbxd)
+riskratio(lbxd)
+oddsratio(lbxd)
+```
+
+In the tests above, we obtain results similar to before when conditioning upon smoking. In particular, we found p-values > 0.05 and confidence intervals that include 1. These results also indicate that drinking is not a statistically significant factor in understanding low birth weight.
+
+### Statistics for low birthweight by smoking when death=no
+```{r}
+bwlife <- bw %>% filter(bw[,6]=='No')
+lbxsxdn<- tally(~ LowBirthWgt | Smoking, useNA ="no", data = bwlife)
+addmargins(lbxsxdn)
+chisq.test(lbxsxdn)
+fisher.test(lbxsxdn)
+riskratio(lbxsxdn)
+oddsratio(lbxsxdn)
+```
+
+P-values and confidence intervals above indicate that, for those who did not die, smoking was not a statistically significant factor for low birth weight.
+
+### Statistics for low birthweight by smoking when death=yes
+```{r}
+bwdeath <- bw %>% filter(bw[,6]=='Yes')
+lbxsxdy<- tally(~ LowBirthWgt | Smoking, useNA ="no", data = bwdeath)
+addmargins(lbxsxdy)
+chisq.test(lbxsxdy)
+fisher.test(lbxsxdy)
+riskratio(lbxsxdy)
+oddsratio(lbxsxdy)
+```
+
+When controlling for those who did die, the p-values and confidence intervals above indicate that smoking is not a statistically significant factor for low birth weight.
+
+
+### Statistics for low birthweight by smoking by death
+```{r}
+mantelhaen.test(tally(~ LowBirthWgt | Smoking + Death, useNA ="no", data = bw))
+DescTools::BreslowDayTest(tally(~ LowBirthWgt | Smoking + Death, useNA ="no", data = bw))
+```
+
+
+### Statistics for low birthweight by drinking when death=no
+```{r}
+lbxdrxdn<- tally(~ LowBirthWgt | Drinking, useNA ="no", data = bwlife)
+addmargins(lbxdrxdn)
+chisq.test(lbxdrxdn)
+fisher.test(lbxdrxdn)
+riskratio(lbxdrxdn)
+oddsratio(lbxdrxdn)
+```
+
+The confidence intervals containing 1 and p-values > 0.05 above lead us to conclude that, for those who did not die, drinking was not a statistically significant factor for low birth weight.
+
+
+### Statistics for low birthweight by drinking when death=yes
+```{r}
+lbxdrxdy<- tally(~ LowBirthWgt | Drinking, useNA ="no", data = bwdeath)
+addmargins(lbxdrxdy)
+chisq.test(lbxdrxdy)
+fisher.test(lbxdrxdy)
+riskratio(lbxdrxdy)
+oddsratio(lbxdrxdy)
+```
+
+The confidence intervals containing 1 and p-values > 0.05 above lead us to conclude that, for those who did die, drinking was not a statistically significant factor for low birth weight.
+
+### Statistics for low birthweight by drinking by death
+```{r}
+mantelhaen.test(tally(~ LowBirthWgt | Drinking + Death, useNA ="no", data = bw))
+DescTools::BreslowDayTest(tally(~ LowBirthWgt | Drinking + Death, useNA ="no", data = bw))
+```
+
+### Statistics for death by low birthweight
+```{r}
+dxlb <- tally(~ Death | LowBirthWgt, useNA ="no", data = bw)
+addmargins(dxlb)
+chisq.test(dxlb)
+fisher.test(dxlb)
+riskratio(dxlb)
+oddsratio(dxlb)
+```
+
+Since the p-values above are < 0.05, and since the confidence intervals do not include 1, we conclude that there is a significant relationship between low birth weight and infants that died. In particular, the infants with low birth weight were found to be approximately 8.15 times more likely to die than those who did not have low birth weight.

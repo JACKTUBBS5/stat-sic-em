@@ -1,0 +1,218 @@
+---
+title: "Birth Weight"
+author: "Caleb Fox, Natalie deBonoPaula, Weijiang Hou"
+date: "11/12/2021"
+output: 
+  latex_document:
+    toc: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options("repos" = c(CRAN = "https://cran.rstudio.com"))
+
+```
+
+```{r wrap-hook, include=FALSE}
+#This is to wrap text in output
+library(knitr)
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+```
+
+Needed Packages
+```{r, message = FALSE, include = FALSE}
+
+# if(!require(FSA)){install.packages("FSA")}
+# if(!require(ggplot2)){install.packages("ggplot2")}
+# if (!require("mosaic")) install.packages("mosaic", dep=FALSE)
+# if (!require("nortest")) install.packages("nortest", dep=TRUE)
+# if (!require("epitools")) install.packages("epitools", dep=TRUE)
+# if (!require("prettyR")) install.packages("prettyR", dep=TRUE)
+# if (!require("rms")) install.packages("rms", dep=TRUE)
+lapply(c("FSA", "tidyverse", "mosaic", "nortest", "epitools", "prettyR", "rms", "epitools", "epiR", "DescTools", "knitr"), require, character.only = TRUE)
+# add other as needed
+```
+
+## Problem -- Infant Birth Weight Data
+
+Read data from SAS input file
+```{r}
+# this data came from SASHELP.BWEIGHT
+bw = read.csv('bwgt.csv', header = TRUE, fileEncoding = 'UTF-8-BOM')
+bw = data.frame(bw)[!(bw$Smoking == ""),]
+#summary(bw)
+bw = transform(bw, AgeGroup.f = as.factor(AgeGroup))
+bw = transform(bw, Race.f = as.factor(Race))
+bw = transform(bw, Drinking.f = as.factor(Drinking))
+bw = transform(bw, Death.f = as.factor(Death))
+bw = transform(bw, Smoking.f = as.factor(Smoking))
+bw = transform(bw, SomeCollege.f = as.factor(SomeCollege))
+bw = transform(bw, LowBirthWgt.f = as.factor(LowBirthWgt))
+```
+```{r}
+tally(~ AgeGroup + Race.f, data=bw)
+tally(~ Race.f | AgeGroup.f, data=bw)
+
+mytab = tally(~ Race.f | AgeGroup.f, data=bw)
+addmargins(mytab)
+prop.table(mytab, 1)
+```
+
+```{r, message=FALSE, warning=FALSE}
+attach(bw)
+mytab = tally(~ LowBirthWgt.f | Death.f, data=bw)
+addmargins(mytab)
+prop.table(mytab, 1)
+riskratio(x=Smoking.f, y=Death.f)
+```
+
+
+# Code 1
+## Summary Statistics
+```{r}
+summary(bw)
+head(bw)
+```
+
+# Code 2
+
+## Test for Association Between Low Birth Weight and Smoking
+
+```{r}
+bw_smoking_table = tally(~ LowBirthWgt.f | Smoking.f, data=bw)
+addmargins(bw_smoking_table)
+prop.table(bw_smoking_table, 1)
+```
+```{r}
+fisher.test(bw_smoking_table)
+chisq.test(bw_smoking_table)
+```
+Both p-values are greater than 0.05.
+```{r, linewidth = 85}
+ratio <- table(bw$Smoking.f,bw$LowBirthWgt.f)
+epi.2by2(ratio, method = "cohort.count", interpret = TRUE)
+```
+Because 1 is in the odds ratio confidence interval and the p-values for the Fisher's exact test and Chi-Square test are above 0.05, we fail to reject that there is a significant association between low birth weight and smoking.
+
+## Test for Association Between Low Birth Weight and Drinking
+
+```{r}
+bw_drinking_table = tally(~ LowBirthWgt.f | Drinking.f, data=bw)
+addmargins(bw_drinking_table)
+prop.table(bw_drinking_table, 1)
+```
+
+
+```{r}
+fisher.test(bw_drinking_table)
+chisq.test(bw_drinking_table)
+```
+Both p-values are greater than 0.05.
+```{r, linewidth = 85}
+ratio <- table(bw$Drinking.f,bw$LowBirthWgt.f)
+epi.2by2(ratio, method = "cohort.count", interpret = TRUE)
+```
+Because 1 is in the odds ratio confidence interval and the p-values for the Fisher's exact test and Chi-Square test are above 0.05, we fail to reject that there is a significant association between low birth weight and drinking.
+
+# Code 3
+## Test for Association between Low Birth Weight and Smoking, Controlling for Death
+### Death = "Yes"
+```{r, linewidth = 85}
+deathdaty <- bw |> filter(Death.f == "Yes")
+smokingtaby <- tally(~ Smoking.f | LowBirthWgt.f, data = deathdaty)
+epi.2by2(smokingtaby, method = "cohort.count", interpret = TRUE)
+```
+Because 1 is in the odds ratio confidence interval and the p-values for the Fisher's exact test and Chi-Square test are above 0.05, we fail to reject that there is a significant association between low birth weight and smoking when Death = "Yes".
+
+### Death = "No"
+```{r, linewidth = 85}
+deathdatn <- bw |> filter(Death.f == "No")
+smokingtabn <- tally(~ Smoking.f | LowBirthWgt.f, data = deathdatn)
+epi.2by2(smokingtabn, method = "cohort.count", interpret = TRUE)
+```
+Because 1 is in the odds ratio confidence interval and the p-values for the Fisher's exact test and Chi-Square test are above 0.05, we fail to reject that there is a significant association between low birth weight and smoking when Death = "No".
+
+
+### General
+```{r}
+mysarray <- array(c(smokingtaby, smokingtabn),dim = c(2,2,2))
+mantelhaen.test(mysarray)
+DescTools::BreslowDayTest(mysarray)
+```
+Both p-values are greater than 0.05, so we fail to reject that the common odds ratio is 1 and fail to reject that the odds ratios are homogeneous.
+
+## Test for Association between Low Birth Weight and Drinking, Controlling for Death
+
+### Death = "Yes"
+```{r, linewidth = 85}
+drinkingtaby <- tally(~ Drinking.f | LowBirthWgt.f, data = deathdaty)
+epi.2by2(drinkingtaby, method = "cohort.count", interpret = TRUE)
+```
+Because 1 is in the odds ratio confidence interval and the p-values for the Fisher's exact test and Chi-Square test are above 0.05, we fail to reject that there is a significant association between low birth weight and drinking when Death = "Yes".
+
+
+### Death = "No"
+```{r, linewidth = 85}
+drinkingtabn <- tally(~ Drinking.f | LowBirthWgt.f, data = deathdatn)
+epi.2by2(drinkingtabn, method = "cohort.count", interpret = TRUE)
+```
+Because 1 is in the odds ratio confidence interval and the p-values for the Fisher's exact test and Chi-Square test are above 0.05, we fail to reject that there is a significant association between low birth weight and drinking when Death = "No".
+
+### General
+```{r}
+mydarray <- array(c(drinkingtaby, drinkingtabn), dim = c(2,2,2))
+mantelhaen.test(mydarray)
+DescTools::BreslowDayTest(mydarray)
+```
+Both p-values are greater than 0.05, so we fail to reject that the common odds ratio is 1 and fail to reject that the odds ratios are homogeneous.
+
+# Code 4
+## Test for Association between Low Birth Weight and Death
+
+```{r, linewidth = 85}
+mytab = tally(~ LowBirthWgt.f | Death.f, data=bw)
+addmargins(mytab)
+prop.table(mytab, 1)
+
+fisher.test(mytab)
+chisq.test(mytab)
+
+ratio <- table(bw$Death.f,bw$LowBirthWgt.f)
+epi.2by2(ratio, method = "cohort.count", interpret = TRUE)
+```
+
+
+From the frequency table of Death by Low birth weight, we know that low birth weight is more likely to lead to death.
+The Chi-square test and the Fisher's test shows that there are enough statistical evidence to conclude that the odds ratio is more than one of death by low birth weight, that is, death and low birth weight are positively correlated.
+The Chi-square test provides the 95% CI of Death by Low birth weight is (18.3410, 28.5869), which is far away from 1 and does not contain "0".
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

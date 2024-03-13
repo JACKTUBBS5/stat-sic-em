@@ -1,0 +1,1330 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\title{Birth Weight}
+\author{Team C}
+\date{11/03/2021}
+
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Birth Weight},
+  pdfauthor={Team C},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\begin{document}
+\maketitle
+
+Needed Packages
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(FSA))\{}\FunctionTok{install.packages}\NormalTok{(}\StringTok{"FSA"}\NormalTok{)\}}
+\ControlFlowTok{if}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(ggplot2))\{}\FunctionTok{install.packages}\NormalTok{(}\StringTok{"ggplot2"}\NormalTok{)\}}
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"mosaic"}\NormalTok{)) }\FunctionTok{install.packages}\NormalTok{(}\StringTok{"mosaic"}\NormalTok{, }\AttributeTok{dep=}\ConstantTok{FALSE}\NormalTok{)}
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"nortest"}\NormalTok{)) }\FunctionTok{install.packages}\NormalTok{(}\StringTok{"nortest"}\NormalTok{, }\AttributeTok{dep=}\ConstantTok{TRUE}\NormalTok{)}
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"epitools"}\NormalTok{)) }\FunctionTok{install.packages}\NormalTok{(}\StringTok{"epitools"}\NormalTok{, }\AttributeTok{dep=}\ConstantTok{TRUE}\NormalTok{)}
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"prettyR"}\NormalTok{)) }\FunctionTok{install.packages}\NormalTok{(}\StringTok{"prettyR"}\NormalTok{, }\AttributeTok{dep=}\ConstantTok{TRUE}\NormalTok{)}
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"rms"}\NormalTok{)) }\FunctionTok{install.packages}\NormalTok{(}\StringTok{"rms"}\NormalTok{, }\AttributeTok{dep=}\ConstantTok{TRUE}\NormalTok{)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\CommentTok{\# add other as needed}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{problem-infant-birth-weight-data}{%
+\subsection{Problem -- Infant Birth Weight
+Data}\label{problem-infant-birth-weight-data}}
+
+Read data into R
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# this data came from SASHELP.BWEIGHT}
+\NormalTok{bw }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{\textquotesingle{}bwgt.csv\textquotesingle{}}\NormalTok{)}
+\NormalTok{bw }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(bw)}
+\CommentTok{\#summary(bw)}
+\NormalTok{bw }\OtherTok{=} \FunctionTok{transform}\NormalTok{(bw, }\AttributeTok{AgeGroup.f =} \FunctionTok{as.factor}\NormalTok{(AgeGroup))}
+\NormalTok{bw }\OtherTok{=} \FunctionTok{transform}\NormalTok{(bw, }\AttributeTok{Race.f =} \FunctionTok{as.factor}\NormalTok{(Race))}
+\NormalTok{bw }\OtherTok{=} \FunctionTok{transform}\NormalTok{(bw, }\AttributeTok{Drinking.f =} \FunctionTok{as.factor}\NormalTok{(Drinking))}
+\NormalTok{bw }\OtherTok{=} \FunctionTok{transform}\NormalTok{(bw, }\AttributeTok{Death.f =} \FunctionTok{as.factor}\NormalTok{(Death))}
+\NormalTok{bw }\OtherTok{=} \FunctionTok{transform}\NormalTok{(bw, }\AttributeTok{Smoking.f =} \FunctionTok{as.factor}\NormalTok{(Smoking))}
+\NormalTok{bw }\OtherTok{=} \FunctionTok{transform}\NormalTok{(bw, }\AttributeTok{SomeCollege.f =} \FunctionTok{as.factor}\NormalTok{(SomeCollege))}
+\NormalTok{bw }\OtherTok{=} \FunctionTok{transform}\NormalTok{(bw, }\AttributeTok{LowBirthWgt.f =} \FunctionTok{as.factor}\NormalTok{(bw}\SpecialCharTok{$}\NormalTok{LowBirthWgt))}
+\end{Highlighting}
+\end{Shaded}
+
+\newpage
+
+\hypertarget{code-1---data-summary}{%
+\section{Code 1 - Data Summary}\label{code-1---data-summary}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(bw)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  LowBirthWgt          Married             AgeGroup         Race          
+##  Length:3089        Length:3089        Min.   :1.000   Length:3089       
+##  Class :character   Class :character   1st Qu.:2.000   Class :character  
+##  Mode  :character   Mode  :character   Median :2.000   Mode  :character  
+##                                        Mean   :2.021                     
+##                                        3rd Qu.:2.000                     
+##                                        Max.   :3.000                     
+##    Drinking            Death             Smoking          SomeCollege       
+##  Length:3089        Length:3089        Length:3089        Length:3089       
+##  Class :character   Class :character   Class :character   Class :character  
+##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+##                                                                             
+##                                                                             
+##                                                                             
+##  AgeGroup.f      Race.f     Drinking.f Death.f    Smoking.f  SomeCollege.f
+##  1: 357     Asian   : 145      : 197   No :2483      : 197      : 245     
+##  2:2310     Black   : 518   No :2493   Yes: 606   No :2191   No :1526     
+##  3: 422     Hispanic: 624   Yes: 399              Yes: 701   Yes:1318     
+##             Native  :  32                                                 
+##             White   :1770                                                 
+##                                                                           
+##  LowBirthWgt.f
+##  No :2476     
+##  Yes: 613     
+##               
+##               
+##               
+## 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(bw}\SpecialCharTok{$}\NormalTok{LowBirthWgt)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Length     Class      Mode 
+##      3089 character character
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(bw}\SpecialCharTok{$}\NormalTok{Smoking)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Length     Class      Mode 
+##      3089 character character
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mytab }\OtherTok{\textless{}{-}} \FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ Race.f }\SpecialCharTok{|}\NormalTok{ AgeGroup.f, }\AttributeTok{data=}\NormalTok{bw)}
+\FunctionTok{addmargins}\NormalTok{(mytab)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           AgeGroup.f
+## Race.f        1    2    3  Sum
+##   Asian       8  101   36  145
+##   Black      91  375   52  518
+##   Hispanic   83  475   66  624
+##   Native      6   22    4   32
+##   White     169 1337  264 1770
+##   Sum       357 2310  422 3089
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mytab1 }\OtherTok{\textless{}{-}} \FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ Married }\SpecialCharTok{|}\NormalTok{ AgeGroup.f, }\AttributeTok{data=}\NormalTok{bw)}
+\FunctionTok{addmargins}\NormalTok{(mytab1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        AgeGroup.f
+## Married    1    2    3  Sum
+##     No    61 1533  351 1945
+##     Yes  296  777   71 1144
+##     Sum  357 2310  422 3089
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mytab2 }\OtherTok{\textless{}{-}} \FunctionTok{tally}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ LowBirthWgt.f }\SpecialCharTok{|}\NormalTok{ Race.f, }\AttributeTok{data=}\NormalTok{bw)}
+\FunctionTok{addmargins}\NormalTok{(mytab2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              Race.f
+## LowBirthWgt.f Asian Black Hispanic Native White  Sum
+##           No    117   342      523     26  1468 2476
+##           Yes    28   176      101      6   302  613
+##           Sum   145   518      624     32  1770 3089
+\end{verbatim}
+
+\newpage
+
+\hypertarget{code-2}{%
+\section{Code 2}\label{code-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bw }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{\textquotesingle{}bwgt.csv\textquotesingle{}}\NormalTok{)}
+\CommentTok{\# Create a new smaller data set of size 2500}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{1568}\NormalTok{)}
+\NormalTok{ssize }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(bw),}\FunctionTok{round}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(bw) }\SpecialCharTok{*}\NormalTok{ .}\DecValTok{8092}\NormalTok{))}
+\NormalTok{new\_bwgt }\OtherTok{\textless{}{-}}\NormalTok{ bw }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{slice}\NormalTok{(ssize)}
+\NormalTok{new\_bwgt }\OtherTok{\textless{}{-}}\NormalTok{new\_bwgt  }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{na\_if}\NormalTok{(}\StringTok{""}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}\NormalTok{  na.omit}
+ 
+\CommentTok{\# Make the following columns }
+\NormalTok{new\_bwgt }\OtherTok{\textless{}{-}}\NormalTok{ new\_bwgt }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{( }\AttributeTok{AgeGroup.f =} \FunctionTok{factor}\NormalTok{(AgeGroup), }\AttributeTok{Race.f =} \FunctionTok{factor}\NormalTok{(Race), }
+\AttributeTok{Drinking.f =} \FunctionTok{factor}\NormalTok{(Drinking), }\AttributeTok{Death.f =} \FunctionTok{factor}\NormalTok{(Death),}\AttributeTok{Smoking.f =} \FunctionTok{factor}\NormalTok{(Smoking),}
+\AttributeTok{SomeCollege.f =} \FunctionTok{factor}\NormalTok{(SomeCollege), }\AttributeTok{LowBirthWgt.f =} \FunctionTok{factor}\NormalTok{(LowBirthWgt))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{test-for-association-between-low-birth-weight-and-smoking}{%
+\subsubsection{Test for Association between Low Birth Weight and
+smoking}\label{test-for-association-between-low-birth-weight-and-smoking}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Risk ratio}
+\NormalTok{RR1}\OtherTok{\textless{}{-}}\FunctionTok{riskratio}\NormalTok{(}\AttributeTok{x=}\NormalTok{new\_bwgt}\SpecialCharTok{$}\NormalTok{Smoking.f, }\AttributeTok{y=}\NormalTok{new\_bwgt}\SpecialCharTok{$}\NormalTok{LowBirthWgt.f)}
+\NormalTok{RR1}\SpecialCharTok{$}\NormalTok{measure}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          risk ratio with 95% C.I.
+## Predictor estimate     lower    upper
+##       No   1.00000        NA       NA
+##       Yes  1.13645 0.9433483 1.369078
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{RR1}\SpecialCharTok{$}\NormalTok{p.value}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          two-sided
+## Predictor midp.exact fisher.exact chi.square
+##       No          NA           NA         NA
+##       Yes  0.1838204    0.1963432  0.1814622
+\end{verbatim}
+
+Since 95\% C.I. does contain the value of 1, which is the value of no
+smoking. So, there is insufficient evidence to conclude that the two
+groups are statistically significantly different. Also, the p.values can
+confirm our found.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#chisq test}
+\FunctionTok{chisq.test}\NormalTok{(new\_bwgt}\SpecialCharTok{$}\NormalTok{Smoking.f,new\_bwgt}\SpecialCharTok{$}\NormalTok{LowBirthWgt.f)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's Chi-squared test with Yates' continuity correction
+## 
+## data:  new_bwgt$Smoking.f and new_bwgt$LowBirthWgt.f
+## X-squared = 1.625, df = 1, p-value = 0.2024
+\end{verbatim}
+
+The chi-squared result shows that there is not enough evidence to say
+the low birth weight is causing by the smoking.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#oddsratio}
+\FunctionTok{oddsratio}\NormalTok{(new\_bwgt}\SpecialCharTok{$}\NormalTok{Smoking.f, new\_bwgt}\SpecialCharTok{$}\NormalTok{LowBirthWgt.f,}\AttributeTok{rev=}\FunctionTok{c}\NormalTok{(}\StringTok{"b"}\NormalTok{),}\AttributeTok{method=}\StringTok{"wald"}\NormalTok{)}\SpecialCharTok{$}\NormalTok{measure}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          odds ratio with 95% C.I.
+## Predictor estimate     lower    upper
+##       Yes 1.000000        NA       NA
+##       No  1.174036 0.9276977 1.485787
+\end{verbatim}
+
+Even though the odd ratio of the non-smoking group is greater than one,
+the value is just 1.17. Also, the 95\% C.I. does include 1, so our
+conclusion will be the same as above. We cannot say when women is
+smoking, it is more likely to deliver a low birth weight baby.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Fisher’s Exact Test }
+\NormalTok{tab22}\OtherTok{\textless{}{-}} \FunctionTok{table}\NormalTok{(}\AttributeTok{x=}\NormalTok{new\_bwgt}\SpecialCharTok{$}\NormalTok{Smoking.f , }\AttributeTok{y=}\NormalTok{new\_bwgt}\SpecialCharTok{$}\NormalTok{LowBirthWgt.f)}
+\NormalTok{tab22}\OtherTok{\textless{}{-}} \FunctionTok{as.matrix}\NormalTok{(tab22)}
+
+\CommentTok{\# Two{-}sided alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(tab22)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  tab22
+## p-value = 0.1963
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.9190588 1.4931839
+## sample estimates:
+## odds ratio 
+##   1.173928
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# One{-}sided less than alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(tab22,}\AttributeTok{alternative=}\StringTok{"less"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  tab22
+## p-value = 0.918
+## alternative hypothesis: true odds ratio is less than 1
+## 95 percent confidence interval:
+##  0.000000 1.438835
+## sample estimates:
+## odds ratio 
+##   1.173928
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# One{-}sided greater than alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(tab22,}\AttributeTok{alternative=}\StringTok{"greater"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  tab22
+## p-value = 0.1019
+## alternative hypothesis: true odds ratio is greater than 1
+## 95 percent confidence interval:
+##  0.955358      Inf
+## sample estimates:
+## odds ratio 
+##   1.173928
+\end{verbatim}
+
+All these three will lead to the same conclusion as we mentioned above,
+that is, there is no significant association at \(\alpha=0.5\) between
+smoking and low birth weight.
+
+\hypertarget{section}{%
+\section{}\label{section}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# MH test:}
+\FunctionTok{mantelhaen.test}\NormalTok{(new\_bwgt}\SpecialCharTok{$}\NormalTok{Smoking.f, new\_bwgt}\SpecialCharTok{$}\NormalTok{LowBirthWgt.f, new\_bwgt}\SpecialCharTok{$}\NormalTok{Drinking.f,}\AttributeTok{correct=}\NormalTok{T)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Mantel-Haenszel chi-squared test with continuity correction
+## 
+## data:  new_bwgt$Smoking.f and new_bwgt$LowBirthWgt.f and new_bwgt$Drinking.f
+## Mantel-Haenszel X-squared = 5.9382, df = 1, p-value = 0.01482
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  1.089772 2.005459
+## sample estimates:
+## common odds ratio 
+##          1.478341
+\end{verbatim}
+
+\vspace{1 in}
+
+\hypertarget{test-for-association-between-low-birth-weight-and-drinking}{%
+\subsubsection{Test for Association between Low Birth Weight and
+drinking}\label{test-for-association-between-low-birth-weight-and-drinking}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Risk ratio}
+\NormalTok{RR1}\OtherTok{\textless{}{-}}\FunctionTok{riskratio}\NormalTok{(}\AttributeTok{x=}\NormalTok{new\_bwgt}\SpecialCharTok{$}\NormalTok{Drinking.f, }\AttributeTok{y=}\NormalTok{new\_bwgt}\SpecialCharTok{$}\NormalTok{LowBirthWgt.f)}
+\NormalTok{RR1}\SpecialCharTok{$}\NormalTok{measure}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          risk ratio with 95% C.I.
+## Predictor  estimate     lower   upper
+##       No  1.0000000        NA      NA
+##       Yes 0.9057919 0.7032788 1.16662
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{RR1}\SpecialCharTok{$}\NormalTok{p.value}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          two-sided
+## Predictor midp.exact fisher.exact chi.square
+##       No          NA           NA         NA
+##       Yes  0.4434666    0.4896086  0.4393742
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#chisq test}
+\FunctionTok{chisq.test}\NormalTok{(new\_bwgt}\SpecialCharTok{$}\NormalTok{Drinking.f,new\_bwgt}\SpecialCharTok{$}\NormalTok{LowBirthWgt.f)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's Chi-squared test with Yates' continuity correction
+## 
+## data:  new_bwgt$Drinking.f and new_bwgt$LowBirthWgt.f
+## X-squared = 0.48508, df = 1, p-value = 0.4861
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#oddsratio}
+\FunctionTok{oddsratio}\NormalTok{(new\_bwgt}\SpecialCharTok{$}\NormalTok{Drinking.f, new\_bwgt}\SpecialCharTok{$}\NormalTok{LowBirthWgt.f,}\AttributeTok{rev=}\FunctionTok{c}\NormalTok{(}\StringTok{"b"}\NormalTok{),}\AttributeTok{method=}\StringTok{"wald"}\NormalTok{)}\SpecialCharTok{$}\NormalTok{measure}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          odds ratio with 95% C.I.
+## Predictor estimate     lower    upper
+##       Yes 1.000000        NA       NA
+##       No  0.885103 0.6494903 1.206188
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Fisher’s Exact Test }
+\NormalTok{tab23}\OtherTok{\textless{}{-}} \FunctionTok{table}\NormalTok{(}\AttributeTok{x=}\NormalTok{new\_bwgt}\SpecialCharTok{$}\NormalTok{Drinking.f, }\AttributeTok{y=}\NormalTok{new\_bwgt}\SpecialCharTok{$}\NormalTok{LowBirthWgt.f)}
+\NormalTok{tab22}\OtherTok{\textless{}{-}} \FunctionTok{as.matrix}\NormalTok{(tab23)}
+
+\CommentTok{\# Two{-}sided alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(tab22)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  tab22
+## p-value = 0.4896
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.6372546 1.2133958
+## sample estimates:
+## odds ratio 
+##   0.885151
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# One{-}sided less than alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(tab22,}\AttributeTok{alternative=}\StringTok{"less"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  tab22
+## p-value = 0.2449
+## alternative hypothesis: true odds ratio is less than 1
+## 95 percent confidence interval:
+##  0.000000 1.157093
+## sample estimates:
+## odds ratio 
+##   0.885151
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# One{-}sided greater than alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(tab22,}\AttributeTok{alternative=}\StringTok{"greater"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  tab22
+## p-value = 0.8015
+## alternative hypothesis: true odds ratio is greater than 1
+## 95 percent confidence interval:
+##  0.6714868       Inf
+## sample estimates:
+## odds ratio 
+##   0.885151
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# MH test:}
+\FunctionTok{mantelhaen.test}\NormalTok{(new\_bwgt}\SpecialCharTok{$}\NormalTok{Drinking.f, new\_bwgt}\SpecialCharTok{$}\NormalTok{LowBirthWgt.f, new\_bwgt}\SpecialCharTok{$}\NormalTok{Smoking.f,}\AttributeTok{correct=}\NormalTok{T)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Mantel-Haenszel chi-squared test with continuity correction
+## 
+## data:  new_bwgt$Drinking.f and new_bwgt$LowBirthWgt.f and new_bwgt$Smoking.f
+## Mantel-Haenszel X-squared = 4.4378, df = 1, p-value = 0.03515
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.4277696 0.9516248
+## sample estimates:
+## common odds ratio 
+##         0.6380252
+\end{verbatim}
+
+All 5 tests' outputs give the same result, at \(\alpha=0.5\),there is no
+strong evidence to conclude the relation between having a low birth
+weight baby and drinking is significant.
+
+\newpage
+
+\hypertarget{code-3}{%
+\section{Code 3}\label{code-3}}
+
+\hypertarget{test-for-association-between-low-birth-weight-and-smoking-controlling-for-death}{%
+\subsubsection{Test for Association between Low Birth Weight and Smoking
+controlling for
+Death}\label{test-for-association-between-low-birth-weight-and-smoking-controlling-for-death}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{new\_bwgt1}\OtherTok{\textless{}{-}}\FunctionTok{table}\NormalTok{(new\_bwgt)}
+\NormalTok{tab1}\OtherTok{\textless{}{-}}\FunctionTok{margin.table}\NormalTok{(new\_bwgt1, }\FunctionTok{c}\NormalTok{(}\DecValTok{15}\NormalTok{,}\DecValTok{13}\NormalTok{,}\DecValTok{12}\NormalTok{))}
+\NormalTok{d\_yes}\OtherTok{\textless{}{-}}\NormalTok{tab1[, , Death.f }\OtherTok{=} \StringTok{"No"}\NormalTok{]}
+\NormalTok{d\_no}\OtherTok{\textless{}{-}}\NormalTok{tab1[, , Death.f }\OtherTok{=} \StringTok{"Yes"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Risk ratio for Death= Yes}
+\NormalTok{RR1}\OtherTok{\textless{}{-}}\FunctionTok{riskratio}\NormalTok{(d\_yes)}
+\NormalTok{RR1}\SpecialCharTok{$}\NormalTok{measure}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              risk ratio with 95% C.I.
+## LowBirthWgt.f estimate     lower    upper
+##           No  1.000000        NA       NA
+##           Yes 1.162103 0.8812414 1.532478
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{RR1}\SpecialCharTok{$}\NormalTok{p.value}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              two-sided
+## LowBirthWgt.f midp.exact fisher.exact chi.square
+##           No          NA           NA         NA
+##           Yes  0.2991542    0.3191694  0.2964308
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Risk ratio for Death= No}
+\NormalTok{RR1}\OtherTok{\textless{}{-}}\FunctionTok{riskratio}\NormalTok{(d\_no)}
+\NormalTok{RR1}\SpecialCharTok{$}\NormalTok{measure}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              risk ratio with 95% C.I.
+## LowBirthWgt.f  estimate     lower   upper
+##           No  1.0000000        NA      NA
+##           Yes 0.8456945 0.6186096 1.15614
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{RR1}\SpecialCharTok{$}\NormalTok{p.value}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              two-sided
+## LowBirthWgt.f midp.exact fisher.exact chi.square
+##           No          NA           NA         NA
+##           Yes  0.3015446    0.3031373  0.2982256
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#chisq test for Death= Yes}
+\FunctionTok{chisq.test}\NormalTok{(d\_yes)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's Chi-squared test with Yates' continuity correction
+## 
+## data:  d_yes
+## X-squared = 0.89219, df = 1, p-value = 0.3449
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#chisq test for Death= No}
+\FunctionTok{chisq.test}\NormalTok{(d\_no)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's Chi-squared test with Yates' continuity correction
+## 
+## data:  d_no
+## X-squared = 0.8562, df = 1, p-value = 0.3548
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#oddsratio for Death= Yes}
+\FunctionTok{oddsratio}\NormalTok{(d\_yes,}\AttributeTok{rev=}\FunctionTok{c}\NormalTok{(}\StringTok{"b"}\NormalTok{),}\AttributeTok{method=}\StringTok{"wald"}\NormalTok{)}\SpecialCharTok{$}\NormalTok{measure}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              odds ratio with 95% C.I.
+## LowBirthWgt.f estimate     lower    upper
+##           Yes 1.000000        NA       NA
+##           No  1.220403 0.8392721 1.774614
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#oddsratio for Death= No}
+\FunctionTok{oddsratio}\NormalTok{(d\_no,}\AttributeTok{rev=}\FunctionTok{c}\NormalTok{(}\StringTok{"b"}\NormalTok{),}\AttributeTok{method=}\StringTok{"wald"}\NormalTok{)}\SpecialCharTok{$}\NormalTok{measure}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              odds ratio with 95% C.I.
+## LowBirthWgt.f  estimate     lower    upper
+##           Yes 1.0000000        NA       NA
+##           No  0.7904843 0.5073498 1.231626
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Fisher’s Exact Test for Death=Yes}
+\CommentTok{\# Two{-}sided alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(d\_yes)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  d_yes
+## p-value = 0.3192
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.8174221 1.7929076
+## sample estimates:
+## odds ratio 
+##   1.220293
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# One{-}sided less than alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(d\_yes,}\AttributeTok{alternative=}\StringTok{"less"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  d_yes
+## p-value = 0.8728
+## alternative hypothesis: true odds ratio is less than 1
+## 95 percent confidence interval:
+##  0.00000 1.69251
+## sample estimates:
+## odds ratio 
+##   1.220293
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# One{-}sided greater than alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(d\_yes,}\AttributeTok{alternative=}\StringTok{"greater"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  d_yes
+## p-value = 0.172
+## alternative hypothesis: true odds ratio is greater than 1
+## 95 percent confidence interval:
+##  0.8708259       Inf
+## sample estimates:
+## odds ratio 
+##   1.220293
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Fisher’s Exact Test for Death=No}
+\CommentTok{\# Two{-}sided alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(d\_no)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  d_no
+## p-value = 0.3031
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.4968447 1.2674330
+## sample estimates:
+## odds ratio 
+##  0.7909397
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# One{-}sided less than alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(d\_no,}\AttributeTok{alternative=}\StringTok{"less"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  d_no
+## p-value = 0.1772
+## alternative hypothesis: true odds ratio is less than 1
+## 95 percent confidence interval:
+##  0.000000 1.178722
+## sample estimates:
+## odds ratio 
+##  0.7909397
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# One{-}sided greater than alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(d\_no,}\AttributeTok{alternative=}\StringTok{"greater"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  d_no
+## p-value = 0.8756
+## alternative hypothesis: true odds ratio is greater than 1
+## 95 percent confidence interval:
+##  0.532999      Inf
+## sample estimates:
+## odds ratio 
+##  0.7909397
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# MH test:}
+\FunctionTok{mantelhaen.test}\NormalTok{(tab1,}\AttributeTok{correct=}\NormalTok{T)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Mantel-Haenszel chi-squared test with continuity correction
+## 
+## data:  tab1
+## Mantel-Haenszel X-squared = 0.0010773, df = 1, p-value = 0.9738
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.7604251 1.3570002
+## sample estimates:
+## common odds ratio 
+##          1.015823
+\end{verbatim}
+
+\vspace{0.5in}
+
+\hypertarget{test-for-association-between-low-birth-weight-and-drinking-controlling-for-death}{%
+\subsubsection{Test for Association between Low Birth Weight and
+Drinking controlling for
+Death}\label{test-for-association-between-low-birth-weight-and-drinking-controlling-for-death}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{tab2}\OtherTok{\textless{}{-}}\FunctionTok{margin.table}\NormalTok{(new\_bwgt1, }\FunctionTok{c}\NormalTok{(}\DecValTok{15}\NormalTok{,}\DecValTok{11}\NormalTok{,}\DecValTok{12}\NormalTok{))}
+\NormalTok{d\_yes1}\OtherTok{\textless{}{-}}\NormalTok{tab2[, , Death.f }\OtherTok{=} \StringTok{"No"}\NormalTok{]}
+\NormalTok{d\_no1}\OtherTok{\textless{}{-}}\NormalTok{tab2[, , Death.f }\OtherTok{=} \StringTok{"Yes"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Risk ratio for Death= Yes}
+\NormalTok{RR1}\OtherTok{\textless{}{-}}\FunctionTok{riskratio}\NormalTok{(d\_yes1)}
+\NormalTok{RR1}\SpecialCharTok{$}\NormalTok{measure}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              risk ratio with 95% C.I.
+## LowBirthWgt.f estimate     lower    upper
+##           No  1.000000        NA       NA
+##           Yes 1.121268 0.7618986 1.650145
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{RR1}\SpecialCharTok{$}\NormalTok{p.value}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              two-sided
+## LowBirthWgt.f midp.exact fisher.exact chi.square
+##           No          NA           NA         NA
+##           Yes  0.5566217    0.5458626  0.5644661
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Risk ratio for Death= No}
+\NormalTok{RR1}\OtherTok{\textless{}{-}}\FunctionTok{riskratio}\NormalTok{(d\_no1)}
+\NormalTok{RR1}\SpecialCharTok{$}\NormalTok{measure}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              risk ratio with 95% C.I.
+## LowBirthWgt.f  estimate     lower    upper
+##           No  1.0000000        NA       NA
+##           Yes 0.7852063 0.4619528 1.334658
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{RR1}\SpecialCharTok{$}\NormalTok{p.value}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              two-sided
+## LowBirthWgt.f midp.exact fisher.exact chi.square
+##           No          NA           NA         NA
+##           Yes   0.377272    0.4237677  0.3729685
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#chisq test for Death= Yes}
+\FunctionTok{chisq.test}\NormalTok{(d\_yes1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's Chi-squared test with Yates' continuity correction
+## 
+## data:  d_yes1
+## X-squared = 0.20717, df = 1, p-value = 0.649
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#chisq test for Death= No}
+\FunctionTok{chisq.test}\NormalTok{(d\_no1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's Chi-squared test with Yates' continuity correction
+## 
+## data:  d_no1
+## X-squared = 0.53419, df = 1, p-value = 0.4648
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#oddsratio for Death= Yes}
+\FunctionTok{oddsratio}\NormalTok{(d\_yes1,}\AttributeTok{rev=}\FunctionTok{c}\NormalTok{(}\StringTok{"b"}\NormalTok{),}\AttributeTok{method=}\StringTok{"wald"}\NormalTok{)}\SpecialCharTok{$}\NormalTok{measure}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              odds ratio with 95% C.I.
+## LowBirthWgt.f estimate     lower    upper
+##           Yes 1.000000        NA       NA
+##           No  1.143486 0.7244916 1.804796
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#oddsratio for Death= No}
+\FunctionTok{oddsratio}\NormalTok{(d\_no1,}\AttributeTok{rev=}\FunctionTok{c}\NormalTok{(}\StringTok{"b"}\NormalTok{),}\AttributeTok{method=}\StringTok{"wald"}\NormalTok{)}\SpecialCharTok{$}\NormalTok{measure}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              odds ratio with 95% C.I.
+## LowBirthWgt.f  estimate     lower    upper
+##           Yes 1.0000000        NA       NA
+##           No  0.7591707 0.4135274 1.393717
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Fisher’s Exact Test for Death=Yes}
+\CommentTok{\# Two{-}sided alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(d\_yes1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  d_yes1
+## p-value = 0.5459
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.6922058 1.8217709
+## sample estimates:
+## odds ratio 
+##   1.143438
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# One{-}sided less than alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(d\_yes1,}\AttributeTok{alternative=}\StringTok{"less"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  d_yes1
+## p-value = 0.7611
+## alternative hypothesis: true odds ratio is less than 1
+## 95 percent confidence interval:
+##  0.000000 1.702521
+## sample estimates:
+## odds ratio 
+##   1.143438
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# One{-}sided greater than alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(d\_yes1,}\AttributeTok{alternative=}\StringTok{"greater"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  d_yes1
+## p-value = 0.3177
+## alternative hypothesis: true odds ratio is greater than 1
+## 95 percent confidence interval:
+##  0.7501199       Inf
+## sample estimates:
+## odds ratio 
+##   1.143438
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Fisher’s Exact Test for Death=No}
+\CommentTok{\# Two{-}sided alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(d\_no1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  d_no1
+## p-value = 0.4238
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.398984 1.479963
+## sample estimates:
+## odds ratio 
+##   0.759641
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# One{-}sided less than alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(d\_no1,}\AttributeTok{alternative=}\StringTok{"less"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  d_no1
+## p-value = 0.2304
+## alternative hypothesis: true odds ratio is less than 1
+## 95 percent confidence interval:
+##  0.00000 1.33571
+## sample estimates:
+## odds ratio 
+##   0.759641
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# One{-}sided greater than alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(d\_no1,}\AttributeTok{alternative=}\StringTok{"greater"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  d_no1
+## p-value = 0.8531
+## alternative hypothesis: true odds ratio is greater than 1
+## 95 percent confidence interval:
+##  0.4386242       Inf
+## sample estimates:
+## odds ratio 
+##   0.759641
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# MH test:}
+\FunctionTok{mantelhaen.test}\NormalTok{(tab2,}\AttributeTok{correct=}\NormalTok{T)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Mantel-Haenszel chi-squared test without continuity correction
+## 
+## data:  tab2
+## Mantel-Haenszel X-squared = 0.0060663, df = 1, p-value = 0.9379
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  0.6800377 1.4286344
+## sample estimates:
+## common odds ratio 
+##         0.9856598
+\end{verbatim}
+
+According to the tests results shows above, we conclude the association
+between low birth weight and drinking controlling for death is not
+statistical significant.
+
+\newpage
+
+\hypertarget{code-4}{%
+\section{Code 4}\label{code-4}}
+
+\hypertarget{test-for-association-between-low-birth-weight-and-death}{%
+\subsubsection{Test for Association between Low Birth Weight and
+Death}\label{test-for-association-between-low-birth-weight-and-death}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Risk ratio}
+\NormalTok{RR1}\OtherTok{\textless{}{-}}\FunctionTok{riskratio}\NormalTok{(}\AttributeTok{x=}\NormalTok{new\_bwgt}\SpecialCharTok{$}\NormalTok{Death.f, }\AttributeTok{y=}\NormalTok{new\_bwgt}\SpecialCharTok{$}\NormalTok{LowBirthWgt.f)}
+\NormalTok{RR1}\SpecialCharTok{$}\NormalTok{measure}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          risk ratio with 95% C.I.
+## Predictor estimate    lower    upper
+##       No  1.000000       NA       NA
+##       Yes 8.201933 6.962315 9.662259
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{RR1}\SpecialCharTok{$}\NormalTok{p.value}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          two-sided
+## Predictor midp.exact  fisher.exact    chi.square
+##       No          NA            NA            NA
+##       Yes          0 2.342608e-146 4.397064e-176
+\end{verbatim}
+
+According to the risk ratio, since the 95\% confidence interval does not
+contain 1, the association between the low birth weight and death is
+statistical significant.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#chisq test}
+\FunctionTok{chisq.test}\NormalTok{(new\_bwgt}\SpecialCharTok{$}\NormalTok{Death.f,new\_bwgt}\SpecialCharTok{$}\NormalTok{LowBirthWgt.f)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's Chi-squared test with Yates' continuity correction
+## 
+## data:  new_bwgt$Death.f and new_bwgt$LowBirthWgt.f
+## X-squared = 796.62, df = 1, p-value < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#oddsratio}
+\FunctionTok{oddsratio}\NormalTok{(new\_bwgt}\SpecialCharTok{$}\NormalTok{Death.f, new\_bwgt}\SpecialCharTok{$}\NormalTok{LowBirthWgt.f,}\AttributeTok{rev=}\FunctionTok{c}\NormalTok{(}\StringTok{"b"}\NormalTok{),}\AttributeTok{method=}\StringTok{"wald"}\NormalTok{)}\SpecialCharTok{$}\NormalTok{measure}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          odds ratio with 95% C.I.
+## Predictor estimate    lower    upper
+##       Yes  1.00000       NA       NA
+##       No  23.64956 18.22641 30.68632
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Fisher’s Exact Test }
+\NormalTok{tab24}\OtherTok{\textless{}{-}} \FunctionTok{table}\NormalTok{(}\AttributeTok{x=}\NormalTok{new\_bwgt}\SpecialCharTok{$}\NormalTok{Death.f , }\AttributeTok{y=}\NormalTok{new\_bwgt}\SpecialCharTok{$}\NormalTok{LowBirthWgt.f)}
+\NormalTok{tab22}\OtherTok{\textless{}{-}} \FunctionTok{as.matrix}\NormalTok{(tab24)}
+
+\CommentTok{\# Two{-}sided alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(tab24)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  tab24
+## p-value < 2.2e-16
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  18.06601 30.93969
+## sample estimates:
+## odds ratio 
+##   23.58755
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# One{-}sided less than alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(tab24,}\AttributeTok{alternative=}\StringTok{"less"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  tab24
+## p-value = 1
+## alternative hypothesis: true odds ratio is less than 1
+## 95 percent confidence interval:
+##   0.00000 29.65712
+## sample estimates:
+## odds ratio 
+##   23.58755
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# One{-}sided greater than alternative hypothesis}
+\FunctionTok{fisher.test}\NormalTok{(tab24,}\AttributeTok{alternative=}\StringTok{"greater"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  tab24
+## p-value < 2.2e-16
+## alternative hypothesis: true odds ratio is greater than 1
+## 95 percent confidence interval:
+##  18.82176      Inf
+## sample estimates:
+## odds ratio 
+##   23.58755
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# MH test:}
+\FunctionTok{mantelhaen.test}\NormalTok{(new\_bwgt}\SpecialCharTok{$}\NormalTok{Death.f, new\_bwgt}\SpecialCharTok{$}\NormalTok{LowBirthWgt.f, new\_bwgt}\SpecialCharTok{$}\NormalTok{Drinking.f,}\AttributeTok{correct=}\NormalTok{T)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Mantel-Haenszel chi-squared test with continuity correction
+## 
+## data:  new_bwgt$Death.f and new_bwgt$LowBirthWgt.f and new_bwgt$Drinking.f
+## Mantel-Haenszel X-squared = 794.75, df = 1, p-value < 2.2e-16
+## alternative hypothesis: true common odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  18.20822 30.65360
+## sample estimates:
+## common odds ratio 
+##          23.62515
+\end{verbatim}
+
+\end{document}
