@@ -1,0 +1,180 @@
+---
+title: "2 X 2 Contingency Tables"
+author: "jdt"
+date: "12/9/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+In this document we will consider a very simple case where we have two discrete binary variables $X$ and $Y$. Several examples will be considered.
+
+##Example 1 - Asprin use and heart attacks (myocardial infaraction - MI)
+```{r}
+MI <- matrix(c(189, 104, 10845, 10933), nrow = 2)
+dimnames(MI) <- list("Group" = c("Placebo","Aspirin"), "MI" = c("Yes","No"))
+MI
+```
+Complete the table with marginal totals and cell probabilities
+```{r}
+addmargins(MI) 
+prop.table(MI, 1)
+```
+From the table, we estimate the probability of having MI while taking asprin is 0.0094 whereas the probability of having MI when not taking the asprin is 0.017. Neither of these probabilities are large but can we determine if they are statistical different.  A board test would be to determine if the two variables Group and MI are associated using the Pearson chi-square type goodness-of-fit approach.
+```{r}
+chisq.test(MI)
+```
+Since the p-value is very small, one can reject the hyporthesis that the two variables are independent upon one another. Let's  consider the problem of testing to see if the two probabilities differ from zero.
+
+```{r}
+prop.test(MI)
+```
+```{r}
+p.out=prop.test(MI)
+# difference in proportions
+p.out$estimate[1] - p.out$estimate[2]
+```
+
+In this case a better statistic is the relative risk given below 
+```{r}
+prop.out = prop.table(MI, margin = 1)
+# relative risk of placebo vs. aspirin
+prop.out[1,1]/prop.out[2,1]
+
+```
+
+The relative risk is 1.817 which means that those taking the placebo have about a 82% greater liklehood of having MI when compared with those taking the asprin.
+
+Another statistic that is commonly used is the Odds Ratio.
+
+Odds Ratio
+```{r}
+library(epitools) 
+oddsratio.fisher(MI) 
+oddsratio.wald(MI)    #large sample size procedure
+riskratio(MI) 
+riskratio.wald(MI)    #large sample size procedure
+```
+
+## Example 2 - Diagnostic Tests
+A diagnostic test is said to have high accuracy if it achieves a high overall proportion of correct diagnoses. There are actually two aspects of accuracy— namely, the proportion of patients that the diagnostic test correctly identifies as having the disease of interest (the sensitivity of the test) and the proportion of patients that the test correctly identifies as not having the disease (the specificity of the test). The calculation of both assumes that we have a ‘gold standard’ diagnosis against which to evaluate the performance of our diagnostic test. For example, after patients for whom we have the results of the diagnostic test die, they are examined by a pathologist and given a ‘true’ diagnosis. In the account that follows, we shall assume that we are assessing how well our diagnostic test predicts this true diagnosis and conveniently ignore the complications that may arise if the diagnosis against which the test is evaluated is itself fallible.
+
+Consider the following table
+```{r}
+Liver_scan <- matrix(c(231, 27, 32, 54), nrow = 2)
+dimnames(Liver_scan) <- list("Test" = c("positive","negative"), "Disease" = c("Yes","No"))
+Liver_scan
+addmargins(Liver_scan) 
+prob.out = prop.table(Liver_scan, 2)
+prob.out
+sensitivity = prob.out[1,1]
+sensitivity
+specificity = prob.out[2,2]
+specificity
+```
+The sensitivity and specificity are the characteristics of the test (often determined in a laboratory setting). What we want to determine is what are the operating characteristics of the test. These values are dependent (highly) upon how prevalent the disease is within the population that is being tested. These can be described as 
+
+Positive predictive value (PPV) = probability that a patient with a positive liver scan truly has a liver abnormality
+
+Negative predictive value (NPV) = probability that a patient with a negative liver scan does not have liver abnormality
+
+These probabilities can be written as
+
+
+```{r}
+prev = .05
+positive_test = sensitivity*prev + (1 - specificity)*(1 - prev)
+negative_test = (1-sensitivity)*prev + specificity*(1-prev)
+PPV = (sensitivity*prev)/positive_test
+NPV = (specificity*(1 - prev))/negative_test
+#Prevalence = p[Disease]
+prev
+#Positive Test = true positive + false negative
+positive_test
+#True positive test = P[D=yes | T=positive]
+PPV
+#False positive test
+1 - PPV
+#True negative test = P[D=no | T=negative]
+NPV
+#False negative test
+1 - NPV
+#Miss Classification
+miss_class = prev*(1 - sensitivity) + (1 - specificity)*(1 - prev)
+miss_class
+```
+## Example 3 - Comparing Multiple 2 x 2 Tables
+It is not uncommon to have extra variables that act like separate the original table into multiple tables. Below we consider a simple example comparing two countries preference towards a new soft drink. The combined table is
+
+```{r}
+soft_drink <- matrix(c(36, 43, 29, 44), nrow = 2)
+dimnames(soft_drink) <- list("Country" = c("America","UK"), "Choice" = c("Yes","No"))
+soft_drink
+```
+Complete the table with marginal totals and cell probabilities
+```{r}
+addmargins(soft_drink) 
+prop.table(soft_drink, 1)
+chisq.test(soft_drink)
+```
+Consider the test for proportion that favor the soft drink.
+```{r}
+prop.test(soft_drink)
+```
+```{r}
+p.out=prop.test(soft_drink)
+# difference in proportions
+p.out$estimate[1] - p.out$estimate[2]
+```
+
+In this case a better statistic is the relative risk given below 
+```{r}
+prop.out = prop.table(soft_drink, margin = 1)
+# relative risk of placebo vs. aspirin
+prop.out[1,1]/prop.out[2,1]
+
+```
+
+The relative risk is 1.12 which means that American have about a 12% greater likelihood of favoring soft drink when compared with those the UK. This difference is not statistically significant.
+
+The above table combined both males and females. Suppose we separate the table by gender and reproduce the results. Install needed library
+```{r}
+library(epitools) 
+```
+
+```{r}
+#Males
+soft_drink_males <- matrix(c(29, 19, 6, 15), nrow = 2)
+dimnames(soft_drink_males) <- list("Country" = c("America","UK"), "Choice" = c("Yes","No"))
+addmargins(soft_drink_males) 
+prop.table(soft_drink_males, 1)
+chisq.test(soft_drink_males)
+#oddsratio.fisher(soft_drink_males) 
+oddsratio.wald(soft_drink_males)  #large sample size procedure
+#riskratio(soft_drink_males) 
+#riskratio.wald(soft_drink_males)  #large sample size procedure
+```
+```{r}
+#Females
+soft_drink_females <- matrix(c(7, 24, 23, 29), nrow = 2)
+dimnames(soft_drink_females) <- list("Country" = c("America","UK"), "Choice" = c("Yes","No"))
+addmargins(soft_drink_females) 
+prop.table(soft_drink_females, 1)
+chisq.test(soft_drink_females)
+#oddsratio.fisher(soft_drink_males) 
+oddsratio.wald(soft_drink_females)  
+#riskratio(soft_drink_males) 
+#riskratio.wald(soft_drink_females)
+```
+The Mantel-Haenszel odds ratio estimates the odds ratio for association between country and choice, controlling for the possible confounding effects of the stratifying variable (gender here). Need to install a R package
+```{r}
+library("lawstat")
+```
+```{r}
+myarray <- array(c(soft_drink_males,soft_drink_females),dim=c(2,2,2))
+cmh.test(myarray)
+```
+It appears that there is a gender difference but once this variable is accounted for, there is not a preference difference between the two countries.
+
+
