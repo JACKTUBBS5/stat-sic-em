@@ -1,0 +1,22 @@
+Overview:
+This dataset provides comprehensive information on individuals, encompassing key attributes such as gender, age, height, weight, family history with overweight, dietary habits, physical activity, transportation mode, and the corresponding obesity level. The dataset is meticulously curated for research and analysis in the domain of health and lifestyle studies.
+
+Tags:
+
+Gender
+Age
+Height
+Weight
+Family_history_with_overweight
+FAVC (Frequent consumption of high-caloric food)
+FCVC (Frequency of consumption of vegetables)
+NCP (Number of main meals)
+CAEC (Consumption of food between meals)
+SMOKE
+CH2O (Daily water consumption)
+SCC (Caloric beverages consumption)
+FAF (Physical activity frequency)
+TUE (Time spent using technological devices)
+CALC (Consumption of alcohol)
+MTRANS (Mode of transportation)
+0be1dad (Target variable representing obesity level)
