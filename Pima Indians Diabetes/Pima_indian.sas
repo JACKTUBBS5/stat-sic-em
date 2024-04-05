@@ -1,6 +1,8 @@
 libname ldata  '/home/jacktubbs/my_shared_file_links/jacktubbs/LaTeX/Class/s4382-2024' ;
 title1 'Pima Indian Diabetes Data';
 
+* part 1 of the analysis with this data set;
+
 /*
 DESCRIPTION
 Predict the onset of diabetes based on diagnostic measures.
