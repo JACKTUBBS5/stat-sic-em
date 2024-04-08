@@ -1,4 +1,8 @@
-I have listed a selection of possible projects for STAT4382 teams' projects. Each project has the data in a .csv format. I have also provided SAS code for possible ways in which I would analyze the data. You can use my SAS code as a guide for creating your teams RStudio code and results. As each data set has a story (background, problem of interest, your approach, and your results) you should include these in your final report.
+I have listed a selection of possible projects for STAT 4382 teams' projects. Each project has the data in a .csv format. 
+I have also provided SAS code for possible ways in which I would analyze the data. You can use my SAS code as a guide for 
+creating your teams RStudio code and results. As each data set has a story (background, problem of interest, your approach, 
+and your results) you should include these in your final report.
+
 The projects include:
     Binge Drinking in US 2003 - 2021 for male and females ages 18-25.
     Heart Failure in the Framingham MA cohort study
