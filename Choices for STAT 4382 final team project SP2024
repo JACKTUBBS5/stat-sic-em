@@ -14,3 +14,7 @@ The projects include:
 This is a team project, so each member of the team will contribute to the final report. Some of the material that your report
 should include is NOT STATISTICAL. The hard part is communication of your story. The WHY, the WHAT, the SO WHAT, 
 and the NOW WHAT are much more important than the HOW!
+
+Each of the above projects, except for the binge drinking will make use of some elementary machine learning techniques, 
+CART and Random Forest. The binge drinking problem will involve modeling data collected over time. Probably more matheatical 
+than statistical.
