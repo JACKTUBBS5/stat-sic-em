@@ -174,9 +174,8 @@ title2 'Using Proc Logistic';
 title3 'Reduced Model'; 
 proc logistic desc data=wines_red plot=effect;  
 *    class ses/param=glm; 
-    model r_quality =  vol_acidity sugar
-								/link=logit; 
-	roc vol_acidity	sugar;						
+      model r_quality =  vol_acidity sugar/link=logit; 
+      roc vol_acidity sugar;						
 run; 
  /*
 title3 'Reduced Model';         
