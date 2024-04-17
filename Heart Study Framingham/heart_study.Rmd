@@ -38,4 +38,5 @@ summary(heart)
 dim(heart)
 ```
 
-The objective is to model the probability that a subject with CHD lives longer than 10 years (TenYearCHD = '1'). Note: you can probably find this data and R programs via Google, yet this data is not the same as that found on the internet.
+The objective is to model the probability that a subject with CHD lives longer than 10 years (TenYearCHD = '1').
+Note: you can probably find this data and R programs via Google, yet this data is not the same as that found on the internet.
