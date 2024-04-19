@@ -83,11 +83,6 @@ proc sgplot data=fitstats;
    yaxis label='Misclassification Rate';
 run;
 
-title2 'Predicted Survival';
-proc sgplot data=leo.score;
-vbox P_pla2_out1/group=leo;
-run;
-
 data temp; set leo.score;
 pred = (P_pla2_out1 > .5);
 run;
