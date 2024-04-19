@@ -30,7 +30,7 @@ if (!require("rms")) install.packages("rms", dep=TRUE)
 ## Observational Cohort Data
 
 ```{r}
-frame = read.csv('class_framingham.csv', header = TRUE,
+frame = read.csv('frame_heart.csv', header = TRUE,
                        fileEncoding = 'UTF-8-BOM') #latest version
 
 heart = data.frame(frame)
