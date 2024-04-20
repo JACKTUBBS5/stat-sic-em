@@ -22,7 +22,9 @@ proc means data=temp1;
 var AGE ApoB BMI HDL HR HbA1c ID1 IR Insulin LDL LpPLA2 TC TG 
 hc_CRP sdLDL_C wt; run;
 
-proc freq data=temp1; tables leo*(gender pla2_out htn) ; run;
+proc freq data=temp1; 
+tables leo*(gender pla2_out htn)/nocol nopercent; 
+run;
 
 proc sgplot data=temp1;
 density age / type=kernel;
